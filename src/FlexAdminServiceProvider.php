@@ -2,9 +2,9 @@
 
 namespace Psi\FlexAdmin;
 
+use Psi\FlexAdmin\Commands\FlexAdminCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Psi\FlexAdmin\Commands\FlexAdminCommand;
 
 class FlexAdminServiceProvider extends PackageServiceProvider
 {
