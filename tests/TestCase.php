@@ -23,6 +23,7 @@ class TestCase extends Orchestra
         return [
             FlexAdminServiceProvider::class,
             \Spatie\LaravelRay\RayServiceProvider::class,
+            \Psi\FlexAdmin\Tests\Providers\AuthServiceProvider::class,
         ];
     }
 
