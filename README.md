@@ -1,5 +1,7 @@
 # Flexible Admin for Laravel and Inertia
 
+Update
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/psi/flex-admin.svg?style=flat-square)](https://packagist.org/packages/psi/flex-admin)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/psi/flex-admin/run-tests?label=tests)](https://github.com/psi/flex-admin/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/psi/flex-admin/Check%20&%20fix%20styling?label=code%20style)](https://github.com/psi/flex-admin/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
@@ -76,8 +78,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Ron Fuller](https://github.com/ronfuller)
-- [All Contributors](../../contributors)
+-   [Ron Fuller](https://github.com/ronfuller)
+-   [All Contributors](../../contributors)
 
 ## License
 
