@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Psi\\FlexAdmin\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Psi\\FlexAdmin\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
     }
 
@@ -21,6 +21,7 @@ class TestCase extends Orchestra
     {
         return [
             FlexAdminServiceProvider::class,
+            \Spatie\LaravelRay\RayServiceProvider::class,
         ];
     }
 
