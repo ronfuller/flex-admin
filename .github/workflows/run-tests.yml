@@ -18,11 +18,22 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
         include:
           - laravel: 8.*
-            testbench: ^6.23
+            testbench: ^6.6
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
+    env:
+      DB_DATABASE: flex_admin
+      DB_USER: root
+      DB_PASSWORD: root
+
     steps:
+      - name: Setup MySQL Connection
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{env.DB_DATABASE}};' -u${{ env.DB_USER }} -p${{env.DB_PASSWORD}}
+          mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD}}
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -45,3 +56,8 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest
+        env:
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
