@@ -63,3 +63,7 @@ jobs:
           DB_PASSWORD: root
           DB_HOST: 127.0.0.1
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
+
+      - name: Test Coverage
+        run: |
+          vendor/bin/pest --coverage --min=90
