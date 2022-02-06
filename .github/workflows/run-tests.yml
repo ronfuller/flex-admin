@@ -68,3 +68,8 @@ jobs:
         run: |
           vendor/bin/pest --filter=setup
           vendor/bin/pest --exclude-group=setup --coverage --min=90
+        env:
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
