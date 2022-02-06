@@ -15,7 +15,7 @@ beforeEach(function () {
     );
     $this->user = User::factory()->create(
         [
-            'permissions' => ['properties.view-any'],
+            'permissions' => ['properties.view-any', 'properties.view', 'properties.create'],
         ]
     );
     actingAs($this->user);
@@ -28,11 +28,11 @@ it('should make a resource field')
     ->toBeNull();
 
 it('should be null if resource field is not in column list')
-    ->expect(Field::make(['name'], 'id'))
+    ->expect(fn () => Field::make(['name'], 'id'))
     ->toBeNull();
 
 it('should create display defaults')
-    ->expect(Field::make(null, 'id')->display)
+    ->expect(fn () => Field::make(null, 'id')->display)
     ->toBe([
         Field::CONTEXT_INDEX => true,
         Field::CONTEXT_DETAIL => true,
@@ -42,71 +42,71 @@ it('should create display defaults')
     ->group('display');
 
 it('should have default permissions')
-    ->expect(Field::make(null, 'id')->permissions)
+    ->expect(fn () => Field::make(null, 'id')->permissions)
     ->not->toBeNull()
     ->group('permissions');
 
 it('should hide field from index')
-    ->expect(Field::make(null, 'id')->hideFromIndex()->display)
+    ->expect(fn () => Field::make(null, 'id')->hideFromIndex()->display)
     ->toHaveKey(Field::CONTEXT_INDEX, false)
     ->toHaveKey(Field::CONTEXT_DETAIL, true)
     ->group('display');
 
 it('should hide field from detail')
-    ->expect(Field::make(null, 'id')->hideFromDetail()->display)
+    ->expect(fn () => Field::make(null, 'id')->hideFromDetail()->display)
     ->toHaveKey(Field::CONTEXT_DETAIL, false)
     ->toHaveKey(Field::CONTEXT_INDEX, true)
     ->group('display');
 
 it('should hide field from create')
-    ->expect(Field::make(null, 'id')->hideFromCreate()->display)
+    ->expect(fn () => Field::make(null, 'id')->hideFromCreate()->display)
     ->toHaveKey(Field::CONTEXT_CREATE, false)
     ->toHaveKey(Field::CONTEXT_INDEX, true)
     ->group('display');
 
 it('should hide field from edit')
-    ->expect(Field::make(null, 'id')->hideFromEdit()->display)
+    ->expect(fn () => Field::make(null, 'id')->hideFromEdit()->display)
     ->toHaveKey(Field::CONTEXT_EDIT, false)
     ->toHaveKey(Field::CONTEXT_DETAIL, true)
     ->toHaveKey(Field::CONTEXT_INDEX, true)
     ->group('display');
 
 it('should only have index context')
-    ->expect(Field::make(null, 'id')->indexOnly()->display)
+    ->expect(fn () => Field::make(null, 'id')->indexOnly()->display)
     ->toHaveKey(Field::CONTEXT_INDEX, true)
     ->not->toHaveKeys([Field::CONTEXT_DETAIL, Field::CONTEXT_CREATE, Field::CONTEXT_EDIT])
     ->group('display');
 
 it('should only have detail context')
-    ->expect(Field::make(null, 'id')->detailOnly()->display)
+    ->expect(fn () => Field::make(null, 'id')->detailOnly()->display)
     ->toHaveKey(Field::CONTEXT_DETAIL, true)
     ->not->toHaveKeys([Field::CONTEXT_INDEX, Field::CONTEXT_CREATE, Field::CONTEXT_EDIT])
     ->group('display');
 
 it('should only have edit context')
-    ->expect(Field::make(null, 'id')->editOnly()->display)
+    ->expect(fn () => Field::make(null, 'id')->editOnly()->display)
     ->toHaveKey(Field::CONTEXT_EDIT, true)
     ->not->toHaveKeys([Field::CONTEXT_INDEX, Field::CONTEXT_CREATE, Field::CONTEXT_DETAIL])
     ->group('display');
 
 it('should only have create context')
-    ->expect(Field::make(null, 'id')->createOnly()->display)
+    ->expect(fn () => Field::make(null, 'id')->createOnly()->display)
     ->toHaveKey(Field::CONTEXT_CREATE, true)
     ->not->toHaveKeys([Field::CONTEXT_INDEX, Field::CONTEXT_EDIT, Field::CONTEXT_DETAIL])
     ->group('display');
 
 it('should set a default camel case name')
-    ->expect(Field::make(null, 'property_title')->attributes)
+    ->expect(fn () => Field::make(null, 'property_title')->attributes)
     ->toHaveKey('name', 'propertyTitle')
     ->group('attributes');
 
 it('should set a default title case label')
-    ->expect(Field::make(null, 'property_title')->attributes)
+    ->expect(fn () => Field::make(null, 'property_title')->attributes)
     ->toHaveKey('label', 'Property Title')
     ->group('attributes');
 
 it('should merge custom attributes')
-    ->expect(Field::make(null, 'property_title')->attributes([
+    ->expect(fn () => Field::make(null, 'property_title')->attributes([
         'align' => 'left',
         'url' => 'https://www.google.com',
     ])->attributes)
@@ -114,7 +114,7 @@ it('should merge custom attributes')
     ->group('attributes');
 
 it('should overwrite the label attribute')
-    ->expect(Field::make(null, 'property_title')->attributes([
+    ->expect(fn () => Field::make(null, 'property_title')->attributes([
         'label' => 'Property Name',
     ])->attributes)
     ->toHaveKeys(['name', 'label'])
@@ -122,7 +122,7 @@ it('should overwrite the label attribute')
     ->group('attributes');
 
 it('should overwrite the name attribute')
-    ->expect(Field::make(null, 'property_title')->attributes([
+    ->expect(fn () => Field::make(null, 'property_title')->attributes([
         'name' => 'property',
     ])->attributes)
     ->toHaveKeys(['name', 'label'])
@@ -130,77 +130,87 @@ it('should overwrite the name attribute')
     ->group('attributes');
 
 it('should not be sortable by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('sortable', false)
     ->group('attributes');
 
 it('should not be searchable by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('searchable', false)
     ->group('attributes');
 
 it('should not be constrainable by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('constrainable', false)
     ->group('attributes');
 
 it('should not be filterable by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('filterable', false)
     ->group('attributes');
 
 it('should not be hidden by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('hidden', false)
     ->group('attributes');
 
 it('should not be selectable by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('selectable', false)
     ->group('attributes');
 
 it('should not be copyable by default')
-    ->expect(Field::make(null, 'id')->attributes)
+    ->expect(fn () => Field::make(null, 'id')->attributes)
     ->toHaveKey('copyable', false)
     ->group('attributes');
 
+it('should not be copyable')
+    ->expect(fn () => Field::make(null, 'id')->copyable()->attributes)
+    ->toHaveKey('copyable', true)
+    ->group('attributes');
+
+it('should not be readonlye')
+    ->expect(fn () => Field::make(null, 'id')->readonly()->attributes)
+    ->toHaveKey('readonly', true)
+    ->group('attributes');
+
 it('should be filterable')
-    ->expect(Field::make(null, 'id')->filterable()->attributes)
+    ->expect(fn () => Field::make(null, 'id')->filterable()->attributes)
     ->toHaveKey('filterable', true)
     ->group('attributes');
 
 it('should be searchable')
-    ->expect(Field::make(null, 'id')->searchable()->attributes)
+    ->expect(fn () => Field::make(null, 'id')->searchable()->attributes)
     ->toHaveKey('searchable', true)
     ->group('attributes');
 
 it('should be sortable')
-    ->expect(Field::make(null, 'id')->sortable()->attributes)
+    ->expect(fn () => Field::make(null, 'id')->sortable()->attributes)
     ->toHaveKey('sortable', true)
     ->group('attributes');
 
 it('should be selectable')
-    ->expect(Field::make(null, 'id')->selectable()->attributes)
+    ->expect(fn () => Field::make(null, 'id')->selectable()->attributes)
     ->toHaveKey('selectable', true)
     ->group('attributes');
 
 it('should be hidden for index context')
-    ->expect(Field::make(null, 'id')->hidden()->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->hidden()->toAttributes(Field::CONTEXT_INDEX))
     ->toHaveKey('attributes.hidden', true)
     ->group('attributes');
 
 it('should be hidden for detail context')
-    ->expect(Field::make(null, 'id')->hidden()->toAttributes(Field::CONTEXT_DETAIL))
+    ->expect(fn () => Field::make(null, 'id')->hidden()->toAttributes(Field::CONTEXT_DETAIL))
     ->toHaveKey('attributes.hidden', true)
     ->group('attributes');
 
 it('should have a panel')
-    ->expect(Field::make(null, 'id')->panel('properties')->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->panel('properties')->toAttributes(Field::CONTEXT_INDEX))
     ->toHaveKey('panel', 'properties')
     ->group('render');
 
 it('should have default render properties')
-    ->expect(Field::make(null, 'id')->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->toAttributes(Field::CONTEXT_INDEX))
     ->toHaveKey('panel', 'details')
     ->group('render');
 
@@ -360,14 +370,44 @@ it('should have permission to index the resource')
     ->toHaveKey('enabled', true)
     ->group('permissions');
 
+it('should not have permission to index the resource with specific permission')
+    ->expect(fn () => Field::make(null, 'id')->indexPermission('properties.admin')->withPermissions(Field::CONTEXT_INDEX, new Property())->model(new Property())->toColumn())
+    ->toHaveKey('enabled', false)
+    ->group('permissions');
+
 it('should not have permission to edit the resource')
     ->expect(fn () => Field::make(null, 'id')->withPermissions(Field::CONTEXT_EDIT, new Property())->model(new Property())->toColumn())
+    ->toHaveKey('enabled', false)
+    ->group('permissions');
+
+it('should not have permission to edit the resource with specific permission')
+    ->expect(fn () => Field::make(null, 'id')->editPermission('properties.view')->withPermissions(Field::CONTEXT_EDIT, new Property())->model(new Property())->toColumn())
+    ->toHaveKey('enabled', true)
+    ->group('permissions');
+
+it('should not have permission to view details for the resource')
+    ->expect(fn () => Field::make(null, 'id')->withPermissions(Field::CONTEXT_DETAIL, new Property())->model(new Property())->toColumn())
+    ->toHaveKey('enabled', true)
+    ->group('permissions');
+
+it('should not have have permission to view the resource with specific permission')
+    ->expect(fn () => Field::make(null, 'id')->detailPermission('properties.admin')->withPermissions(Field::CONTEXT_EDIT, new Property())->model(new Property())->toColumn())
     ->toHaveKey('enabled', false)
     ->group('permissions');
 
 it('should have permission to edit the resource with permissions disabled')
     ->expect(fn () => Field::make(null, 'id')->withoutPermissions()->withPermissions(Field::CONTEXT_EDIT, new Property())->model(new Property())->toColumn())
     ->toHaveKey('enabled', true)
+    ->group('permissions');
+
+it('should have permission to create the resource')
+    ->expect(fn () => Field::make(null, 'id')->withPermissions(Field::CONTEXT_CREATE, new Property())->model(new Property())->toColumn())
+    ->toHaveKey('enabled', true)
+    ->group('permissions');
+
+it('should not have have permission to create the resource with specific permission')
+    ->expect(fn () => Field::make(null, 'id')->createPermission('properties.admin')->withPermissions(Field::CONTEXT_EDIT, new Property())->model(new Property())->toColumn())
+    ->toHaveKey('enabled', false)
     ->group('permissions');
 
 it('should have a searchable type')

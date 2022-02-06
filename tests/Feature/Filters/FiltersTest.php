@@ -22,46 +22,46 @@ beforeEach(function () {
 });
 
 it('should make a resource filter')
-    ->expect(Filter::make('company'))
+    ->expect(fn () => Filter::make('company'))
     ->not()
     ->toBeNull();
 
 it('should have a filter name')
-    ->expect(Filter::make('company')->toArray())
+    ->expect(fn () => Filter::make('company')->toArray())
     ->name
     ->toBe('company');
 
 it('should have a default type of filter')
-    ->expect(Filter::make('company')->toArray()['type'])
+    ->expect(fn () => Filter::make('company')->toArray()['type'])
     ->toBe('select');
 
 it('should have a default label')
-    ->expect(Filter::make('company')->toArray())
+    ->expect(fn () => Filter::make('company')->toArray())
     ->label
     ->toBe('Companies');
 
 it('should have a default label from snake case')
-    ->expect(Filter::make('company_user')->toArray())
+    ->expect(fn () => Filter::make('company_user')->toArray())
     ->label
     ->toBe('Company Users');
 
 it('should have a default label from kebab case')
-    ->expect(Filter::make('company-user')->toArray())
+    ->expect(fn () => Filter::make('company-user')->toArray())
     ->label
     ->toBe('Company Users');
 
 it('should have an icon')
-    ->expect(Filter::make('company')->icon('mdi-domain')->toArray())
+    ->expect(fn () => Filter::make('company')->icon('mdi-domain')->toArray())
     ->prependIcon
     ->toBe('mdi-domain');
 
 it('should have an option configuration')
-    ->expect(Filter::make('company')->option('name', 'id')->toArray())
+    ->expect(fn () => Filter::make('company')->option('name', 'id')->toArray())
     ->toHaveKey('optionValue', 'id')
     ->toHaveKey('optionLabel', 'name');
 
 it('should append attributes')
-    ->expect(Filter::make('company')->attributes(
+    ->expect(fn () => Filter::make('company')->attributes(
         [
             'dense' => true,
             'optionsDense' => true,
@@ -80,12 +80,12 @@ it('should throw exception appending reserved keys', function () {
 });
 
 it('should set filter type to boolean')
-    ->expect(Filter::make('company')->boolean()->toArray())
+    ->expect(fn () => Filter::make('company')->boolean()->toArray())
     ->type
     ->toBe('boolean');
 
 it('should set a filter format')
-    ->expect(Filter::make('company')->format('type-ahead')->toArray())
+    ->expect(fn () => Filter::make('company')->format('type-ahead')->toArray())
     ->format
     ->toBe('type-ahead');
 
@@ -139,6 +139,13 @@ it('should set options from model filter function', function () {
     expect($filter['options'])->toHaveCount(10);
 });
 
+it('should throw error when building without a source set', function () {
+    $query = Property::select('id', 'name', 'company_id', 'options')->with('company');
+
+    expect(fn () => Filter::make('company')->build($this->property, $query)->toArray())
+        ->toThrow("Cannot build filter without source set");
+});
+
 it('should set options from query column', function () {
     $this->companies = Company::factory()->count(10)->hasProperties(5)->create();
     $this->companies = Company::with('properties')->whereIn('id', $this->companies->pluck('id')->all())->get();
@@ -148,6 +155,20 @@ it('should set options from query column', function () {
     expect(count($filter['options']))->toBeGreaterThan(0);
     expect($filter['options'])->each->toHaveKeys(['value', 'label']);
     expect($filter)->toHaveKey('optionValue', 'value')->toHaveKey('optionLabel', 'label');
+});
+
+it('should throw error building from an invalid attribute', function () {
+    $query = Property::select('id', 'name', 'company_id', 'options')->with('company');
+
+    expect(fn () => Filter::make('company')->fromAttribute('invalid')->build($this->property, $query)->toArray())
+        ->toThrow("Attribute missing for filter");
+});
+
+it('should throw error building from an invalid function', function () {
+    $query = Property::select('id', 'name', 'company_id', 'options')->with('company');
+
+    expect(fn () => Filter::make('company')->fromFunction('invalid')->build($this->property, $query)->toArray())
+        ->toThrow("Could not find filter function for filter");
 });
 
 it('should get an item from a callable function', function () {

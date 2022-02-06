@@ -12,7 +12,6 @@ use Psi\FlexAdmin\Resources\Resource;
 class Flex extends Resource
 {
     use CollectsResources;
-    use FlexContexts;
     use FlexQuery;
     use FlexSearch;
     use FlexConstraint;

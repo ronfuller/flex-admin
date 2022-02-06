@@ -222,7 +222,7 @@ class Filter
     public function build(Model $model,  Builder | null $query): self
     {
         if (is_null($this->source) || is_null($this->sourceMeta)) {
-            throw new \Exception("Can't build filter without source set.");
+            throw new \Exception("Cannot build filter without source set.");
         }
 
         switch ($this->source) {

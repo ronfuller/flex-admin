@@ -76,13 +76,25 @@ class Action
         $this->setDefaults();
     }
 
-    public static function make(string $slug, bool $condition = null)
+    /**
+     * Undocumented function
+     *
+     * @param string $slug
+     * @param bool|null $condition
+     * @return \Psi\FlexAdmin\Actions\Action | null
+     */
+    public static function make(string $slug, bool $condition = null): self | null
     {
         $condition = $condition ?? true;
 
         return $condition ? new static($slug) : null;
     }
 
+    /**
+     * Without permissions will disable using permissions to enable action
+     *
+     * @return \Psi\FlexAdmin\Actions\Action
+     */
     public function withoutPermissions(): self
     {
         $this->withPermissions = false;
@@ -117,7 +129,7 @@ class Action
 
     public function route(string $name, string $method = "get", array $params = []): self
     {
-        if (!Route::has($name)) {
+        if (! Route::has($name)) {
             throw new \Exception("Could not find route for name = {$name}. You may need to create an API resource");
         }
         $url = route($name, $params);
@@ -227,7 +239,7 @@ class Action
             $this->authorized() &&                          // has permission
             $this->canAct($resource);                       // has capability based on resource
 
-        $this->attributes['disabled'] = !$this->enabled;    // disabled attribute reflects true value of enabled
+        $this->attributes['disabled'] = ! $this->enabled;    // disabled attribute reflects true value of enabled
 
         // If we always want a disabled attribute for the action, we'll enable but set disabled based on this status
         $this->enabled = $this->withDisabled ? true : $this->enabled;
@@ -251,7 +263,7 @@ class Action
     {
         $this->permission = $this->permission ?? '';
 
-        return $this->withPermissions && !empty($this->permission) ? (auth()->check() ? auth()->user()->can($this->permission) : true) : true;
+        return $this->withPermissions && ! empty($this->permission) ? (auth()->check() ? auth()->user()->can($this->permission) : true) : true;
     }
 
     protected function canAct(mixed $resource): bool
@@ -271,7 +283,8 @@ class Action
 
     protected function defaultContexts(): array
     {
-        return collect(Field::CONTEXTS)->mapWithKeys(fn ($context) => [$context => true])->all();;
+        return collect(Field::CONTEXTS)->mapWithKeys(fn ($context) => [$context => true])->all();
+        ;
     }
 
     protected function defaultAttributes(): array

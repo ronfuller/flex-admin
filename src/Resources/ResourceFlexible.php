@@ -4,6 +4,9 @@ namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Http\Request;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait ResourceFlexible
 {
     public function filters(): array
