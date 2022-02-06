@@ -55,7 +55,9 @@ jobs:
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/pest
+        run: |
+          vendor/bin/pest --filter=setup
+          vendor/bin/pest --exclude-group=setup
         env:
           DB_USERNAME: root
           DB_PASSWORD: root
