@@ -90,6 +90,9 @@ class Action
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function withDisabled(): self
     {
         $this->withDisabled = true;

@@ -21,8 +21,8 @@ class CompanyFactory extends Factory
             'type' => $this->faker->randomElement(['Small', 'Large', 'Enterprise']),
             'settings' => [
                 'color' => $this->faker->randomElement(['blue', 'green', 'yellow', 'purple', 'orange']),
-                'employees' => $this->faker->randomElement(['1000-5000', '100-1000', '10-100', 'Under 10'])
-            ]
+                'employees' => $this->faker->randomElement(['1000-5000', '100-1000', '10-100', 'Under 10']),
+            ],
         ];
     }
 }

@@ -44,7 +44,7 @@ trait ResourcePanels
         $fieldPanels = $fieldCollection->each(function ($field) use ($panelCollection) {
             $key = $field['panel'];
 
-            if (!empty($key)) {
+            if (! empty($key)) {
                 $panel = $panelCollection->first(function ($item) use ($key) {
                     return $item->key === $key;
                 });

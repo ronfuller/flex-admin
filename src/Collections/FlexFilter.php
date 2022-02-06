@@ -24,7 +24,7 @@ trait FlexFilter
      */
     protected function hasFilters(array $filters): bool
     {
-        return $this->withFilters && collect($filters)->contains(fn ($filter) => !is_null($filter['value']));
+        return $this->withFilters && collect($filters)->contains(fn ($filter) => ! is_null($filter['value']));
     }
 
     /**
@@ -93,7 +93,7 @@ trait FlexFilter
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         collect($filters)
-            ->filter(fn ($filter) => !is_null($filter['value']))    // only filters with a value set
+            ->filter(fn ($filter) => ! is_null($filter['value']))    // only filters with a value set
             ->each(function ($filter) use (&$query) {
                 $meta = $filter['meta'];
                 $value = $filter['value'];
@@ -136,7 +136,7 @@ trait FlexFilter
     {
         return [
             'filter' => collect($filters)
-                ->filter(fn ($filter) => !is_null($filter['value']))
+                ->filter(fn ($filter) => ! is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
                 ->join("|"),
         ];

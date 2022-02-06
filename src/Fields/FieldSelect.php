@@ -33,6 +33,7 @@ trait FieldSelect
         if (is_null($select)) {
             return null;
         }
+
         return $this->withQualifiedColumn($select);
     }
 

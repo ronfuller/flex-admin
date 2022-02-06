@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Psi\FlexAdmin\Tests\Models\User;
 use Illuminate\Http\Request;
+use Psi\FlexAdmin\Tests\Models\User;
 use Psi\FlexAdmin\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

@@ -20,6 +20,7 @@ trait FieldAttributes
     public function name(string $name): self
     {
         $this->attributes['name'] = $name;
+
         return $this;
     }
 
@@ -29,6 +30,7 @@ trait FieldAttributes
     public function attributes(array $attributes): self
     {
         $this->attributes = array_merge($this->attributes, $attributes);
+
         return $this;
     }
 
@@ -38,6 +40,7 @@ trait FieldAttributes
     public function copyable(): self
     {
         $this->attributes['copyable'] = true;
+
         return $this;
     }
 
@@ -47,6 +50,7 @@ trait FieldAttributes
     public function selectable(): self
     {
         $this->attributes['selectable'] = true;
+
         return $this;
     }
 
@@ -56,6 +60,7 @@ trait FieldAttributes
     public function constrainable(): self
     {
         $this->attributes['constrainable'] = true;
+
         return $this;
     }
 
@@ -95,6 +100,7 @@ trait FieldAttributes
     public function hidden(): self
     {
         $this->attributes['hidden'] = true;
+
         return $this;
     }
 

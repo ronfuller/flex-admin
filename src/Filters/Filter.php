@@ -5,7 +5,6 @@ namespace Psi\FlexAdmin\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Psi\FlexAdmin\Lib\FlexInspect;
 
 class Filter
 {
@@ -145,6 +144,7 @@ class Filter
     public function itemValue(callable $itemFromValue): self
     {
         $this->itemFromValue = $itemFromValue;
+
         return $this;
     }
 
@@ -192,6 +192,7 @@ class Filter
     public function setItem(): self
     {
         $this->item = $this->itemFromValue ? \call_user_func($this->itemFromValue, $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
+
         return $this;
     }
 
@@ -227,12 +228,15 @@ class Filter
         switch ($this->source) {
             case self::SOURCE_COLUMN:
                 $this->options = $this->optionsFromColumn($model, $query);
+
                 break;
             case self::SOURCE_FUNCTION:
                 $this->options = $this->optionsFromFunction($model, $query);
+
                 break;
             case self::SOURCE_ATTRIBUTE:
                 $this->options = $this->optionsFromAttribute($model);
+
                 break;
         }
 
@@ -243,7 +247,7 @@ class Filter
     {
         $attribute = 'filter_' .  $this->sourceMeta;
         $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append("Attribute");
-        if (!\method_exists($model, $filterMutatorMethod)) {
+        if (! \method_exists($model, $filterMutatorMethod)) {
             throw new \Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
         }
 
@@ -255,7 +259,7 @@ class Filter
         $filterQuery = clone $query;
         $method = (string) Str::of($this->sourceMeta)->title()->prepend("filter");
 
-        if (!\method_exists($model, $method)) {
+        if (! \method_exists($model, $method)) {
             throw new \Exception("Could not find filter function for filter named {$this->sourceMeta}");
         }
 
@@ -264,7 +268,6 @@ class Filter
 
     protected function optionsFromColumn(Model $model, Builder $query): array
     {
-
         $column = $model->qualifyColumn($this->sourceMeta);
         $filterQuery = clone $query;
         $options = $filterQuery->select($column)->distinct()->orderBy($column)->toBase()->get()->pluck($this->sourceMeta)->all();

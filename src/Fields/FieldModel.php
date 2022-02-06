@@ -3,7 +3,6 @@
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 use Psi\FlexAdmin\Lib\FlexInspect;
 
 trait FieldModel

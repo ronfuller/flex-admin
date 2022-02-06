@@ -70,7 +70,7 @@ it('should return collection meta')
         'searchType',
         'filterType',
         'addToValues',
-        'join'
+        'join',
     ]);
 
 it('should return collection meta with searches')

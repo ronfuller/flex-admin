@@ -4,7 +4,6 @@ namespace Psi\FlexAdmin\Fields;
 
 trait FieldFilter
 {
-
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */

@@ -17,10 +17,9 @@ class FlexInspect
 
     protected function getMeta(Model $model): array
     {
-
         return [
             'class' => \get_class($model),
-            'name' =>  $model->joiningTableSegment(),
+            'name' => $model->joiningTableSegment(),
             'pluralName' => $this->pluralName($model),
             'filterFunctions' => $this->filterFunctions($model),
             'filterAttributes' => $this->filterAttributes($model),
@@ -36,7 +35,7 @@ class FlexInspect
             'primaryKeyColumn' => $model->getQualifiedKeyName(),
             'routeKey' => $model->getRouteKeyName(),
             'foreignKey' => $model->getForeignKey(),
-            'perPage' => $model->getPerPage()
+            'perPage' => $model->getPerPage(),
         ];
     }
 
@@ -49,6 +48,7 @@ class FlexInspect
             ->values()->map(fn ($function) => (string) Str::of($function)->replace('filter', '')->lower())
             ->all();
     }
+
     protected function filterAttributes($model): array
     {
         $methods = \get_class_methods($model);

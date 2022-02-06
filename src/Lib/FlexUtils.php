@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 
 class FlexUtils
 {
-
     protected array $meta;
 
     public function __construct(Model $model)
@@ -38,6 +37,7 @@ class FlexUtils
     public function permission(string $slug): string
     {
         $pluralModelName = $this->meta['pluralName'];
+
         return "{$pluralModelName}.{$slug}";
     }
 

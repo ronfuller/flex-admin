@@ -53,30 +53,37 @@ trait FieldRender
     public function indexComponent(string $string): self
     {
         $this->components[self::CONTEXT_INDEX] = $string;
+
         return $this;
     }
+
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function detailComponent(string $string): self
     {
         $this->components[self::CONTEXT_DETAIL] = $string;
+
         return $this;
     }
+
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function createComponent(string $string): self
     {
         $this->components[self::CONTEXT_CREATE] = $string;
+
         return $this;
     }
+
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function editComponent(string $string): self
     {
         $this->components[self::CONTEXT_EDIT] = $string;
+
         return $this;
     }
 
@@ -94,6 +101,6 @@ trait FieldRender
     protected function setDefaultComponents()
     {
         // initialize context components to null
-        $this->components =  $this->components ?? collect(self::CONTEXTS)->mapWithKeys(fn ($context) => [$context => null])->all();
+        $this->components = $this->components ?? collect(self::CONTEXTS)->mapWithKeys(fn ($context) => [$context => null])->all();
     }
 }

@@ -55,6 +55,7 @@ class Property extends Model
     public function filterCompany($query)
     {
         $companyIds = $query->select('company_id')->orderBy('company_id')->distinct()->toBase()->get()->pluck('company_id')->all();
+
         return Company::select('id', 'name')->whereIn('id', $companyIds)->orderBy('name')->toBase()->get()->map(fn ($item) => (array) $item)->all();
     }
 

@@ -4,10 +4,12 @@
 use Illuminate\Support\Facades\Route as Route;
 use Psi\FlexAdmin\Actions\Action;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Tests\Feature\Actions\ActionWrapper;
 use Psi\FlexAdmin\Tests\Http\Actions\UrlAction;
 use Psi\FlexAdmin\Tests\Http\Controllers\TestController;
 use Psi\FlexAdmin\Tests\Models\Property;
 use Psi\FlexAdmin\Tests\Models\User;
+
 
 beforeEach(function () {
     $this->property = Property::factory()->create(
@@ -85,6 +87,15 @@ it('should have a url')
         'asEvent' => false,
     ]);
 
+it('should have a url with target self')
+    ->expect(Action::make('view-website')->url('https://pacificscreening.com', "_self")->toArray()['attributes'])
+    ->toMatchArray([
+        'url' => 'https://pacificscreening.com',
+        'target' => '_self',
+        'external' => true,
+        'asEvent' => false,
+    ]);
+
 it('should have a route', function () {
     Route::resource('tests', TestController::class);
     $attributes = Action::make('view-website')->route('tests.show', 'get', ['test' => 1])->toArray()['attributes'];
@@ -96,12 +107,25 @@ it('should have a route', function () {
         ])
         ->url->toContain('/tests/1');
 });
+it('should merge attributes')
+    ->expect(fn () => Action::make('view-website')->attributes(['color' => 'blue'])->toArray()['attributes'])
+    ->toHaveKey('color', 'blue');
 
+
+it('should throw error on invalid route', function () {
+    Route::resource('tests', TestController::class);
+    expect(fn () => Action::make('view-website')->route('tests.bad-route', 'get', ['test' => 1])->toArray()['attributes'])
+        ->toThrow("Could not find route");
+});
 
 // Context Tests
 it('should hide from index')
     ->expect(Action::make('view-website')->hideFromIndex()->toArray(Field::CONTEXT_INDEX))
     ->toHaveKey('enabled', false);
+
+it('should not hide from index on condition')
+    ->expect(Action::make('view-website')->hideFromIndex(false)->toArray(Field::CONTEXT_INDEX))
+    ->toHaveKey('enabled', true);
 
 it('should hide from detail')
     ->expect(Action::make('view-website')->hideFromDetail()->toArray(Field::CONTEXT_DETAIL))
@@ -164,3 +188,9 @@ it('should have the type of the extended class')
     ->expect(UrlAction::make('view-website'))
     ->not()
     ->toBeNull();
+
+it('should set withDisabled')
+    ->expect(ActionWrapper::make('view-website')->withDisabled()->getWithDisabled())->toBeTrue();
+
+it('should set withDisabled returning instance of Action')
+    ->expect(Action::make('view-website')->withDisabled())->toBeInstanceOf(Action::class);

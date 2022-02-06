@@ -7,18 +7,18 @@ use Illuminate\Support\Arr;
 
 class Field
 {
-    use Makeable,
-        FieldPermissions,
-        FieldDisplay,
-        FieldAttributes,
-        FieldSort,
-        FieldValue,
-        FieldSelect,
-        FieldRender,
-        FieldSearchable,
-        FieldModel,
-        FieldFilter,
-        FieldRelation;
+    use Makeable;
+    use FieldPermissions;
+    use FieldDisplay;
+    use FieldAttributes;
+    use FieldSort;
+    use FieldValue;
+    use FieldSelect;
+    use FieldRender;
+    use FieldSearchable;
+    use FieldModel;
+    use FieldFilter;
+    use FieldRelation;
 
     public const
         CONTEXT_INDEX = 'index',
@@ -230,7 +230,6 @@ class Field
      */
     protected array|null $onModelMeta = null;
 
-
     final public function __construct(public $key)
     {
         $this->setDefaults();
@@ -240,12 +239,14 @@ class Field
     {
         $this->component = $this->componentForContext($context);
         $this->attributes['enabled'] = $this->displayContext($context);
+
         return $this;
     }
 
     public function model(Model $model): self
     {
         $this->model = $model;
+
         return $this;
     }
 
@@ -273,7 +274,7 @@ class Field
                 'searchType' => $this->searchType,
                 'filterType' => $this->filterType,
                 'addToValues' => $this->addToValues,
-                'join' => $this->join()
+                'join' => $this->join(),
             ]
         );
     }

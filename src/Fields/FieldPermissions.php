@@ -12,6 +12,7 @@ trait FieldPermissions
     public function withoutPermissions(): self
     {
         $this->withPermissions = false;
+
         return $this;
     }
 
@@ -21,6 +22,7 @@ trait FieldPermissions
     public function indexPermission(string $permission): self
     {
         $this->permissions['index'] = $permission;
+
         return $this;
     }
 
@@ -30,6 +32,7 @@ trait FieldPermissions
     public function detailPermission(string $permission): self
     {
         $this->permissions['detail'] = $permission;
+
         return $this;
     }
 
@@ -39,6 +42,7 @@ trait FieldPermissions
     public function createPermission(string $permission): self
     {
         $this->permissions['create'] = $permission;
+
         return $this;
     }
 
@@ -48,6 +52,7 @@ trait FieldPermissions
     public function editPermission(string $permission): self
     {
         $this->permissions['edit'] = $permission;
+
         return $this;
     }
 
@@ -57,6 +62,7 @@ trait FieldPermissions
     public function withPermissions(string $context, mixed $model): self
     {
         $this->attributes['enabled'] = $this->authorizeEnabledContext($context, $model);
+
         return $this;
     }
 

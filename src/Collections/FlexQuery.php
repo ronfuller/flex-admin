@@ -59,7 +59,7 @@ trait FlexQuery
          */
         $query = $this->preFilterQuery($attributes); // Selects, Joins, Authorization, Constraints
         // Filters
-        $filters =  $this->deferFilters ?  $this->getFilters($attributes) : $this->buildFilters($attributes, $query);
+        $filters = $this->deferFilters ? $this->getFilters($attributes) : $this->buildFilters($attributes, $query);
 
         if ($this->hasFilters($filters)) {
             $query = $this->applyFilters($query, $filters);

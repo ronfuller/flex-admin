@@ -108,7 +108,7 @@ class Flex extends Resource
         $this->collects = $this->collects();
 
         // Validate context against list of contexts
-        if (!in_array($context, Field::CONTEXTS)) {
+        if (! in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
 

@@ -10,6 +10,7 @@ trait FieldDisplay
     public function indexOnly(): self
     {
         $this->display = [self::CONTEXT_INDEX => true];
+
         return $this;
     }
 
