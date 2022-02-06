@@ -64,6 +64,7 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
 
-      - name: Test Coverage
+      - name: Run Test Coverage
         run: |
-          vendor/bin/pest --coverage --min=90
+          vendor/bin/pest --filter=setup
+          vendor/bin/pest --exclude-group=setup --coverage --min=90
