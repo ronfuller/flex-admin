@@ -78,7 +78,7 @@ class Filter
     /**
      * Callable function to get an item from the filter value
      *
-     * @var callable
+     * @var callable|null
      */
     public $itemFromValue;
 
