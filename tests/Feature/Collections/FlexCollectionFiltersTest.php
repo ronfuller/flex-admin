@@ -33,15 +33,12 @@ beforeEach(function () {
             ['created_at' => now()->subHours(2),  'status' => '0NYYUYW9DF',],
             ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(2),  'status' => 'O4IGPQ4FGW',],
             ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(4),  'status' => 'O4IGPQ4FGW',],
-
             ['created_at' => now()->firstOfYear()->addDays(1),  'status' => '5R2O5O63MQ',],
             ['created_at' => now()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ',],
             ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ',],
-
             ['created_at' => now()->subYear()->firstOfYear()->addDays(1),  'status' => '4FI6DUVKNC',],
             ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC',],
             ['created_at' => now()->subYears(2)->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC',],
-
         ))
         ->create();
     $this->user = User::factory()->create(

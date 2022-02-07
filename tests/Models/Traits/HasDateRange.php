@@ -18,6 +18,7 @@ trait HasDateRange
         'Last Quarter',
         'Last Year',
     ];
+
     public function getDateRanges(): array
     {
         return collect($this->dateRanges)->map(fn ($range) => ['label' => $range, 'value' => $range])->all();
