@@ -15,6 +15,7 @@ return new class () extends Migration {
             $table->string('name')->index();
 
             $table->string('type')->index()->nullable();
+            $table->string('status')->index()->nullable();
             $table->json('options')->nullable();
             $table->json('contact')->nullable();
             $table->json('address')->nullable();

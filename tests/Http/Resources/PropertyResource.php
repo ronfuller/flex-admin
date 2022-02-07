@@ -3,15 +3,47 @@
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
+use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Fields\Panel;
 use Psi\FlexAdmin\Filters\Filter;
 use Psi\FlexAdmin\Resources\Flexible;
+use Psi\FlexAdmin\Resources\Relation;
 use Psi\FlexAdmin\Resources\Resource;
 use Psi\FlexAdmin\Tests\Models\Company;
 
 class PropertyResource extends Resource implements Flexible
 {
+    protected array $resourceFields = [];
+    protected array $resourceFilters = [];
+    protected array $resourceActions = [];
+
+    /**
+     * Add a field to the fields array
+     *
+     * @param Field $field
+     * @return \Psi\FlexAdmin\Tests\Http\Resources\PropertyResource
+     */
+    public function addField(Field $field): self
+    {
+        array_push($this->resourceFields, $field);
+
+        return $this;
+    }
+
+    /**
+     * Add a filter to the filters array
+     *
+     * @param Filter $filter
+     * @return \Psi\FlexAdmin\Tests\Http\Resources\PropertyResource
+     */
+    public function addFilter(Filter $filter): self
+    {
+        array_push($this->resourceFilters, $filter);
+
+        return $this;
+    }
+
     /**
      * Create fields for resource
      *
@@ -69,7 +101,7 @@ class PropertyResource extends Resource implements Flexible
             ->
          =====*/
         // KEYS NEED TO BE SMART WITH DATA VALUES
-        return [
+        $fields = [
             Field::make($keys, 'id')
                 ?->name('propertyId')
                 ->constrainable()
@@ -82,7 +114,7 @@ class PropertyResource extends Resource implements Flexible
                 ->searchable(),
 
             Field::make($keys, 'created_at')
-                ?->filterable()
+                ?->filterable('date-range')
                 ->selectable()
                 ->icon('mdi-domain'),
 
@@ -99,6 +131,13 @@ class PropertyResource extends Resource implements Flexible
                 ->constrainable()
                 ->select('options->color')
                 ->icon('mdi-palette'),
+
+            Field::make($keys, 'status')
+                ?->filterable()
+                ->searchable('exact')
+                ->sortable()
+                ->constrainable()
+                ->icon('mdi-check-circle'),
 
             Field::make($keys, 'type')
                 ?->filterable()
@@ -122,19 +161,17 @@ class PropertyResource extends Resource implements Flexible
                 ?->on(Company::class)
                 ->select('settings->employees')
                 ->icon('mdi-domain'),
-
-
         ];
+
+        return array_merge($fields, $this->resourceFields);
     }
 
     public function relations(Request $request): array
     {
         return [
-            // Relation::belongsTo('company')
-            //     ->whenDetailorEdit()
-            //     ->asDetail(Flex::for(Company::class)),
-            // Flex::hasMany('units')->whenDetailorEdit()->for(Unit::class)
-            //     Relation::make('company' => Flex::for() )->when(Field::CONTEXT_DETAIL);
+            Relation::belongsTo('company')
+                ->whenDetailorEdit()
+                ->as(Flex::forDetail(Company::class)),
         ];
     }
 
@@ -152,14 +189,17 @@ class PropertyResource extends Resource implements Flexible
 
     public function filters(): array
     {
-        return [
+        $filters = [
             Filter::make('company')
                 ->fromFunction()
                 ->option('id', 'name')
                 ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
-            Filter::make('type')->default(['label' => 'Small', 'value' => 'small'])->fromColumn(),
+            Filter::make('type')->default('small')->fromColumn(),
             Filter::make('color')->default('blue')->fromAttribute(),
+            Filter::make('created_at')->fromColumn(),
         ];
+
+        return array_merge($filters, $this->resourceFilters);
     }
 
     public function wrapResourcePermission(string $slug)

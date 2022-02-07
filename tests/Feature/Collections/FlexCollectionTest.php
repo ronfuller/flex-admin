@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Tests\Models\Company;
 use Psi\FlexAdmin\Tests\Models\Property;
 use Psi\FlexAdmin\Tests\Models\User;
 
@@ -13,11 +14,11 @@ beforeEach(function () {
     $this->properties = Property::factory()->count(5)
         ->forCompany()
         ->state(new Sequence(
-            ['name' => 'Everest', 'options' => ['color' => 'blue'], 'type' => 'townhome'],
-            ['name' => 'Cascade', 'options' => ['color' => 'green'], 'type' => 'apartment'],
-            ['name' => 'Denali', 'options' => ['color' => 'violet'], 'type' => 'home'],
-            ['name' => 'Cameroon', 'options' => ['color' => 'blue green'], 'type' => 'duplex'],
-            ['name' => 'Rainier', 'options' => ['color' => 'light blue'], 'type' => 'commercial'],
+            ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue',], 'status' => 'success', 'type' => 'townhome'],
+            ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green',], 'status' => 'fail', 'type' => 'apartment'],
+            ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'violet',], 'status' => 'fail', 'type' => 'home'],
+            ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue green',], 'status' => 'fail', 'type' => 'duplex'],
+            ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'light blue',], 'status' => 'fail', 'type' => 'commercial'],
         ))
         ->create();
     $this->user = User::factory()->create(
@@ -37,6 +38,17 @@ it('should create a collection for a property with short syntax')
     ->expect(fn () => Flex::forIndex(Property::class)->flexModel)
     ->toBeInstanceOf(Property::class);
 
+it('should create a collection for a property with short syntax for detail')
+    ->expect(fn () => Flex::forDetail(Property::class)->flexModel)
+    ->toBeInstanceOf(Property::class);
+
+it('should create a collection for a property with short syntax for edit')
+    ->expect(fn () => Flex::forEdit(Property::class)->flexModel)
+    ->toBeInstanceOf(Property::class);
+
+it('should create a collection for a property with short syntax for create')
+    ->expect(fn () => Flex::forCreate(Property::class)->flexModel)
+    ->toBeInstanceOf(Property::class);
 
 it('should throw error on missing resource', function () {
     expect(fn () => Flex::forIndex("Psi\LaravelFlexAdmin\Tests\Models\NotThere")->flexModel)
@@ -72,6 +84,7 @@ it('should search on property name')
 
 it('should search on full color match with JSON column')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
+        ->withoutFilters()
         ->query(createRequest(['search' => 'blue']))
         ->count())
     ->toBe(3)
@@ -79,7 +92,16 @@ it('should search on full color match with JSON column')
 
 it('should search on type partial match')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
+        ->withoutFilters()
         ->query(createRequest(['search' => 'hom']))
+        ->count())
+    ->toBe(1)
+    ->group('search');
+
+it('should search on type exact match')
+    ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
+        ->withoutFilters()
+        ->query(createRequest(['search' => 'success']))
         ->count())
     ->toBe(1)
     ->group('search');
@@ -128,6 +150,22 @@ it('should have an ordered query type asc')
     ->type
     ->toBe('apartment')
     ->group('order');
+
+it('should throw an error when there is no default sort order', function () {
+    expect(fn () => Flex::for(Company::class, FIELD::CONTEXT_INDEX)
+        ->withoutFilters()
+        ->query(createRequest()))
+        ->toThrow("Error. Default sort is required for resource.");
+})->group('order');
+
+it('should throw an error when there is an invalid sort direction', function () {
+    config(['flex-admin.sort.direction.flag' => null]);
+    expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)
+        ->withoutFilters()
+        ->query(createRequest(['sort' => 'type', 'descending' => 'abc'])))
+        ->toThrow("Invalid sort direction");
+})->group('order');
+
 
 it('should have an ordered query type desc')
     ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)
@@ -187,15 +225,6 @@ it('should create pagination meta')
     })->toHaveKey('pagination')
     ->group('paginate');
 
-
-
-
-it('should filter the query by multiple filters')
-    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->query(createRequest(['filter' => 'type:apartment|color:green']))->resource)
-    ->toHaveCount(1)
-    ->group('filter');
-
-
 it('should output to an array with rows data')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)->withoutFilters()->query(createRequest())->toArray(createRequest()))
     ->data
@@ -225,22 +254,6 @@ it('should execute query in to array if not ran')
     ->toHaveCount(5)
     ->each->toHaveKeys(['fields', 'values', 'actions']);
 
-it('should return filters')
-    ->expect(fn () => Flex::forIndex(Property::class)->toArray(createRequest()))
-    ->filters
-    ->toHaveCount(3);
-
-it('should return filter options for types')
-    ->expect(fn () => Flex::forIndex(Property::class)->withoutDeferredFilters()->toArray(createRequest()))
-    ->filters
-    ->toHaveKey('1.options.0.label', 'Apartment')
-    ->toHaveKey('1.options.4.label', 'Townhome')
-    ->group("filters");
-
-it('should filter the resource query')
-    ->expect(fn () => Flex::forIndex(Property::class)->query(createRequest(['filter' => 'type:apartment|color:green']))->resource)
-    ->toHaveCount(1)
-    ->group('filter');
 
 
     /*

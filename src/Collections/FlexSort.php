@@ -45,9 +45,7 @@ trait FlexSort
     {
         $dirConfig = config('flex-admin.sort.direction');
         $dir = $attributes[$dirConfig['attribute']];
-
         $flag = $dirConfig['flag'];
-
         if (is_null($flag)) {
             return in_array($dir, ['asc', 'desc']) ? $dir : throw new \Exception("Invalid sort direction {$dir}");
         }

@@ -94,27 +94,37 @@ class Flex extends Resource
     protected bool $deferFilters = true;
 
     /**
+     * Determines if we load default filter values from the resource
+     *
+     * @var bool
+     */
+    protected bool $defaultFilters = true;
+
+    /**
      * Create a flex collection instance
      *
      * @param  string  $model
+     * @param string $context
+     * @param Resource $resource
      * @return void
      */
-    final public function __construct(string $model, string $context)
+    final public function __construct(string $model, string $context, Resource $resource = null)
     {
         $this->flexModel = new $model();
-
         $this->context = $context;
-        $this->collects = $this->collects();
+        if (is_null($resource)) {
+            $this->collects = $this->collects();
+            /**
+             * @var \Psi\FlexAdmin\Resources\Resource
+             */
+            $resource = new $this->collects(null);
+        }
 
         // Validate context against list of contexts
         if (! in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
 
-        /**
-         * @var \Psi\FlexAdmin\Resources\Resource
-         */
-        $resource = new $this->collects(null);
         // TODO:  ADD WITH PERMISSIONS HERE, DELAY META ??
         $this->meta = $resource->withContext($context)->toMeta($this->flexModel);
     }

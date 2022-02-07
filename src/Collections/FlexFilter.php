@@ -9,6 +9,13 @@ use Psi\FlexAdmin\Filters\Filter;
 
 trait FlexFilter
 {
+    public function withoutDefaultFilters(): self
+    {
+        $this->defaultFilters = false;
+
+        return $this;
+    }
+
     public function withoutDeferredFilters(): self
     {
         $this->deferFilters = false;
@@ -35,7 +42,13 @@ trait FlexFilter
      */
     protected function getFilters(array $attributes): array
     {
-        $filters = collect($this->meta['filters']); // ->map(fn ($filter) => $filter->toArray())->all();
+        $filters = collect($this->meta['filters']);
+
+        if (! $this->defaultFilters) {
+            // not using default filters then set any values to null
+            $filters->each(fn ($filter) => $filter->value(null));
+        }
+
         // Filters will include default filters with values if set
         // Determine if we are filtering from the query string
         if (isset($attributes['filter'])) {
@@ -158,10 +171,5 @@ trait FlexFilter
     private function valueOf(string $value)
     {
         return is_numeric($value) ? (Str::of($value)->contains(".") ? (float) $value : (int) $value) : $value;
-    }
-
-    private function isFloat(string $value): bool
-    {
-        return ($value == (string)(float)$value);
     }
 }

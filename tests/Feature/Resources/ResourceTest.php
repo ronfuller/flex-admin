@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Filters\Filter;
 use Psi\FlexAdmin\Tests\Http\Controllers\TestController;
 use Psi\FlexAdmin\Tests\Http\Resources\ApplicationGroupResource;
 use Psi\FlexAdmin\Tests\Http\Resources\CompanyResource;
@@ -20,6 +21,7 @@ beforeEach(function () {
             'name' => 'Test Property',
         ]
     );
+    $this->company = Company::factory()->create();
     $this->applicationGroup = ApplicationGroup::factory()->make();
     $this->user = User::factory()->create(
         [
@@ -28,6 +30,7 @@ beforeEach(function () {
     );
     actingAs($this->user);
     Route::resource('properties', TestController::class);
+    Route::resource('companies', TestController::class);
 });
 
 it('should create a resource')
@@ -78,7 +81,7 @@ it('should return collection meta with searches')
         ->withContext(Field::CONTEXT_INDEX)
         ->toMeta(new Property()))
     ->searches
-    ->toHaveCount(3)
+    ->toHaveCount(4)
     ->toHaveKey('0.key', 'name');
 
 it('should return collection meta with constraints')
@@ -86,7 +89,7 @@ it('should return collection meta with constraints')
         ->withContext(Field::CONTEXT_INDEX)
         ->toMeta(new Property()))
     ->constraints
-    ->toHaveCount(3)
+    ->toHaveCount(4)
     ->toHaveKey('0.name', 'propertyId');
 
 it('should return collection meta with joins')
@@ -140,7 +143,7 @@ it('should return fields')
     ->expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)
         ->toFields())
-    ->toHaveCount(9);
+    ->toHaveCount(10);
 
 it('should return an id field')
     ->expect(fn () => (new PropertyResource($this->property))
@@ -207,13 +210,18 @@ it('should create default actions', function () {
         ->toHaveKey('2.slug', 'delete');
 });
 
+it('should return with empty actions', function () {
+    $results = (new PropertyResource($this->property))->withoutActions()->withContext(Field::CONTEXT_INDEX)->toArray(createRequest());
+    expect($results['actions'])->toHaveCount(0);
+});
+
 it('should have a default details panel')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest()))
     ->toHaveKey('panels');
 
 it('should add fields to default details panel')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest()))
-    ->toHaveKey('panels.0.fields', ['name', 'created_at', 'updated_at', 'color', 'type', 'companyName', 'companyEmployees']);
+    ->toHaveKey('panels.0.fields', ['name', 'created_at', 'updated_at', 'color', 'status', 'type', 'companyName', 'companyEmployees']);
 
 
 it('should have empty panels without panels')
@@ -230,10 +238,17 @@ it('should have not have panels in index context')
     ->not
     ->toHaveKey('panels');
 
+it('should throw an error when setting a key to an invalid panel', function () {
+    $field = Field::make(null, 'id')->panel('invalid');
+
+    expect(fn () => (new PropertyResource($this->property))->addField($field)->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest()))
+        ->toThrow('Could not find panel for key');
+});
+
 it('should have filters')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toMeta(new Property()))
     ->filters
-    ->toHaveCount(3);
+    ->toHaveCount(4);
 
 it('should have empty filters when without filters is set')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->withoutFilters()->toMeta(new Property()))
@@ -243,3 +258,21 @@ it('should have empty filters when without filters is set')
 it('should create filters with meta information')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toMeta(new Property())['filters'])
     ->each(fn ($filter) => $filter->toArray()->toHaveKey('meta.column'));
+
+it('should throw error when creating a filter on a non-filterable key', function () {
+    $filter = Filter::make('name')->fromAttribute();
+    expect(fn () => (new PropertyResource($this->property))->addFilter($filter)->withContext(Field::CONTEXT_INDEX)->toMeta(new Property()))
+        ->toThrow("Filter for key = name is not filterable");
+});
+
+it('should have relations')
+    ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest()))
+    ->toHaveKey('relations')
+    ->relations
+    ->toHaveCount(1);
+
+it('should have an empty relations when without')
+    ->expect(fn () => (new PropertyResource($this->property))->withoutRelations()->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest()))
+    ->toHaveKey('relations')
+    ->relations
+    ->toHaveCount(0);
