@@ -37,11 +37,6 @@ trait FilterDateRange
         }
     }
 
-    /**
-     * Returns the end date time for the date rang
-     * @param string $date_range
-     * @return void
-     */
     protected function getEndDateTime(string $date_range)
     {
         switch ($date_range) {
