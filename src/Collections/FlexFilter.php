@@ -133,7 +133,7 @@ trait FlexFilter
             case 'range':
                 return $query->whereIn($column, $value);
             case 'date-range':
-                return $query->where($column, '>', $this->getStartDateTime($value))->where($column, '<', $this->getEndDateTime($value));
+                return $query->where($column, '>', $this->getStartDateTime($value))->where($column, '<=', $this->getEndDateTime($value));
         }
 
         return $query;
