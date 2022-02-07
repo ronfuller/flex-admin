@@ -31,7 +31,7 @@ trait FlexFilter
      */
     protected function hasFilters(array $filters): bool
     {
-        return $this->withFilters && collect($filters)->contains(fn ($filter) => ! is_null($filter['value']));
+        return $this->withFilters && collect($filters)->contains(fn ($filter) => !is_null($filter['value']));
     }
 
     /**
@@ -44,7 +44,7 @@ trait FlexFilter
     {
         $filters = collect($this->meta['filters']);
 
-        if (! $this->defaultFilters) {
+        if (!$this->defaultFilters) {
             // not using default filters then set any values to null
             $filters->each(fn ($filter) => $filter->value(null));
         }
@@ -106,7 +106,7 @@ trait FlexFilter
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         collect($filters)
-            ->filter(fn ($filter) => ! is_null($filter['value']))    // only filters with a value set
+            ->filter(fn ($filter) => !is_null($filter['value']))    // only filters with a value set
             ->each(function ($filter) use (&$query) {
                 $meta = $filter['meta'];
                 $value = $filter['value'];
@@ -130,10 +130,14 @@ trait FlexFilter
         switch ($type) {
             case 'value':
                 return $query->where($column, '=', $value);
-            case 'range':
-                return $query->whereIn($column, $value);
+
+                // TODO: Implement range filter
+                // case 'range':
+                //     return $query->whereIn($column, $value);
             case 'date-range':
                 return $query->where($column, '>', $this->getStartDateTime($value))->where($column, '<=', $this->getEndDateTime($value));
+
+                // TODO: implement default route with error
         }
 
         return $query;
@@ -149,7 +153,7 @@ trait FlexFilter
     {
         return [
             'filter' => collect($filters)
-                ->filter(fn ($filter) => ! is_null($filter['value']))
+                ->filter(fn ($filter) => !is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
                 ->join("|"),
         ];

@@ -11,7 +11,7 @@ use Psi\FlexAdmin\Tests\Models\User;
 beforeEach(function () {
     $this->status = '5JOYAE7QO8';
 
-    $this->properties = Property::factory()->count(11)
+    $this->properties = Property::factory()->count(25)
         ->forCompany()
         ->state(new Sequence(
             ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue',], 'status' => $this->status, 'type' => 'townhome'],
@@ -25,6 +25,23 @@ beforeEach(function () {
             ['created_at' => now()->subDays(55),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now()->subDays(70),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now()->subDays(85),  'status' => 'AJU2Z14UUQ'],
+            ['created_at' => now()->subMonth()->firstOfMonth()->addDays(2), 'status' => '9850G5PW2O'],
+            ['created_at' => now()->subMonth()->firstOfMonth()->addDays(4), 'status' => '9850G5PW2O'],
+            ['created_at' => now()->subMonth()->firstOfQuarter()->addDays(2), 'status' => 'JN6ZSAJLHM'],
+            ['created_at' => now()->subMonth()->firstOfQuarter()->addDays(4), 'status' => 'JN6ZSAJLHM'],
+            ['created_at' => now()->subHours(1),  'status' => '0NYYUYW9DF',],
+            ['created_at' => now()->subHours(2),  'status' => '0NYYUYW9DF',],
+            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(2),  'status' => 'O4IGPQ4FGW',],
+            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(4),  'status' => 'O4IGPQ4FGW',],
+
+            ['created_at' => now()->firstOfYear()->addDays(1),  'status' => '5R2O5O63MQ',],
+            ['created_at' => now()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ',],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ',],
+
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(1),  'status' => '4FI6DUVKNC',],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC',],
+            ['created_at' => now()->subYears(2)->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC',],
+
         ))
         ->create();
     $this->user = User::factory()->create(
@@ -56,9 +73,19 @@ it('should filter the query by multiple filters')
     ->toHaveCount(1)
     ->group('filter');
 
-it('should filter the query by a date range')
+it('should filter the query by a date range of last 7 days')
     ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:Last 7 days', 'status' => '5JOYAE7QO8']))->resource)
     ->toHaveCount(2)
+    ->group('filter');
+
+it('should filter the query by last 4 hours')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:Last 4 hours (new)', 'status' => '0NYYUYW9DF']))->resource)
+    ->toHaveCount(2)
+    ->group('filter');
+
+it('should filter the query by last 14 days')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:Last 14 days', 'status' => '5JOYAE7QO8']))->resource)
+    ->toHaveCount(4)
     ->group('filter');
 
 it('should filter the query by last 30 days')
@@ -76,10 +103,41 @@ it('should filter the query by last 90 days')
     ->toHaveCount(6)
     ->group('filter');
 
+
 it('should filter the query by this month')
     ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:This Month', 'status' => 'AJU2Z14UUQ']))->resource)
     ->toHaveCount(2)
     ->group('filter');
+
+it('should filter the query by last month')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:Last Month', 'status' => '9850G5PW2O']))->resource)
+    ->toHaveCount(2)
+    ->group('filter');
+
+it('should filter the query by this quarter')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:This Quarter', 'status' => 'JN6ZSAJLHM']))->resource)
+    ->toHaveCount(2)
+    ->group('filter');
+
+it('should filter the query by last quarter')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:Last Quarter', 'status' => 'O4IGPQ4FGW']))->resource)
+    ->toHaveCount(2)
+    ->group('filter');
+
+it('should filter the query by this year')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:This Year', 'status' => '5R2O5O63MQ']))->resource)
+    ->toHaveCount(2)
+    ->group('filter');
+
+it('should filter the query by last year')
+    ->expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:Last Year', 'status' => '4FI6DUVKNC']))->resource)
+    ->toHaveCount(2)
+    ->group('filter');
+
+it('should throw error on invalid date range filter', function () {
+    expect(fn () => Flex::for(Property::class, FIELD::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:invalid', 'status' => 'O4IGPQ4FGW']))->resource)
+        ->toThrow("Error in date range filter");
+})->group('filter');
 
 it('should return filter options for types')
     ->expect(fn () => Flex::forIndex(Property::class)->withoutDeferredFilters()->toArray(createRequest(['status' => '5JOYAE7QO8'])))

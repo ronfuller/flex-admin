@@ -33,10 +33,15 @@ trait FilterDateRange
             case 'Last Year':
                 return now()->subYear()->firstOfYear();
             default:
-                throw new \Exception("Error in date range filter. Unknow parameter {$date_range}");
+                throw new \Exception("Error in date range filter. Unknown parameter {$date_range}");
         }
     }
 
+    /**
+     * Returns the end date time for the date rang
+     * @param string $date_range
+     * @return void
+     */
     protected function getEndDateTime(string $date_range)
     {
         switch ($date_range) {
@@ -57,7 +62,7 @@ trait FilterDateRange
             case 'Last Year':
                 return now()->subYear()->lastOfYear();
             default:
-                throw new \Exception("Error in date range filter. Unknow parameter {$date_range}");
+                throw new \Exception("Error in date range filter. Unknown parameter {$date_range}");
         }
     }
 }

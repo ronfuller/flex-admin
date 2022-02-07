@@ -196,7 +196,7 @@ class PropertyResource extends Resource implements Flexible
                 ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
             Filter::make('type')->default('small')->fromColumn(),
             Filter::make('color')->default('blue')->fromAttribute(),
-            Filter::make('created_at')->fromColumn(),
+            Filter::make('created_at')->fromAttribute(),
         ];
 
         return array_merge($filters, $this->resourceFilters);

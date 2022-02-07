@@ -254,6 +254,10 @@ it('should execute query in to array if not ran')
     ->toHaveCount(5)
     ->each->toHaveKeys(['fields', 'values', 'actions']);
 
+it('should create filter options for query')
+    ->expect(fn () => Flex::forIndex(Property::class)->withoutDefaultFilters()->queryFilters(createRequest()))
+    ->flexFilters
+    ->each(fn ($filter) => $filter->options->not->toBeEmpty());
 
 
     /*

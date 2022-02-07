@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Psi\FlexAdmin\Tests\Models\Traits\HasDateRange;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasFactory, HasDateRange;
 
     public const PROPERTY_TYPES = ['managed', 'private', 'portland', 'local', 'environmental', 'public', 'large', 'small', 'medium'];
     public const PROPERTY_COLORS = ['blue', 'green', 'yellow', 'orange', 'purple', 'red'];
@@ -41,6 +42,12 @@ class Property extends Model
     {
         return collect(self::PROPERTY_COLORS)->sort()->map(fn ($color) => ['label' => (string) Str::of($color)->title(), 'value' => $color])->all();
     }
+
+    public function getFilterCreatedAtAttribute()
+    {
+        return $this->getDateRanges();
+    }
+
 
     public function canAct(string $slug)
     {
