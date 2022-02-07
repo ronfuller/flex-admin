@@ -1,6 +1,6 @@
 # Flexible Admin for Laravel and Inertia
 
-Update
+Update to force change
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/psi/flex-admin.svg?style=flat-square)](https://packagist.org/packages/psi/flex-admin)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/psi/flex-admin/run-tests?label=tests)](https://github.com/psi/flex-admin/actions?query=workflow%3Arun-tests+branch%3Amain)
