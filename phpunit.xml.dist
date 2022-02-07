@@ -19,7 +19,7 @@
     verbose="true"
 >
     <testsuites>
-        <testsuite name="VendorName Test Suite">
+        <testsuite name="Psi Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
@@ -36,4 +36,12 @@
     <logging>
         <junit outputFile="build/report.junit.xml"/>
     </logging>
+     <php>
+        <env name="DB_CONNECTION" value="mysql" />
+        <env name="DB_USERNAME" value="sail" />
+        <env name="DB_PASSWORD" value="password" />
+        <env name="DB_HOST" value="mysql" />
+        <env name="DB_PORT" value="3306" />
+        <env name="DB_DATABASE" value="laravel_flex_admin" />
+    </php>
 </phpunit>

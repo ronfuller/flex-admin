@@ -1,12 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Psi\FlexAdmin\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+/**
+ * @codeCoverageIgnore
+ */
+class FlexAdminCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'flex-admin';
 
     public $description = 'My command';
 

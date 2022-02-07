@@ -2,9 +2,9 @@ name: run-tests
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   pull_request:
-    branches: [main]
+    branches: [develop]
 
 jobs:
   test:
@@ -12,17 +12,28 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         php: [8.0]
         laravel: [8.*]
-        stability: [prefer-lowest, prefer-stable]
+        stability: [prefer-stable]
         include:
           - laravel: 8.*
-            testbench: ^6.23
+            testbench: ^6.6
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
+    env:
+      DB_DATABASE: flex_admin
+      DB_USER: root
+      DB_PASSWORD: root
+
     steps:
+      - name: Setup MySQL Connection
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{env.DB_DATABASE}};' -u${{ env.DB_USER }} -p${{env.DB_PASSWORD}}
+          mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD}}
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -31,7 +42,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
+          coverage: pcov
 
       - name: Setup problem matchers
         run: |
@@ -44,4 +55,21 @@ jobs:
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/pest
+        run: |
+          vendor/bin/pest --filter=setup
+          vendor/bin/pest --exclude-group=setup
+        env:
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
+
+      - name: Run Test Coverage
+        run: |
+          vendor/bin/pest --filter=setup
+          vendor/bin/pest --exclude-group=setup --coverage --min=90
+        env:
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
