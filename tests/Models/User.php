@@ -61,6 +61,14 @@ class User extends Authenticatable
         $this->save();
     }
 
+    public function revokePermissionTo(string $permission)
+    {
+        $this->permissions = $this->permissions ? collect($this->permissions)->filter(function ($item) use ($permission) {
+            return $item !== $permission;
+        })->values()->all() : [];
+        $this->save();
+    }
+
     /**
      * Create a new factory instance for the model.
      *

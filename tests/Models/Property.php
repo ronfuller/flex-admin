@@ -64,6 +64,44 @@ class Property extends Model
         return Company::select('id', 'name')->whereIn('id', $companyIds)->orderBy('name')->toBase()->get()->map(fn ($item) => (array) $item)->all();
     }
 
+    public function scopeAuthorize($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeOrder($query, array $attributes)
+    {
+        return $query;
+    }
+    public function scopeFilter($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeSearch($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeIndex($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeDetail($query, array $attributes)
+    {
+        return $query;
+    }
+    public function scopeEdit($query, array $attributes)
+    {
+        return $query;
+    }
+    public function scopeCreate($query, array $attributes)
+    {
+        return $query;
+    }
+
+
     /**
      * Create a new factory instance for the model.
      *

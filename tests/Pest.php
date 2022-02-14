@@ -46,11 +46,7 @@ uses()
                 'name' => 'Test Property',
             ]
         );
-        $this->user = User::factory()->create(
-            [
-                'permissions' => ['properties.view-any', 'properties.view', 'properties.create'],
-            ]
-        );
+        $this->user = User::first();
         actingAs($this->user);
     })
     ->in('Feature/Fields');
@@ -64,11 +60,7 @@ uses()
         );
         $this->company = Company::factory()->create();
         $this->applicationGroup = ApplicationGroup::factory()->make();
-        $this->user = User::factory()->create(
-            [
-                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.create', 'properties.delete'],
-            ]
-        );
+        $this->user = User::first();
         actingAs($this->user);
         Route::resource('properties', TestController::class);
         Route::resource('companies', TestController::class);
@@ -87,11 +79,7 @@ uses()
                 ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'light blue',], 'status' => 'fail', 'type' => 'commercial'],
             ))
             ->create();
-        $this->user = User::factory()->create(
-            [
-                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.delete', 'properties.create'],
-            ]
-        );
+        $this->user = User::first();
         actingAs($this->user);
         Route::resource('properties', PropertyController::class)->middleware(['web']);
     })

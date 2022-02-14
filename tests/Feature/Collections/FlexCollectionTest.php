@@ -98,48 +98,41 @@ it('should cache the column meta', function () {
         Full Signature
 
         Flex::for(Class,Context)
+            ->withoutCache()
 
            ->authorizeScope(string '' )
+           ->orderScope(string '')
+           ->filterScope()
+           ->searchScope()
+
+           ->indexScope()
+           ->detailScope()
+           ->editScope()
+           ->createScope()
+
            ->withoutAuthorize()
+           ->withoutConstraints()
 
-           ->withConstraints()
-
-            ->orderScope()
-
-            ->filterScope()
-
-            ->searchScope()
-
-            ->indexScope()
-
-            ->detailScope()
-
-            ->editScope()
-
-            ->createScope()
-
-            ->withScopes(['',''])
-
-            ->withoutGlobalScopes([''])
+           ->withScopes(['',''])
+           ->withoutGlobalScopes([''])
 
             ->withoutPagination()
 
             ->withoutRelations()
             ->withoutRelation(Related)
 
-            ->filters()
+            ->withoutFilters()
+            ->withoutDefaultFilters()
+            ->withoutDeferredFilters()
 
-            ->wrapper()
+            ->wrapper(string $elemen)
 
             ->query()
-
             ->count()
 
-            ->transform()
+            ->transform( callable )
 
             ->toArray()
-
             ->toResponse()
-
 
 */

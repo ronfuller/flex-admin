@@ -167,6 +167,7 @@ class Resource extends JsonResource implements Flexible
 
         // return actions
         $actions = $this->withActions ? $this->actions ?? $this->withActions($this->toActions())->actions : [];
+        $actions = $this->transformActions($actions);
 
         // return relations based on context
         $relations =  $this->withRelations() ? $this->toRelations($request) : [];

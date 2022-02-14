@@ -52,6 +52,7 @@ trait ResourceActions
         return $this;
     }
 
+
     /**
      * Returns the actions for the resource with specified permissions and context set
      *
@@ -68,6 +69,13 @@ trait ResourceActions
             ->all();
     }
 
+    protected function transformActions(array $actions): array
+    {
+        return collect($actions)->map(function ($action) {
+            $action['attributes'] = Arr::except($action['attributes'], ['route', 'divider']);
+            return Arr::only($action, ['slug', 'attributes']);
+        })->all();
+    }
     /**
      * withActions
      *
