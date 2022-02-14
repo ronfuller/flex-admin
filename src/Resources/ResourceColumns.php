@@ -8,6 +8,13 @@ use Psi\FlexAdmin\Fields\Field;
 
 trait ResourceColumns
 {
+    /**
+     * Column collection
+     *
+     * @var \Illuminate\Support\Collection | null
+     */
+    protected $columns = null;
+
     public function columns(): Collection
     {
         return collect($this->fields(null))->map(function (Field $field) {
@@ -17,7 +24,7 @@ trait ResourceColumns
 
     public function renderable(): array
     {
-        return $this->columns->filter(fn ($column) => $column['render'])->all();
+        return $this->columns->filter(fn ($column) => $column['render'])->values()->all();
     }
 
     public function selects(): array

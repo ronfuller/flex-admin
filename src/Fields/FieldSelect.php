@@ -9,6 +9,14 @@ trait FieldSelect
 {
     // TODO: Add depends field, include in selects for mutated attributes
 
+    /**
+     * Select query column
+     *
+     * @var string|null
+     */
+    protected string|null $select = null;
+
+
     public function select(string $key): self
     {
         $this->select = $key;

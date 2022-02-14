@@ -11,6 +11,8 @@ class FlexFilterWrapper
 
     protected $meta;
     protected $defaultFilters = true;
+    protected $flexResource;
+    private $flexFilters;
 
     public function wrapParseFilter(array $attributes)
     {
@@ -24,14 +26,23 @@ class FlexFilterWrapper
 
     public function wrapGetFilters(array $attributes)
     {
+        $this->flexFilters = [
+            Filter::make('company')->fromFunction()->option('id', 'name'),
+            Filter::make('type')->default(['label' => 'Small', 'value' => 'small'])->fromColumn(),
+            Filter::make('color')->default('blue')->fromAttribute(),
+        ];
+        $this->flexResource = $this;
         $this->meta = [
-            'filters' => [
-                Filter::make('company')->fromFunction()->option('id', 'name'),
-                Filter::make('type')->default(['label' => 'Small', 'value' => 'small'])->fromColumn(),
-                Filter::make('color')->default('blue')->fromAttribute(),
-            ],
+            'filters' => collect($this->flexFilters)->map(fn ($filter) => $filter->toArray())->all(),
         ];
 
         return $this->getFilters($attributes);
+    }
+
+    public function getFilter(string $name)
+    {
+        return collect($this->flexFilters)->first(function ($filter) use ($name) {
+            return $filter->name === $name;
+        });
     }
 }

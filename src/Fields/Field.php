@@ -5,6 +5,15 @@ namespace Psi\FlexAdmin\Fields;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
+/**
+ * @property string|null $component
+ * @property array $display
+ * @property array $attributes
+ * @property array $permissions
+ *
+ * @method Psi\Flexadmin\Fields context(string $context)
+ */
+
 class Field
 {
     use Makeable;
@@ -60,181 +69,21 @@ class Field
     ];
 
     /**
-     * Name of component, override on child
+     * Key determines the default field name, is the primary identifier for the field
      *
-     * @var string | null
+     * @param string $key
      */
-    public string | null $component;
-
-    /**
-     * Defines the contexts in which the resource field is displayed
-     *
-     * @var array
-     */
-    public $display;
-
-    /**
-     * Associative array of components
-     */
-    public array|null $components;
-
-
-    /**
-     * Indicates the field should be a value only without a render component
-     *
-     * @var bool
-     */
-    public $valueOnly;
-
-    /**
-     * Holds the attributes for the resource field
-     *
-     * @var array
-     */
-    public $attributes = [
-        'enabled' => true,
-        'sortable' => false,
-        'filterable' => false,
-        'constrainable' => false,
-        'searchable' => false,
-        'selectable' => false,
-        'copyable' => false,
-        'hidden' => false,
-        'readonly' => false,
-        'align' => 'left',
-    ];
-
-    /**
-     * Context permissions
-     *
-     * @var array
-     */
-    public $permissions = [];
-
-    /**
-     * Field should be readonly on forms
-     *
-     * @var bool
-     */
-    public $readonly = false;
-
-    /**
-     * Enable a null value
-     *
-     * @var bool
-     */
-    public $nullValue = false;
-
-    /**
-     * Determines if the field should be added to resource values array
-     *
-     * @var bool
-     */
-    protected $addToValues = false;
-
-    /**
-     * Default value if not set
-     *
-     * @var mixed
-     */
-    public $default;
-
-    /**
-     * Associates resource with a distinct panel
-     *
-     * @var string
-     */
-    public $panel;
-
-    /**
-     * Value for the Resource
-     *
-     * @var string | array | callable
-     **/
-    protected $value;
-
-    /**
-     * Select query column
-     *
-     * @var string|null
-     */
-    protected string|null $select = null;
-
-    /**
-     * Default filter type
-     *
-     * @var string
-     */
-    protected $filterType;
-
-    /**
-     * Determines if this field is the default sort by field
-     *
-     * @var bool
-     */
-    protected $defaultSort = false;
-
-    /**
-     * Sort Direction for Sort Column {asc, desc}
-     *
-     * @var string
-     */
-    protected $sortDir = null;
-
-    /**
-     * Search type - exact, full, partial
-     *
-     * @var string
-     */
-    protected string $searchType;
-
-    /**
-     *
-     * @var bool
-     */
-    protected $withPermissions = true;
-
-
-    /**
-     * Determines whether to render the field with the component
-     *
-     * @var bool
-     */
-    protected bool $render = true;
-
-    /**
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     */
-    protected Model $model;
-
-    /**
-     * Meta information for the model
-     *
-     * @var array
-     */
-    protected array $modelMeta;
-
-
-    /**
-     * Related model that the field is on
-     *
-     * @var string|null
-     */
-    protected string|null $onModel = null;
-
-    /**
-     * Meta information on the related model
-     *
-     * @var array|null
-     */
-    protected array|null $onModelMeta = null;
-
-    final public function __construct(public $key)
+    final public function __construct(public string $key)
     {
         $this->setDefaults();
     }
 
+    /**
+     * Sets the context for the field
+     *
+     * @param string $context
+     * @return self
+     */
     public function context(string $context): self
     {
         $this->component = $this->componentForContext($context);
@@ -316,7 +165,7 @@ class Field
 
     public function toArray(array $attributes): array
     {
-        return array_merge($this->toAttributes(), ['value' => $this->toValue($attributes)]);
+        return [...$this->toAttributes(), ...['value' => $this->toValue($attributes)]];
     }
 
     protected function setDefaults(): void

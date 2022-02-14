@@ -5,6 +5,21 @@ namespace Psi\FlexAdmin\Fields;
 trait FieldSort
 {
     /**
+     * Determines if this field is the default sort by field
+     *
+     * @var bool
+     */
+    protected $defaultSort = false;
+
+    /**
+     * Sort Direction for Sort Column {asc, desc}
+     *
+     * @var string
+     */
+    protected $sortDir = null;
+
+    /**
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function defaultSort(string $direction = 'asc'): self

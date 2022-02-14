@@ -4,10 +4,25 @@ namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Collection;
 use Psi\FlexAdmin\Fields\Field;
-use Psi\FlexAdmin\Fields\Panel;
+use Psi\FlexAdmin\Panels\Panel;
 
 trait ResourcePanels
 {
+    /**
+     * Include panels with the resource
+     *
+     * @var bool
+     */
+    protected bool $withPanels = true;
+
+
+    /**
+     * Key for default panel
+     *
+     * @var string
+     */
+    protected string $defaultPanelKey = 'details';
+
     public function withoutPanels(): self
     {
         $this->withPanels = false;

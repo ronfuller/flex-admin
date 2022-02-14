@@ -5,6 +5,13 @@ namespace Psi\FlexAdmin\Fields;
 trait FieldDisplay
 {
     /**
+     * Defines the contexts in which the resource field is displayed
+     *
+     * @var array
+     */
+    public $display;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function indexOnly(): self

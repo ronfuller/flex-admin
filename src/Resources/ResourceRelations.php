@@ -7,6 +7,13 @@ use Psi\FlexAdmin\Fields\Field;
 
 trait ResourceRelations
 {
+    /**
+     * Include resource relations
+     *
+     * @var bool
+     */
+    protected bool $withRelations = true;
+
     public function withoutRelations(): self
     {
         $this->withRelations = false;

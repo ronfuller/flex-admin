@@ -9,6 +9,11 @@ use Psi\FlexAdmin\Filters\Filter;
 
 trait FlexFilter
 {
+    /**
+     * Without default filters
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function withoutDefaultFilters(): self
     {
         $this->defaultFilters = false;
@@ -16,6 +21,11 @@ trait FlexFilter
         return $this;
     }
 
+    /**
+     * Without deferred filters
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function withoutDeferredFilters(): self
     {
         $this->deferFilters = false;
@@ -46,16 +56,20 @@ trait FlexFilter
 
         if (! $this->defaultFilters) {
             // not using default filters then set any values to null
-            $filters->each(fn ($filter) => $filter->value(null));
-        }
+            $filters = $filters->map(function ($filter) {
+                $filter['value'] = null;
 
-        // Filters will include default filters with values if set
+                return $filter;
+            });
+        }
+        // filters will include default filters with values if set
+
         // Determine if we are filtering from the query string
         if (isset($attributes['filter'])) {
             $filters = $this->filtersFromAttributes($filters, $attributes);
         }
 
-        return $filters->map(fn ($filter) => $filter->toArray())->all();
+        return $filters->all();
     }
 
     /**
@@ -69,13 +83,14 @@ trait FlexFilter
     {
         $attrFilter = $this->parseFilter($attributes);
 
-        return $filters->each(function (Filter $filter) use ($attrFilter) {
-            if (isset($attrFilter[$filter->name])) {
+        return $filters->map(function ($filter) use ($attrFilter) {
+            if (isset($attrFilter[$filter['name']])) {
                 // Value for the filter comes from the attributes
-                $filter->value($attrFilter[$filter->name]);
-                // Once we set the value, we need a filter item, so have the filter set the item
-                $filter->setItem();
+                $filter['value'] = $attrFilter[$filter['name']];
+                $filter['item'] = $this->flexResource->getFilter($filter['name'])->getItem($filter['value']);
             }
+
+            return $filter;
         });
     }
 
@@ -90,9 +105,11 @@ trait FlexFilter
         $filters = $this->getFilters($attributes);
 
         // the filter items in the array should be filter class objects, not arrays
-
         return collect($this->meta['filters'])->map(function ($filter) use ($query) {
-            return $filter->build($this->flexModel, $query)->toArray();
+            return [
+                ...$filter,
+                ...['options' => $this->flexResource->getFilter($filter['name'])->build($this->flexModel, $query)->toOptions()],
+            ];
         })->all();
     }
 

@@ -3,11 +3,13 @@
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Fields\Field;
-use Psi\FlexAdmin\Fields\Panel;
+use Psi\FlexAdmin\Lib\FlexInspect;
+use Psi\FlexAdmin\Panels\Panel;
 
 class Resource extends JsonResource implements Flexible
 {
@@ -19,6 +21,16 @@ class Resource extends JsonResource implements Flexible
     use ResourcePanels;
     use ResourceRelations;
 
+    /**
+     * @property Model|null $model
+     *
+     * @method \Psi\FlexAdmin\Resources\Resource withContext(string $context)
+     * @method \Psi\FlexAdmin\Resources\Resource withKeys(array $keys)
+     * @method array toMeta(Model $model)
+     * @method \Illuminate\Support\Collection toFields()
+     * @method array toArray(\Illuminate\Http\Request $request)
+     * @method array toFilters(bool $asArrayItems , Model $model)
+     */
     /**
      * Instance of Eloquent Model
      *
@@ -45,39 +57,6 @@ class Resource extends JsonResource implements Flexible
     protected $keys;
 
     /**
-     *
-     * @var int - pagination option to use for default pagination per page
-     */
-    protected int|null $perPage;
-
-    /**
-     *
-     * @var array
-     */
-    protected array|null $perPageOptions;
-
-    /**
-     * Determines if we should paginate the resource
-     *
-     * @var bool
-     */
-    protected bool $paginate = true;
-
-    /**
-     * Default actions for every resource
-     *
-     * @var array
-     */
-    protected array $actions = ['view', 'edit', 'create', 'delete'];
-
-    /**
-     * Key for default panel
-     *
-     * @var string
-     */
-    protected string $defaultPanelKey = 'details';
-
-    /**
      * Resource Theme
      *
      * @var array
@@ -93,50 +72,14 @@ class Resource extends JsonResource implements Flexible
     ];
 
     /**
-     * Include Actions with the resource
-     *
-     * @var bool
-     */
-    protected bool $withActions = true;
-
-    /**
-     * Include panels with the resource
-     *
-     * @var bool
-     */
-    protected bool $withPanels = true;
-
-    /**
-     * Include filters
-     *
-     * @var bool
-     */
-    protected bool $withFilters = true;
-
-    /**
-     * Include resource relations
-     *
-     * @var bool
-     */
-    protected bool $withRelations = true;
-
-    /**
-     * Column collection
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    protected $columns;
-
-    /**
      * Specifies the context for the resource
      *
      * @param string $context
-     * @return self
+     * @return \Psi\FlexAdmin\Resources\Resource
      */
     public function withContext(string $context): self
     {
         $this->context = $context;
-
         return $this;
     }
 
@@ -144,7 +87,7 @@ class Resource extends JsonResource implements Flexible
      * Determines which resource field keys are valid for the resource
      *
      * @param array $keys
-     * @return self
+     * @return \Psi\FlexAdmin\Resources\Resource
      */
     public function withKeys(array $keys): self
     {
@@ -217,19 +160,19 @@ class Resource extends JsonResource implements Flexible
         $fieldCollection = $this->toFields();
 
         // return fields
-        $fields = $this->toFields()->all();
+        $fields = $fieldCollection->all();
 
         // creates values object with name/value pairs
         $values = $this->toValues($fieldCollection);
 
         // return actions
-        $actions = $this->withActions() ? $this->toActions() : [];
+        $actions = $this->withActions ? $this->actions ?? $this->withActions($this->toActions())->actions : [];
 
         // return relations based on context
-        $relations = $this->withRelations() ? $this->toRelations($request) : [];
+        $relations =  $this->withRelations() ? $this->toRelations($request) : [];
 
         // return panels based on context
-        $panels = $this->withPanels() ? $this->toPanels($fieldCollection) : [];
+        $panels =  $this->withPanels() ? $this->toPanels($fieldCollection) : [];
 
         $base = ['fields', 'values', 'actions'];
         $args = $this->context === Field::CONTEXT_INDEX ? $base : [...$base, 'panels', 'relations'];
@@ -245,8 +188,6 @@ class Resource extends JsonResource implements Flexible
      */
     protected function toValues(Collection $fieldsCollection): array
     {
-        // TODO: determine if we should add id, if not in fields. Need to guarantee values always include ID
-
         return $fieldsCollection
             ->filter(fn ($field) => $field['addToValues'])
             ->mapWithKeys(fn ($field) => [$field['attributes']['name'] => $field['value']])->all();
@@ -305,9 +246,9 @@ class Resource extends JsonResource implements Flexible
         ];
         $routeMethod = $slugRouteMethods[$slug];
         $routeName = $pluralModel . "." . $slugResourceRoutes[$slug];
-        $routeParam = in_array($slug, ['view', 'edit', 'delete']) ? [$modelKey => $this->resource->getAttribute($routeKeyName)] : [];
+        $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? array(['name' => $modelKey, 'field' => $routeKeyName]) : [];
 
-        return [$routeName, $routeMethod, $routeParam];
+        return [$routeName, $routeMethod, $routeParams];
     }
 
     /**

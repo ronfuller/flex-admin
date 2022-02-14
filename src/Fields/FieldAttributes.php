@@ -7,6 +7,24 @@ use Illuminate\Support\Str;
 trait FieldAttributes
 {
     /**
+     * Holds the attributes for the resource field
+     *
+     * @var array
+     */
+    public $attributes = [
+        'enabled' => true,
+        'sortable' => false,
+        'filterable' => false,
+        'constrainable' => false,
+        'searchable' => false,
+        'selectable' => false,
+        'copyable' => false,
+        'hidden' => false,
+        'readonly' => false,
+        'align' => 'left',
+    ];
+
+    /**
      * @return bool
      */
     public function enabled(): bool

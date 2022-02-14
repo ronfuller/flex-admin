@@ -5,6 +5,34 @@ namespace Psi\FlexAdmin\Fields;
 trait FieldRender
 {
     /**
+     * Name of component, override on child
+     *
+     * @var string|null
+     */
+    public string|null $component;
+
+    /**
+     * Associative array of components
+     */
+    protected array|null $components;
+
+    /**
+     * Associates resource with a distinct panel
+     *
+     * @var string
+     */
+    protected $panel;
+
+
+    /**
+     * Determines whether to render the field with the component
+     *
+     * @var bool
+     */
+    protected bool $render = true;
+
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function addToValues(): self
@@ -22,6 +50,7 @@ trait FieldRender
         // Value only fields are not rendered as a component or within a panel
         $this->render = false;
         $this->component = null;
+        $this->addToValues = true;
         $this->panel = '';
 
         return $this;

@@ -4,6 +4,27 @@ namespace Psi\FlexAdmin\Resources;
 
 trait ResourcePagination
 {
+
+    /**
+     *
+     * @var int - pagination option to use for default pagination per page
+     */
+    protected int|null $perPage;
+
+    /**
+     *
+     * @var array
+     */
+    protected array|null $perPageOptions;
+
+    /**
+     * Determines if we should paginate the resource
+     *
+     * @var bool
+     */
+    protected bool $paginate = true;
+
+
     public function setPerPage(int $perPage): self
     {
         $this->perPage = $perPage;

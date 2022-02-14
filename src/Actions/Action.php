@@ -129,12 +129,10 @@ class Action
 
     public function route(string $name, string $method = "get", array $params = []): self
     {
-        if (! Route::has($name)) {
+        if (!Route::has($name)) {
             throw new \Exception("Could not find route for name = {$name}. You may need to create an API resource");
         }
-        $url = route($name, $params);
-
-        $this->attributes = array_merge($this->attributes, ['external' => false, 'url' => $url, 'target' => '_self', 'asEvent' => false, 'method' => $method]);
+        $this->attributes = array_merge($this->attributes, ['route' => compact('name', 'params'), 'external' => false, 'target' => '_self', 'asEvent' => false, 'method' => $method]);
 
         return $this;
     }
@@ -236,10 +234,10 @@ class Action
     {
         $this->enabled =
             $this->displayContext($context) &&             // valid for the context?
-            $this->authorized() &&                          // has permission
-            $this->canAct($resource);                       // has capability based on resource
+            $this->authorized();                           // has permission
 
-        $this->attributes['disabled'] = ! $this->enabled;    // disabled attribute reflects true value of enabled
+
+        $this->attributes['disabled'] = !$this->enabled;    // disabled attribute reflects true value of enabled
 
         // If we always want a disabled attribute for the action, we'll enable but set disabled based on this status
         $this->enabled = $this->withDisabled ? true : $this->enabled;
@@ -248,6 +246,8 @@ class Action
             'enabled' => $this->enabled,
             'type' => $this->type,
             'slug' => $this->slug,
+            'withDisabled' => $this->withDisabled,
+            'canAct' => $this->canAct($resource),
             'attributes' => $this->attributes,
         ];
 
@@ -263,17 +263,18 @@ class Action
     {
         $this->permission = $this->permission ?? '';
 
-        return $this->withPermissions && ! empty($this->permission) ? (auth()->check() ? auth()->user()->can($this->permission) : true) : true;
+        return $this->withPermissions && !empty($this->permission) ? (auth()->check() ? auth()->user()->can($this->permission) : true) : true;
     }
 
     protected function canAct(mixed $resource): bool
     {
-        return $resource ? (\method_exists($resource, 'canAct') ? $resource->canAct($this->slug) : true) : true;
+        return  $resource ? \method_exists($resource, 'canAct') : false;
     }
 
     protected function setDefaults()
     {
         $this->attributes = $this->attributes ?? $this->defaultAttributes();
+
         $this->type = $this->type ?? self::TYPE_INLINE;
         $this->dividers = $this->dividers ?? [self::DIVIDER_AFTER => false, self::DIVIDER_BEFORE => false];
         $this->contexts = $this->contexts ?? $this->defaultContexts();
@@ -283,13 +284,12 @@ class Action
 
     protected function defaultContexts(): array
     {
-        return collect(Field::CONTEXTS)->mapWithKeys(fn ($context) => [$context => true])->all();
-        ;
+        return collect(Field::CONTEXTS)->mapWithKeys(fn ($context) => [$context => true])->all();;
     }
 
     protected function defaultAttributes(): array
     {
-        return ['disabled' => false, 'asEvent' => true, 'confirm' => false, 'confirmText' => '', 'divider' => false];
+        return ['disabled' => false, 'asEvent' => true, 'confirm' => false, 'confirmText' => '', 'divider' => false, 'title' => str($this->slug)->replace("-", " ")->title()];
     }
 
     protected function hasDividers(): bool

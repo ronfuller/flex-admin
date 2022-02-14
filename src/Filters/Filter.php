@@ -189,11 +189,33 @@ class Filter
         return $this;
     }
 
+    /**
+     * Get the item value using the callable
+     * @param mixed $value
+     * @return array
+     */
+    public function getItem(mixed $value): array
+    {
+        return $this->itemFromValue ? \call_user_func($this->itemFromValue, $value) : ['label' => (string) Str::of($value)->title(), 'value' => $value];
+    }
+
+    /**
+     * Set the item value using the callable
+     *
+     * @return \Psi\FlexAdmin\Filters\Filter
+     */
     public function setItem(): self
     {
-        $this->item = $this->itemFromValue ? \call_user_func($this->itemFromValue, $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
+        if ($this->value) {
+            $this->item = $this->itemFromValue ? \call_user_func($this->itemFromValue, $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
+        }
 
         return $this;
+    }
+
+    public function toOptions()
+    {
+        return $this->options;
     }
 
     public function toArray()
@@ -247,7 +269,7 @@ class Filter
     {
         $attribute = 'filter_' .  $this->sourceMeta;
         $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append("Attribute");
-        if (! \method_exists($model, $filterMutatorMethod)) {
+        if (!\method_exists($model, $filterMutatorMethod)) {
             throw new \Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
         }
 
@@ -259,7 +281,7 @@ class Filter
         $filterQuery = clone $query;
         $method = (string) Str::of($this->sourceMeta)->title()->prepend("filter");
 
-        if (! \method_exists($model, $method)) {
+        if (!\method_exists($model, $method)) {
             throw new \Exception("Could not find filter function for filter named {$this->sourceMeta}");
         }
 

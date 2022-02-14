@@ -29,6 +29,7 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
+        $app['config']->set('app.key', 'base64:8xem+lYvuVAYkd/UvLjmG4cptCp4aOuWCz7Zn7dXcVo=');
         $app['config']->set('flex-admin.resource_path', 'Psi\\FlexAdmin\\Tests\Http\\Resources');
         $app['config']->set('flex-admin.render.default_component', 'text-field');
         $app['config']->set('flex-admin.render.default_panel', 'details');

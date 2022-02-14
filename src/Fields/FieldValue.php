@@ -5,6 +5,35 @@ namespace Psi\FlexAdmin\Fields;
 trait FieldValue
 {
     /**
+     * Enable a null value
+     *
+     * @var bool
+     */
+    protected $nullValue = false;
+
+    /**
+     * Determines if the field should be added to resource values array
+     *
+     * @var bool
+     */
+    protected $addToValues = false;
+
+    /**
+     * Default value if not set
+     *
+     * @var mixed
+     */
+    protected $default;
+
+    /**
+     * Value for the Resource
+     *
+     * @var string | array | callable
+     **/
+    protected $value;
+
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function value(string | callable | array $value): self
@@ -29,7 +58,7 @@ trait FieldValue
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function default($value): self
+    public function default(mixed $value): self
     {
         $this->default = $value;
 

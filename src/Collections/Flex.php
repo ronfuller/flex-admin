@@ -5,6 +5,7 @@ namespace Psi\FlexAdmin\Collections;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\CollectsResources;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Resources\Resource;
@@ -20,6 +21,7 @@ class Flex extends Resource
     use FilterDateRange;
     use FlexFor;
     use FlexRelations;
+    use FlexCache;
 
     /**
      * The resource that this resource collects.
@@ -38,9 +40,9 @@ class Flex extends Resource
     /**
      * Meta Information on the Collection including columns, selects, sort, keys
      *
-     * @var array
+     * @var array|null
      */
-    protected $meta;
+    protected $meta = null;
 
     /**
      * Request
@@ -101,6 +103,16 @@ class Flex extends Resource
     protected bool $defaultFilters = true;
 
     /**
+     * Determines if we should cache meta values
+     *
+     * @var boolean
+     */
+    protected bool $shouldCacheMeta = true;
+
+    protected Resource $flexResource;
+
+    const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'render', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join'];
+    /**
      * Create a flex collection instance
      *
      * @param  string  $model
@@ -112,6 +124,7 @@ class Flex extends Resource
     {
         $this->flexModel = new $model();
         $this->context = $context;
+
         if (is_null($resource)) {
             $this->collects = $this->collects();
             /**
@@ -121,12 +134,13 @@ class Flex extends Resource
         }
 
         // Validate context against list of contexts
-        if (! in_array($context, Field::CONTEXTS)) {
+        if (!in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
 
-        // TODO:  ADD WITH PERMISSIONS HERE, DELAY META ??
-        $this->meta = $resource->withContext($context)->toMeta($this->flexModel);
+        $this->flexResource = $resource;
+
+        // $this->meta = $resource->withContext($context)->toMeta($this->flexModel);
     }
 
     /**
@@ -164,26 +178,31 @@ class Flex extends Resource
      */
     public function toArray($request)
     {
-        // Get Meta HERE????
 
+        // Resource here is the collected resource instance
         if (is_null($this->resource)) {
             // We haven't executed the query if we have a null resource
             $this->query($request);
         }
 
-        return [
+        $results = [
             // TODO: only need pagination in index context
             'pagination' => $this->toPagination(),
             // TODO: only need columns in index context
-            'columns' => $this->meta['columns'],
+            'columns' => $this->toColumns(),
             // Resource rows index, resource for other context
-            'data' => $this->toData($request),
+            'data' => $this->collection->isEmpty() ? [] : $this->toData($request),
             // TODO: only need filters in index context
             'filters' => $this->flexFilters,
             // Applied Filter
             // applied filter comes from request attributes or cache
 
         ];
+        return $results;
+    }
+    protected function toColumns(): array
+    {
+        return collect($this->meta['columns'])->map(fn ($columns) => Arr::except($columns, self::CONTROL_COLUMNS))->all();
     }
 
     /**
@@ -194,8 +213,12 @@ class Flex extends Resource
      */
     protected function toData(Request $request): array
     {
-        return $this->collection->map(function ($resource) use ($request) {
-            return $resource->withContext($this->context)->withKeys($this->meta['keys'])->toArray($request);
+        // use the first resource in the collection to build actions
+        $actions = $this->collection->first()->toActions();
+
+        // We'll pass actions to the resource to build the array of data
+        return $this->collection->map(function ($resource) use ($request, $actions) {
+            return $resource->withContext($this->context)->withKeys($this->meta['keys'])->withActions($actions)->toArray($request);
         })->all();
     }
 }

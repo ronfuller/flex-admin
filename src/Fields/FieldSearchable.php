@@ -7,6 +7,13 @@ trait FieldSearchable
     public static $SEARCH_TYPES = ['full', 'exact', 'partial'];
 
     /**
+     * Search type - exact, full, partial
+     *
+     * @var string
+     */
+    protected string $searchType;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function searchable(string $type = null): self

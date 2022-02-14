@@ -7,6 +7,20 @@ use Illuminate\Support\Str;
 trait FieldPermissions
 {
     /**
+     * Context permissions
+     *
+     * @var array
+     */
+    public $permissions = [];
+
+
+    /**
+     *
+     * @var bool
+     */
+    protected $withPermissions = true;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function withoutPermissions(): self

@@ -4,9 +4,32 @@ namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Arr;
 use Psi\FlexAdmin\Actions\Action;
+use Psi\FlexAdmin\Lib\FlexHelper;
 
 trait ResourceActions
 {
+
+    /**
+     * Include Actions with the resource
+     *
+     * @var bool
+     */
+    protected bool $withActions = true;
+
+    /**
+     * Default actions for every resource
+     *
+     * @var array
+     */
+    protected array $defaultActions = ['view', 'edit', 'create', 'delete'];
+
+    protected array|null $actions = null;
+
+    /**
+     * Creates a resource without actions
+     *
+     * @return \Psi\FlexAdmin\Resources\Resource
+     */
     public function withoutActions(): self
     {
         $this->withActions = false;
@@ -17,19 +40,24 @@ trait ResourceActions
     /**
      * Determines if we should return actions
      *
-     * @return bool
+     * @return \Psi\FlexAdmin\Resources\Resource
      */
-    protected function withActions(): bool
+    public function withDefaultActions(array $defaultActions = null): self
     {
-        return $this->withActions;
+        // TODO: validate that the array of default actions is in the default list
+        if (!collect($defaultActions)->every(fn ($action) => \in_array($action, ['view', 'edit', 'create', 'delete']))) {
+            throw new \Exception("Invalid default actions. Must be one of view,edit,create,delete");
+        }
+        $this->defaultActions = $defaultActions ?? $this->defaultActions;
+        return $this;
     }
 
     /**
-     * Creates actions for the resource
+     * Returns the actions for the resource with specified permissions and context set
      *
      * @return array
      */
-    protected function toActions(): array
+    public function toActions(): array
     {
         $defaultActions = $this->defaultActions();
 
@@ -41,6 +69,49 @@ trait ResourceActions
     }
 
     /**
+     * withActions
+     *
+     * @param array $actions
+     * @return \Psi\FlexAdmin\Resources\Resource
+     */
+    protected function withActions(array $actions): self
+    {
+        $this->actions = collect($actions)->map(function ($action) {
+            // See if we need to build the route Url from the resource params/values
+            if (!empty(data_get($action, 'attributes.route'))) {
+                data_set($action, 'attributes.url',  $this->buildActionRouteUrl(data_get($action, 'attributes.route')));
+            }
+            // If we need to check on the model and we haven't already disabled the action
+            if ($action['canAct'] && $action['enabled']) {
+                // need to call the can resource method
+                $action['enabled'] = $this->resource->canAct($action['slug']);
+                data_set($action, 'attributes.disabled', !$action['enabled']);
+            }
+            return $action;
+        })
+            // We may have filtered based on capability, remove only if we don't want to show disabled items
+            ->filter(fn ($action) => $action['enabled'] || ($action['withDisabled']))
+            ->values()
+            ->all();
+
+        return $this;
+    }
+
+    /**
+     * Build Action Route URL
+     *
+     * @param array $routeData
+     * @return string
+     */
+    protected function buildActionRouteUrl(array $routeData): string
+    {
+        $params = collect($routeData['params'])->mapWithKeys(function ($param) {
+            return [$param['name'] => $this->resource->getAttribute($param['field'])];
+        })->all();
+        return route($routeData['name'], $params);
+    }
+
+    /**
      * Creates default actions
      *
      * @return array
@@ -49,7 +120,7 @@ trait ResourceActions
     {
         return collect(
             [
-                Action::make('view', (in_array('view', $this->actions)))
+                Action::make('view', (in_array('view', $this->defaultActions)))
                     ?->icon($this->theme['icon-view'])
                     ->attributes(Arr::only($this->theme, ['icon-color', 'color']))
                     ->title($this->resourceTitle('view'))
@@ -57,7 +128,7 @@ trait ResourceActions
                     ->permission($this->resourcePermission('view'))
                     ->hideFromDetail(),
 
-                Action::make('edit', (in_array('edit', $this->actions)))
+                Action::make('edit', (in_array('edit', $this->defaultActions)))
                     ?->icon($this->theme['icon-edit'])
                     ->attributes(Arr::only($this->theme, ['icon-color', 'color']))
                     ->title($this->resourceTitle('edit'))
@@ -65,7 +136,7 @@ trait ResourceActions
                     ->permission($this->resourcePermission('view'))
                     ->hideFromEdit(),
 
-                Action::make('create', (in_array('create', $this->actions)))
+                Action::make('create', (in_array('create', $this->defaultActions)))
                     ?->icon($this->theme['icon-create'])
                     ->attributes(Arr::only($this->theme, ['icon-color', 'color']))
                     ->title($this->resourceTitle('create'))
@@ -74,7 +145,7 @@ trait ResourceActions
                     ->hideFromIndex()
                     ->hideFromCreate(),
 
-                Action::make('delete', (in_array('delete', $this->actions)))
+                Action::make('delete', (in_array('delete', $this->defaultActions)))
                     ?->icon($this->theme['icon-delete'])
                     ->attributes(Arr::only($this->theme, ['icon-color', 'color']))
                     ->title($this->resourceTitle('delete'))

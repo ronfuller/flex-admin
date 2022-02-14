@@ -5,6 +5,13 @@ namespace Psi\FlexAdmin\Fields;
 trait FieldFilter
 {
     /**
+     * Default filter type
+     *
+     * @var string
+     */
+    protected $filterType;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function filterable(string $filterType = null): self

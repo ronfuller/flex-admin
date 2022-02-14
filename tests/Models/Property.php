@@ -51,12 +51,10 @@ class Property extends Model
 
     public function canAct(string $slug)
     {
-        switch ($slug) {
-            case 'view-website':
-                return false;
-        }
-
-        return true;
+        return match ($slug) {
+            'view-website' => false,
+            default => true
+        };
     }
 
     public function filterCompany($query)

@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 trait FlexQuery
 {
+    /**
+     * Without pagination
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function withoutPagination(): self
     {
         $this->paginate = false;
@@ -14,6 +19,11 @@ trait FlexQuery
         return $this;
     }
 
+    /**
+     * Query
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function query(Request $request): self
     {
         $this->toQuery($request);
@@ -21,6 +31,11 @@ trait FlexQuery
         return $this;
     }
 
+    /**
+     * Query Filters
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function queryFilters(Request $request): self
     {
         $this->toQueryFilters($request);
@@ -36,6 +51,11 @@ trait FlexQuery
      */
     protected function toQueryFilters(Request $request)
     {
+        // Have we created the meta for the query from the flex resource?
+        if (is_null($this->meta)) {
+            $this->meta = $this->getCollectionMeta($this->flexResource);
+        }
+
         // Request Attributes
         $attributes = $request->all();
         // Selects, Joins, Authorization, Constraints
@@ -52,6 +72,10 @@ trait FlexQuery
      */
     protected function toQuery(Request $request)
     {
+        // Have we created the meta for the query from the flex resource?
+        if (is_null($this->meta)) {
+            $this->meta = $this->getCollectionMeta($this->flexResource);
+        }
         // Request Attributes
         $attributes = $request->all();
         /**
