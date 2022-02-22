@@ -22,7 +22,6 @@ trait ResourceColumns
         })->filter(fn (array $field) => $field['enabled']);
     }
 
-
     public function selects(): array
     {
         return $this->columns->pluck('select')->all();

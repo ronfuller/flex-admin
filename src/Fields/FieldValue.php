@@ -32,7 +32,6 @@ trait FieldValue
      **/
     protected $value;
 
-
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */

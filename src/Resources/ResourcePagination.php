@@ -4,7 +4,6 @@ namespace Psi\FlexAdmin\Resources;
 
 trait ResourcePagination
 {
-
     /**
      *
      * @var int - pagination option to use for default pagination per page
@@ -23,7 +22,6 @@ trait ResourcePagination
      * @var bool
      */
     protected bool $paginate = true;
-
 
     public function setPerPage(int $perPage): self
     {
@@ -60,7 +58,7 @@ trait ResourcePagination
             'previousUrl' => $this->resource->previousPageUrl(),
             'previous' => $this->resource->onFirstPage(),
             'next' => $this->resource->hasMorePages(),
-            'rowsPerPageOptions' => $this->perPageOptions()
+            'rowsPerPageOptions' => $this->perPageOptions(),
         ] : [];
     }
 

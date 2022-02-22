@@ -16,7 +16,6 @@ trait FieldSelect
      */
     protected string|null $select = null;
 
-
     public function select(string $key): self
     {
         $this->select = $key;

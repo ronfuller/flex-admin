@@ -7,7 +7,6 @@ use Psi\FlexAdmin\Resources\Resource;
 
 class ApplicationGroupResource extends Resource implements Flexible
 {
-
     /**
      * Create fields for resource
      *

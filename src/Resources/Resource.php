@@ -2,15 +2,11 @@
 
 namespace Psi\FlexAdmin\Resources;
 
-use Arr;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Fields\Field;
-use Psi\FlexAdmin\Lib\FlexInspect;
-use Psi\FlexAdmin\Panels\Panel;
 
 class Resource extends JsonResource implements Flexible
 {
@@ -81,6 +77,7 @@ class Resource extends JsonResource implements Flexible
     public function withContext(string $context): self
     {
         $this->context = $context;
+
         return $this;
     }
 
@@ -120,7 +117,7 @@ class Resource extends JsonResource implements Flexible
             'constraints' => $this->constraints(),
             'perPage' => $this->perPage(),
             'perPageOptions' => $this->perPageOptions(),
-            'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all()
+            'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all(),
         ];
 
         // TODO: validate meta, must contain a default sort, sortable can't be false if default sort, can't have multiple default sorts
@@ -134,9 +131,9 @@ class Resource extends JsonResource implements Flexible
      */
     public function toFields(): array
     {
-
         $mappedFields = $this->toFieldsCollection()->mapWithKeys(function ($item) {
-            ['attributes' => $attributes, 'value' => $value] =  $item;    // get the attributes and transformed value
+            ['attributes' => $attributes, 'value' => $value] = $item;    // get the attributes and transformed value
+
             return [$attributes['name'] => compact('attributes', 'value')];
         })->all();
 
@@ -157,6 +154,7 @@ class Resource extends JsonResource implements Flexible
             return  $field->model($this->resource)->toArray($attributes);    // get the attributes and transformed value
         });
     }
+
     /**
      * Transform the resource into an array.
      *
@@ -170,13 +168,13 @@ class Resource extends JsonResource implements Flexible
         $actions = $this->transformActions($actions);
 
         // Relations
-        $relations =  $this->withRelations() ? $this->toRelations($request) : [];
+        $relations = $this->withRelations() ? $this->toRelations($request) : [];
 
         // Fields
         $fields = $this->withFields() ? $this->toFields() : [];
 
         // Panels
-        $panels =  $this->withPanels() ? $this->toPanels($this->toFieldsCollection()) : [];
+        $panels = $this->withPanels() ? $this->toPanels($this->toFieldsCollection()) : [];
 
         $result = empty($fields) ? [] : $fields;
         $result['actions'] = $actions;
@@ -192,7 +190,7 @@ class Resource extends JsonResource implements Flexible
     protected function withFields()
     {
         // return fields array if not using panels
-        return !$this->withPanels();
+        return ! $this->withPanels();
     }
 
     /**
@@ -248,7 +246,7 @@ class Resource extends JsonResource implements Flexible
         ];
         $routeMethod = $slugRouteMethods[$slug];
         $routeName = $pluralModel . "." . $slugResourceRoutes[$slug];
-        $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? array(['name' => $modelKey, 'field' => $routeKeyName]) : [];
+        $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? [['name' => $modelKey, 'field' => $routeKeyName]] : [];
 
         return [$routeName, $routeMethod, $routeParams];
     }

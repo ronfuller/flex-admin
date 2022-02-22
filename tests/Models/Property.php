@@ -73,6 +73,7 @@ class Property extends Model
     {
         return $query;
     }
+
     public function scopeFilter($query, array $attributes)
     {
         return $query;
@@ -92,15 +93,16 @@ class Property extends Model
     {
         return $query;
     }
+
     public function scopeEdit($query, array $attributes)
     {
         return $query;
     }
+
     public function scopeCreate($query, array $attributes)
     {
         return $query;
     }
-
 
     /**
      * Create a new factory instance for the model.

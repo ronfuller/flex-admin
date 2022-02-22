@@ -6,7 +6,6 @@ use Psi\FlexAdmin\Fields\Enums\DisplayContext;
 
 trait FieldDisplay
 {
-
     /**
      * Defines the contexts in which the resource field is displayed
      *

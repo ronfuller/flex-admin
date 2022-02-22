@@ -4,7 +4,6 @@ namespace Psi\FlexAdmin\Fields;
 
 trait FieldRelation
 {
-
     /**
      * Related model that the field is on
      *
@@ -18,7 +17,6 @@ trait FieldRelation
      * @var array|null
      */
     protected array|null $onModelMeta = null;
-
 
     /**
      * @return \Psi\FlexAdmin\Fields\Field

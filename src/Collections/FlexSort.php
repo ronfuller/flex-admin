@@ -33,9 +33,10 @@ trait FlexSort
     {
         return [
             $this->getSortConfig('attribute') => $sortName,
-            $this->getSortConfig('direction.attribute') => $this->getSortConfig('direction.flag') ? $sortDir === $this->getSortConfig('direction.flag') : $sortDir
+            $this->getSortConfig('direction.attribute') => $this->getSortConfig('direction.flag') ? $sortDir === $this->getSortConfig('direction.flag') : $sortDir,
         ];
     }
+
     protected function hasSort(array $attributes): bool
     {
         $sortAttribute = config('flex-admin.sort.attribute') ?? 'sort';

@@ -106,13 +106,14 @@ class Flex extends Resource
     /**
      * Determines if we should cache meta values
      *
-     * @var boolean
+     * @var bool
      */
     protected bool $shouldCacheMeta = true;
 
     protected Resource $flexResource;
 
-    const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join'];
+    public const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join'];
+
     /**
      * Create a flex collection instance
      *
@@ -135,7 +136,7 @@ class Flex extends Resource
         }
 
         // Validate context against list of contexts
-        if (!in_array($context, Field::CONTEXTS)) {
+        if (! in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
 
@@ -205,8 +206,10 @@ class Flex extends Resource
             // applied filter comes from request attributes or cache
 
         ];
+
         return $results;
     }
+
     protected function toColumns(): array
     {
         return collect($this->meta['columns'])->map(fn ($columns) => Arr::except($columns, self::CONTROL_COLUMNS))->all();
@@ -216,6 +219,7 @@ class Flex extends Resource
     {
         return collect($this->meta['columns'])->filter(fn ($col) => $col['render'])->values()->map(fn ($col) => $col['name'])->all();
     }
+
     /**
      * Create the transformed resource
      *

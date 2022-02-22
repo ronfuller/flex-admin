@@ -3,9 +3,6 @@
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Psi\FlexAdmin\Fields\Enums\DisplayContext;
 
 /**
  * @property string|null $component
@@ -133,6 +130,7 @@ class Field
             ]
         );
     }
+
     public function toAttributes(): array
     {
         return [...['key' => $this->key, 'name' => $this->meta['name'], 'panel' => $this->panel], ...$this->attributes];
@@ -165,7 +163,7 @@ class Field
     {
         return [
             'attributes' => $this->toAttributes(),
-            'value' => $this->toValue($attributes)
+            'value' => $this->toValue($attributes),
         ];
     }
 

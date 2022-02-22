@@ -2,7 +2,6 @@
 
 namespace Psi\FlexAdmin\Fields;
 
-use Illuminate\Bus\Dispatcher;
 use Psi\FlexAdmin\Fields\Enums\DisplayContext;
 
 trait FieldRender
@@ -33,7 +32,6 @@ trait FieldRender
      * @var bool
      */
     protected bool $render = true;
-
 
     /**
      * @return \Psi\FlexAdmin\Fields\Field

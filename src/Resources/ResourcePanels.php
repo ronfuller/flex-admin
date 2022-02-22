@@ -59,7 +59,7 @@ trait ResourcePanels
         $fieldPanels = $fieldsCollection->each(function ($field) use ($panelCollection) {
             $key = data_get($field, 'attributes.panel');
 
-            if (!empty($key)) {
+            if (! empty($key)) {
                 /**
                  * @var Panel | null
                  */

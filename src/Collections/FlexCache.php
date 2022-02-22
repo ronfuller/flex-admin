@@ -8,7 +8,6 @@ trait FlexCache
 {
     private string $cacheKey;
 
-
     /**
      * Disables caching meta columns data
      *

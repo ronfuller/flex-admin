@@ -20,6 +20,7 @@ trait FlexScope
 
         return $this;
     }
+
     /**
      * Add an order scope
      *
@@ -124,10 +125,9 @@ trait FlexScope
         return $this;
     }
 
-
     protected function validateScope(string $scope): void
     {
-        if (!$this->flexModel->hasNamedScope($scope)) {
+        if (! $this->flexModel->hasNamedScope($scope)) {
             throw new \Exception("Scope {$scope} does not exist on the model");
         }
     }
