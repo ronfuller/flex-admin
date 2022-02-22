@@ -4,14 +4,18 @@ namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Psi\FlexAdmin\Fields\Enums\DisplayContext;
 
 /**
  * @property string|null $component
  * @property array $display
  * @property array $attributes
  * @property array $permissions
+ * @property array $meta
  *
- * @method Psi\Flexadmin\Fields context(string $context)
+ *
+ *
  */
 
 class Field
@@ -87,7 +91,8 @@ class Field
     public function context(string $context): self
     {
         $this->component = $this->componentForContext($context);
-        $this->attributes['enabled'] = $this->displayContext($context);
+        // We may have disabled through permissions, don't re-enabled with display context, context can only disable
+        $this->meta['enabled'] = $this->meta['enabled'] ? $this->displayContext($context) : false;
 
         return $this;
     }
@@ -99,7 +104,7 @@ class Field
         return $this;
     }
 
-    public function toColumn(): array
+    public function toMeta(): array
     {
         // Meta information for the primary model for the field
         $this->modelMeta = $this->modelMeta($this->model);
@@ -110,8 +115,9 @@ class Field
         }
 
         return array_merge(
-            Arr::only($this->attributes, ['label', 'name', 'sortable', 'align', 'enabled', 'hidden', 'filterable', 'selectable', 'searchable', 'constrainable']),
+            $this->meta,
             [
+                'panel' => $this->panel,
                 'render' => $this->render,
                 'component' => $this->component,
                 'key' => $this->key,
@@ -127,17 +133,9 @@ class Field
             ]
         );
     }
-
     public function toAttributes(): array
     {
-        return [
-            'render' => $this->render,
-            'component' => $this->component,
-            'key' => $this->key,
-            'panel' => $this->panel,
-            'attributes' => $this->attributes,
-            'addToValues' => $this->addToValues,
-        ];
+        return [...['key' => $this->key, 'name' => $this->meta['name'], 'panel' => $this->panel], ...$this->attributes];
     }
 
     public function toValue(array $attributes): mixed
@@ -165,7 +163,10 @@ class Field
 
     public function toArray(array $attributes): array
     {
-        return [...$this->toAttributes(), ...['value' => $this->toValue($attributes)]];
+        return [
+            'attributes' => $this->toAttributes(),
+            'value' => $this->toValue($attributes)
+        ];
     }
 
     protected function setDefaults(): void

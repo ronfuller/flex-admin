@@ -18,12 +18,12 @@ trait FieldSearchable
      */
     public function searchable(string $type = null): self
     {
-        if ($type && ! in_array($type, self::$SEARCH_TYPES)) {
+        if ($type && !in_array($type, self::$SEARCH_TYPES)) {
             throw new \Exception("Invalid search type, must be one of " . implode(",", self::$SEARCH_TYPES));
         }
 
         $this->searchType = $type ?? $this->searchType;
-        $this->attributes['searchable'] = true;
+        $this->meta['searchable'] = true;
 
         return $this;
     }

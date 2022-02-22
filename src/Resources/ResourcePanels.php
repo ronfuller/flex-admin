@@ -35,12 +35,12 @@ trait ResourcePanels
         return $this->withPanels && $this->context !== Field::CONTEXT_INDEX;
     }
 
-    protected function toPanels(Collection $fieldCollection): array
+    protected function toPanels(Collection $fieldsCollection): array
     {
         $defaultPanels = $this->defaultPanels();
         $panelCollection = collect(array_merge($defaultPanels, $this->panels()));
 
-        $panels = $this->panelsWithFields($fieldCollection, $panelCollection);
+        $panels = $this->panelsWithFields($fieldsCollection, $panelCollection);
 
         return $panels->map(fn ($panel) => $panel->toArray())->filter(fn ($panel) => $panel['enabled'])->values()->all();
     }
@@ -54,12 +54,15 @@ trait ResourcePanels
             ];
     }
 
-    public function panelsWithFields(Collection $fieldCollection, Collection $panelCollection): Collection
+    public function panelsWithFields(Collection $fieldsCollection, Collection $panelCollection): Collection
     {
-        $fieldPanels = $fieldCollection->each(function ($field) use ($panelCollection) {
-            $key = $field['panel'];
+        $fieldPanels = $fieldsCollection->each(function ($field) use ($panelCollection) {
+            $key = data_get($field, 'attributes.panel');
 
-            if (! empty($key)) {
+            if (!empty($key)) {
+                /**
+                 * @var Panel | null
+                 */
                 $panel = $panelCollection->first(function ($item) use ($key) {
                     return $item->key === $key;
                 });
@@ -67,7 +70,7 @@ trait ResourcePanels
                 if (is_null($panel)) {
                     throw new \Exception("Could not find panel for key = {$key}");
                 }
-                $panel->field($field['key']);
+                $panel->field($field);
             }
         });
 

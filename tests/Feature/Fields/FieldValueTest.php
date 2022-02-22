@@ -23,7 +23,6 @@ it('should create an array with attributes and value')
         ->value('name')
         ->model($this->property)
         ->toArray($this->property->attributesToArray()))
-    ->toHaveKeys(['render', 'component', 'key', 'panel', 'attributes', 'value'])
     ->toHaveKey('value', 'Test Property')
     ->group('value', 'fields');
 
@@ -51,28 +50,28 @@ it('should have a null value')
     ->group('value', 'fields');
 
 it('should have a value only')
-    ->expect(fn () => Field::make(null, 'id')->valueOnly()->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->valueOnly()->model(new Property())->toMeta())
     ->toHaveKey('render', false)
     ->toHaveKey('component', null)
     ->toHaveKey('panel', '')
     ->group('value', 'fields');
 
 it('should be added to resource values')
-    ->expect(fn () => Field::make(null, 'id')->addToValues()->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->addToValues()->model(new Property())->toMeta())
     ->toHaveKey('addToValues', true)
     ->group('value', 'fields');
 
 it('should not be added to resource values by default')
-    ->expect(fn () => Field::make(null, 'id')->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->model(new Property())->toMeta())
     ->toHaveKey('addToValues', false)
     ->group('value', 'fields');
 
 it('should be added to resource values if value only')
-    ->expect(fn () => Field::make(null, 'id')->valueOnly()->toAttributes(Field::CONTEXT_INDEX))
+    ->expect(fn () => Field::make(null, 'id')->valueOnly()->model(new Property())->toMeta())
     ->toHaveKey('addToValues', true)
     ->group('value', 'fields');
 
 it('should validate the column when value only')
-    ->expect(fn () => Field::make(null, 'id')->valueOnly()->model(new Property())->toColumn())
+    ->expect(fn () => Field::make(null, 'id')->valueOnly()->model(new Property())->toMeta())
     ->toBeArray()
     ->group('value', 'fields');

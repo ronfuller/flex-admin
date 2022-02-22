@@ -59,9 +59,9 @@ class Panel
         return $this;
     }
 
-    public function field(string $key): self
+    public function field(array $field): self
     {
-        array_push($this->fields, $key);
+        array_push($this->fields, $field);
 
         return $this;
     }

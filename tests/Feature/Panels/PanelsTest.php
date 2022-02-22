@@ -56,7 +56,7 @@ it('should not overwrite title attribute')
     ->group('panels');
 
 it('should add fields')
-    ->expect(fn () => Panel::make('details')->field('id')->field('name')->toArray())
+    ->expect(fn () => Panel::make('details')->field(['attributes' => ['key' => 'id']])->field(['attributes' => ['key' => 'name']])->toArray())
     ->fields
-    ->toBe(['id', 'name'])
+    ->toBe([['attributes' => ['key' => 'id']], ['attributes' => ['key' => 'name']]])
     ->group('panels');

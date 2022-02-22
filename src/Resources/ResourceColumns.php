@@ -18,14 +18,10 @@ trait ResourceColumns
     public function columns(): Collection
     {
         return collect($this->fields(null))->map(function (Field $field) {
-            return $field->withPermissions($this->context, $this->model)->model($this->model)->context($this->context)->toColumn();
+            return $field->withPermissions($this->context, $this->model)->model($this->model)->context($this->context)->toMeta();
         })->filter(fn (array $field) => $field['enabled']);
     }
 
-    public function renderable(): array
-    {
-        return $this->columns->filter(fn ($column) => $column['render'])->values()->all();
-    }
 
     public function selects(): array
     {

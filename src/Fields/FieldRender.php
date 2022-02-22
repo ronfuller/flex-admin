@@ -2,6 +2,9 @@
 
 namespace Psi\FlexAdmin\Fields;
 
+use Illuminate\Bus\Dispatcher;
+use Psi\FlexAdmin\Fields\Enums\DisplayContext;
+
 trait FieldRender
 {
     /**
@@ -79,9 +82,9 @@ trait FieldRender
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function indexComponent(string $string): self
+    public function indexComponent(string $component): self
     {
-        $this->components[self::CONTEXT_INDEX] = $string;
+        $this->components[DisplayContext::INDEX->value] = $component;
 
         return $this;
     }
@@ -89,9 +92,9 @@ trait FieldRender
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function detailComponent(string $string): self
+    public function detailComponent(string $component): self
     {
-        $this->components[self::CONTEXT_DETAIL] = $string;
+        $this->components[DisplayContext::DETAIL->value] = $component;
 
         return $this;
     }
@@ -99,9 +102,9 @@ trait FieldRender
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function createComponent(string $string): self
+    public function createComponent(string $component): self
     {
-        $this->components[self::CONTEXT_CREATE] = $string;
+        $this->components[DisplayContext::CREATE->value] = $component;
 
         return $this;
     }
@@ -109,9 +112,9 @@ trait FieldRender
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function editComponent(string $string): self
+    public function editComponent(string $component): self
     {
-        $this->components[self::CONTEXT_EDIT] = $string;
+        $this->components[DisplayContext::EDIT->value] = $component;
 
         return $this;
     }
@@ -130,6 +133,6 @@ trait FieldRender
     protected function setDefaultComponents()
     {
         // initialize context components to null
-        $this->components = $this->components ?? collect(self::CONTEXTS)->mapWithKeys(fn ($context) => [$context => null])->all();
+        $this->components = $this->components ?? collect(DisplayContext::values())->mapWithKeys(fn ($context) => [$context => null])->all();
     }
 }

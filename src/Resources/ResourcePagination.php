@@ -44,6 +44,11 @@ trait ResourcePagination
 
         // TODO: Handle transform , append
         return $this->paginate ? [
+            // Quasar Specific Fields
+            'page' => $this->resource->currentPage(),
+            'rowsPerPage' => $this->resource->perPage(),
+            'rowsNumber' => $this->resource->total(),
+
             'currentPage' => $this->resource->currentPage(),
             'from' => $this->resource->firstItem(),
             'lastPage' => $this->resource->lastPage(),
@@ -55,6 +60,7 @@ trait ResourcePagination
             'previousUrl' => $this->resource->previousPageUrl(),
             'previous' => $this->resource->onFirstPage(),
             'next' => $this->resource->hasMorePages(),
+            'rowsPerPageOptions' => $this->perPageOptions()
         ] : [];
     }
 

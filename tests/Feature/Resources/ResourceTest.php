@@ -21,10 +21,16 @@ it('should return an array limited by valid keys')
         ->withKeys(['id', 'name'])
         ->toArray(Request::create('http://test.com')))
     ->toBeArray()
-    ->toHaveKeys(['fields', 'values', 'actions'])
     ->group('resources');
 
 it('should return collection meta')
+    ->expect(fn () => (new PropertyResource(null))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->toMeta(new Property()))
+    ->toBeArray()
+    ->group('resources');
+
+it('should return collection meta columns')
     ->expect(fn () => (new PropertyResource(null))
         ->withContext(Field::CONTEXT_INDEX)
         ->toMeta(new Property()))
@@ -61,6 +67,15 @@ it('should return collection columns in array list')
         ->toMeta(new Property()))
     ->columns
     ->toBeArrayList()
+    ->group('resources');
+
+it('should return all columns including non-renderable')
+    ->expect(fn () => (new PropertyResource(null))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->toMeta(new Property()))
+    ->columns
+    ->toHaveKey("0.name", "propertyId")
+    ->toHaveKey("0.render", false)
     ->group('resources');
 
 it('should return collection meta with searches')
@@ -103,29 +118,32 @@ it('should return fields')
     ->expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)
         ->toFields())
-    ->toHaveCount(10)
+    ->toHaveKeys(['uuid', 'propertyId', 'name', 'createdAt', 'color', 'status', 'type', 'company', 'companyName', 'companyEmployees'])
     ->group('resources');
 
 it('should return an id field')
     ->expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)
-        ->toFields()[0])
-    ->toHaveKey('key', 'id')
-    ->toHaveKey('render', false)
-    ->toHaveKey('component', null)
-    ->toHaveKeys(['render', 'component', 'panel', 'attributes', 'addToValues', 'value'])
+        ->toFields())
+    ->toHaveKey('propertyId')
     ->group('resources');
 
 it('should return a text field')
     ->expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)
-        ->toFields()[1])
+        ->toMeta(new Property())['columns'][1])
     ->toHaveKey('key', 'name')
     ->toHaveKey('render', true)
     ->toHaveKey('panel', 'details')
     ->toHaveKey('component', 'text-field')
-    ->toHaveKey('value', 'Test Property')
-    ->toHaveKeys(['render', 'component', 'panel', 'attributes', 'addToValues', 'value'])
+    ->toHaveKeys(['render', 'component', 'panel', 'addToValues'])
+    ->group('resources');
+
+it('should return a text field value and attributes')
+    ->expect(fn () => (new PropertyResource($this->property))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->toArray(createRequest()))
+    ->toHaveKey('name.value', 'Test Property')
     ->group('resources');
 
 it('should create a resource permission')

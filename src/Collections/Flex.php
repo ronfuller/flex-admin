@@ -112,7 +112,7 @@ class Flex extends Resource
 
     protected Resource $flexResource;
 
-    const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'render', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join'];
+    const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join'];
     /**
      * Create a flex collection instance
      *
@@ -186,13 +186,19 @@ class Flex extends Resource
             $this->query($request);
         }
 
+        $pagination = $this->toPagination();
+
         $results = [
             // TODO: only need pagination in index context
-            'pagination' => $this->toPagination(),
+            'pagination' => $pagination,
+            'rowsPerPageOptions' => data_get($pagination, 'rowsPerPageOptions'),
             // TODO: only need columns in index context
             'columns' => $this->toColumns(),
+            'visibleColumns' => $this->visibleColumns(),
+
             // Resource rows index, resource for other context
-            'data' => $this->collection->isEmpty() ? [] : $this->toData($request),
+            'rows' => $this->collection->isEmpty() ? [] : $this->toData($request),
+
             // TODO: only need filters in index context
             'filters' => $this->flexFilters,
             // Applied Filter
@@ -206,6 +212,10 @@ class Flex extends Resource
         return collect($this->meta['columns'])->map(fn ($columns) => Arr::except($columns, self::CONTROL_COLUMNS))->all();
     }
 
+    protected function visibleColumns(): array
+    {
+        return collect($this->meta['columns'])->filter(fn ($col) => $col['render'])->values()->map(fn ($col) => $col['name'])->all();
+    }
     /**
      * Create the transformed resource
      *

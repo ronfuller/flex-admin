@@ -49,24 +49,22 @@ it('should create a collects property')
     ->toBe(PropertyResource::class)
     ->group('collections');
 
-
-
-
 it('should output to an array with rows data')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
         ->withoutFilters()
         ->query(createRequest())
         ->toArray(createRequest()))
-    ->data
+    ->rows
     ->toHaveCount(5)
-    ->each->toHaveKeys(['fields', 'values', 'actions']);
+    ->each->toHaveKeys(['uuid', 'actions'])
+    ->group('collections');
 
 it('should have default actions for rows data')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
         ->withoutFilters()
         ->withoutCache()
         ->toArray(createRequest()))
-    ->data
+    ->rows
     ->toHaveCount(5)
     ->each->toHaveKey('actions.0.slug', 'view')
     ->each->toHaveKey('actions.1.slug', 'edit')
@@ -79,12 +77,13 @@ it('should create rows for a large data set', function () {
     ray()->measure();
     $data = Flex::forIndex(Property::class)->withoutFilters()->toArray(createRequest(['perPage' => $count]));
     ray()->measure();
-    expect($data['data'])->toHaveCount($count);
+    expect($data['rows'])->toHaveCount($count);
 })
     ->group('collections');
 
 
 it('should cache the column meta', function () {
+    config(['flex-admin.cache_enabled' => true]);
     $count = 100;
     $properties = Property::factory()->count($count)->forCompany()->create();
     $response = getJson("/properties?count={$count}")

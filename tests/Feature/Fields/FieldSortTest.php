@@ -5,7 +5,7 @@ use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Models\Property;
 
 it('should have a column that is the default sort')
-    ->expect(fn () => Field::make(null, 'id')->defaultSort(direction: 'asc')->model(new Property())->toColumn())
+    ->expect(fn () => Field::make(null, 'id')->defaultSort(direction: 'asc')->model(new Property())->toMeta())
     ->toHaveKey('defaultSort', true)
     ->toHaveKey('sortDir', 'asc')
     ->group('sort', 'fields');

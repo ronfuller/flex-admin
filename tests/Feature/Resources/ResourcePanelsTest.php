@@ -8,9 +8,13 @@ it('should have a default details panel')
     ->toHaveKey('panels')
     ->group('resources', 'panel');
 
+
 it('should add fields to default details panel')
-    ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest()))
-    ->toHaveKey('panels.0.fields', ['name', 'created_at', 'updated_at', 'color', 'status', 'type', 'companyName', 'companyEmployees'])
+    ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_DETAIL)->toArray(createRequest())['panels'][0])
+    ->fields
+    ->toHaveCount(8)
+    ->each
+    ->toHaveKeys(['attributes', 'value'])
     ->group('resources', 'panel');
 
 

@@ -2,6 +2,7 @@
 
 namespace Psi\FlexAdmin\Resources;
 
+use Arr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -108,8 +109,8 @@ class Resource extends JsonResource implements Flexible
         $this->columns = $this->columns();
 
         $meta = [
-            'keys' => $this->keys(),            // TODO: keys may need to be more than an array of resource keys, may need associative array with smart info
-            'columns' => $this->renderable(),
+            'keys' => $this->keys(),
+            'columns' => $this->columns->all(),
             'selects' => $this->selects(),
             'sort' => $this->sort(),
             'sorts' => $this->sorts(),
@@ -119,17 +120,30 @@ class Resource extends JsonResource implements Flexible
             'constraints' => $this->constraints(),
             'perPage' => $this->perPage(),
             'perPageOptions' => $this->perPageOptions(),
+            'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all()
         ];
+
         // TODO: validate meta, must contain a default sort, sortable can't be false if default sort, can't have multiple default sorts
         return $meta;
     }
 
     /**
-     * Creates a fields collection
+     * Creates a fields array
      *
-     * @return Collection
+     * @return array
      */
-    public function toFields(): Collection
+    public function toFields(): array
+    {
+
+        $mappedFields = $this->toFieldsCollection()->mapWithKeys(function ($item) {
+            ['attributes' => $attributes, 'value' => $value] =  $item;    // get the attributes and transformed value
+            return [$attributes['name'] => compact('attributes', 'value')];
+        })->all();
+
+        return [...['uuid' => (string) Str::uuid()], ...$mappedFields];
+    }
+
+    public function toFieldsCollection(): Collection
     {
         // cast, formatted attributes from the resource, including mutated attributes
         $attributes = $this->resource->attributesToArray();
@@ -137,18 +151,12 @@ class Resource extends JsonResource implements Flexible
         /**
          * @var \Illuminate\Support\Collection
          */
-        $fields = collect($this->fields($this->keys))->filter()->values();      // null value for keys will return all fields unrestricted
+        $fields = collect($this->fields($this->keys))->filter()->values();
 
-        return $fields->map(function (Field $field) {
-            return $field->context($this->context);                             // context sets enabled status
-        })->filter(
-            fn (Field $field) => $field->enabled()                              // display context enabled
-        )->values()
-            ->map(function (Field $field) use ($attributes) {
-                return $field->model($this->resource)->toArray($attributes);    // get the attributes and transformed value
-            });
+        return $fields->map(function (Field $field) use ($attributes) {
+            return  $field->model($this->resource)->toArray($attributes);    // get the attributes and transformed value
+        });
     }
-
     /**
      * Transform the resource into an array.
      *
@@ -157,41 +165,34 @@ class Resource extends JsonResource implements Flexible
      */
     public function toArray($request)
     {
-        $fieldCollection = $this->toFields();
-
-        // return fields
-        $fields = $fieldCollection->all();
-
-        // creates values object with name/value pairs
-        $values = $this->toValues($fieldCollection);
-
-        // return actions
+        // Actions
         $actions = $this->withActions ? $this->actions ?? $this->withActions($this->toActions())->actions : [];
         $actions = $this->transformActions($actions);
 
-        // return relations based on context
+        // Relations
         $relations =  $this->withRelations() ? $this->toRelations($request) : [];
 
-        // return panels based on context
-        $panels =  $this->withPanels() ? $this->toPanels($fieldCollection) : [];
+        // Fields
+        $fields = $this->withFields() ? $this->toFields() : [];
 
-        $base = ['fields', 'values', 'actions'];
-        $args = $this->context === Field::CONTEXT_INDEX ? $base : [...$base, 'panels', 'relations'];
+        // Panels
+        $panels =  $this->withPanels() ? $this->toPanels($this->toFieldsCollection()) : [];
 
-        return compact(...$args);
+        $result = empty($fields) ? [] : $fields;
+        $result['actions'] = $actions;
+
+        if ($this->context !== Field::CONTEXT_INDEX) {
+            $result['panels'] = $panels;
+            $result['relations'] = $relations;
+        }
+
+        return $result;
     }
 
-    /**
-     * Creates an associative array of values for the resource
-     *
-     * @param Collection $fieldsCollection
-     * @return array
-     */
-    protected function toValues(Collection $fieldsCollection): array
+    protected function withFields()
     {
-        return $fieldsCollection
-            ->filter(fn ($field) => $field['addToValues'])
-            ->mapWithKeys(fn ($field) => [$field['attributes']['name'] => $field['value']])->all();
+        // return fields array if not using panels
+        return !$this->withPanels();
     }
 
     /**

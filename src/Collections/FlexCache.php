@@ -8,6 +8,7 @@ trait FlexCache
 {
     private string $cacheKey;
 
+
     /**
      * Disables caching meta columns data
      *
@@ -23,14 +24,14 @@ trait FlexCache
     protected function getCollectionMeta(Resource $resource): array
     {
         // Determine if we are caching
-        return $this->shouldCacheMeta && $this->hasMetaCache() ? $this->getCollectionMetaFromCache() : $this->getCollectionMetaFromSource($resource);
+        return $this->shouldCacheMeta() && $this->hasMetaCache() ? $this->getCollectionMetaFromCache() : $this->getCollectionMetaFromSource($resource);
     }
 
     protected function getCollectionMetaFromSource(Resource $resource): array
     {
         $meta = $resource->withContext($this->context)->toMeta($this->flexModel);
 
-        if ($this->shouldCacheMeta) {
+        if ($this->shouldCacheMeta()) {
             session()->put($this->getCacheKey(), $meta);
         }
 
@@ -50,5 +51,10 @@ trait FlexCache
     private function getCacheKey(): string
     {
         return $this->cacheKey ?? str(request()->url() . "-" . get_class($this->flexModel) . "-" . $this->context)->replaceMatches("/[^A-Za-z0-9]++/", "-")->lower();
+    }
+
+    private function shouldCacheMeta(): bool
+    {
+        return $this->shouldCacheMeta && config('flex-admin.cache_enabled', false);
     }
 }

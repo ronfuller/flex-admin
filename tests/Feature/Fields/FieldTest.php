@@ -15,6 +15,6 @@ it('should be null if resource field is not in column list')
     ->group('fields');
 
 it('should have a column')
-    ->expect(fn () => Field::make(null, 'id')->model(new Property())->context(Field::CONTEXT_INDEX)->toColumn())
+    ->expect(fn () => Field::make(null, 'id')->model(new Property())->context(Field::CONTEXT_INDEX)->toMeta())
     ->toHaveKeys(['component', 'render', 'label', 'enabled', 'key', 'name', 'sortable', 'searchable', 'constrainable', 'select', 'align', 'sort', 'defaultSort', 'sortDir'])
     ->group('fields');

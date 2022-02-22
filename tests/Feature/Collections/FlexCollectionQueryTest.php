@@ -24,7 +24,7 @@ it('should execute query in to array if not ran')
         ->withoutFilters()
         ->withoutCache()
         ->toArray(createRequest()))
-    ->data
+    ->rows
     ->toHaveCount(5)
-    ->each->toHaveKeys(['fields', 'values', 'actions'])
+    ->each->toHaveKeys(['uuid', 'actions', 'propertyId', 'name', 'createdAt', 'color', 'status', 'type', 'company', 'companyName'])
     ->group('collections', 'query');
