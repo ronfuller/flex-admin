@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait FlexSort
 {
-    protected $flexSort = [];
-
     public function sortBy(Builder $query, array $attributes): Builder
     {
         if (empty($this->meta['sort'])) {
@@ -23,7 +21,6 @@ trait FlexSort
         }
 
         $this->flexSort = $this->buildSort($sortName, $sortDir);
-
         $query = $query->orderBy($sort, $sortDir);
 
         return $query;
@@ -60,13 +57,13 @@ trait FlexSort
     protected function getSortDirection(array $attributes): string
     {
         $dirConfig = $this->getSortConfig('direction');
-
-        $dir = $attributes[$dirConfig['attribute']];
+        $dir = $attributes[$dirConfig['attribute']] === 'true' ? true : false;
         $flag = $dirConfig['flag'];
+
         if (is_null($flag)) {
-            return in_array($dir, ['asc', 'desc']) ? $dir : throw new \Exception("Invalid sort direction {$dir}");
+            return in_array($attributes[$dirConfig['attribute']], ['asc', 'desc']) ? $attributes[$dirConfig['attribute']] : throw new \Exception("Invalid sort direction {$dir}");
         }
         // Flag is the truthy value
-        return (bool) $dir ? $flag : ($flag === 'desc' ? 'asc' : 'desc');
+        return  $dir ? $flag : ($flag === 'desc' ? 'asc' : 'desc');
     }
 }

@@ -37,11 +37,10 @@ trait ResourcePagination
         return $this;
     }
 
-    public function toPagination(): array
+    public function toPagination(array $sort): array
     {
-
         // TODO: Handle transform , append
-        return $this->paginate ? [
+        return $this->paginate ? [...$sort, ...[
             // Quasar Specific Fields
             'page' => $this->resource->currentPage(),
             'rowsPerPage' => $this->resource->perPage(),
@@ -59,7 +58,7 @@ trait ResourcePagination
             'previous' => $this->resource->onFirstPage(),
             'next' => $this->resource->hasMorePages(),
             'rowsPerPageOptions' => $this->perPageOptions(),
-        ] : [];
+        ]] : [];
     }
 
     protected function perPage()

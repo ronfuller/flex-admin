@@ -47,21 +47,20 @@ trait FlexQuery
      * Create filters with options from query
      *
      * @param Request $request
-     * @return void
+     * @return array
      */
-    protected function toQueryFilters(Request $request)
+    protected function toQueryFilters(Request $request): array
     {
         // Have we created the meta for the query from the flex resource?
         if (is_null($this->meta)) {
             $this->meta = $this->getCollectionMeta($this->flexResource);
         }
-
         // Request Attributes
         $attributes = $request->all();
         // Selects, Joins, Authorization, Constraints
         $query = $this->preFilterQuery($attributes);
         // Filters
-        $this->flexFilters = $this->buildFilters($attributes, $query);
+        return $this->flexFilters = $this->buildFilters($attributes, $query);
     }
 
     /**
@@ -72,10 +71,12 @@ trait FlexQuery
      */
     protected function toQuery(Request $request)
     {
+
         // Have we created the meta for the query from the flex resource?
         if (is_null($this->meta)) {
             $this->meta = $this->getCollectionMeta($this->flexResource);
         }
+
         // Request Attributes
         $attributes = $request->all();
         /**

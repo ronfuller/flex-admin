@@ -47,7 +47,7 @@ it('should have an ordered query type desc')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
         ->withoutFilters()
         ->withoutCache()
-        ->query(createRequest(['sort' => 'type', 'descending' => true]))
+        ->query(createRequest(['sort' => 'type', 'descending' => "true"]))
         ->resource->first())
     ->type
     ->toBe('townhome')

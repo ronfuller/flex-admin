@@ -3,6 +3,7 @@
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Filters\Filter;
@@ -103,13 +104,25 @@ trait FlexFilter
     protected function buildFilters(array $attributes, Builder $query): array
     {
         $filters = $this->getFilters($attributes);
-
         // the filter items in the array should be filter class objects, not arrays
-        return collect($this->meta['filters'])->map(function ($filter) use ($query) {
-            return [
+        return collect($this->meta['filters'])->map(function ($filter) use ($query, $filters) {
+            $item = [
                 ...$filter,
                 ...['options' => $this->flexResource->getFilter($filter['name'])->build($this->flexModel, $query)->toOptions()],
+
             ];
+            $filterItem = collect($filters)->firstWhere('name', $filter['name']);
+            if ($filterItem) {
+                $item = [
+                    ...$item,
+                    ...Arr::only($filterItem, ['value', 'item']),
+                    ...[
+                        'is_active' => ! is_null($filterItem['value']) && ($item['default'] !== $filterItem['value']),
+                    ],
+                ];
+            }
+
+            return $item;
         })->all();
     }
 
@@ -184,7 +197,7 @@ trait FlexFilter
     protected function parseFilter(array $attributes): array
     {
         // Filter params come in with the format param1:value1;param2:value2        // colon, semicolon cannot exists in param values
-        $filterParts = \explode("|", $attributes['filter']);
+        $filterParts = \explode(";", $attributes['filter']);
 
         return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(":")->trim() => $this->valueOf((string) Str::of($part)->after(":")->trim())])->all();
     }

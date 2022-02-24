@@ -101,10 +101,10 @@ class Field
         return $this;
     }
 
-    public function toMeta(): array
+    public function toMeta(array|null $modelMeta = null): array
     {
         // Meta information for the primary model for the field
-        $this->modelMeta = $this->modelMeta($this->model);
+        $this->modelMeta = $modelMeta ?? $this->modelMeta($this->model);
 
         // If this field is on another model, we need that meta
         if ($this->onModel) {

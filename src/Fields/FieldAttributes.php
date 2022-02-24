@@ -48,6 +48,16 @@ trait FieldAttributes
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
+    public function align(string $align): self
+    {
+        $this->meta['align'] = $align;
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
     public function attributes(array $attributes): self
     {
         $this->attributes = [...$this->attributes, ...$attributes];

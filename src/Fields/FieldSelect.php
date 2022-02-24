@@ -2,7 +2,6 @@
 
 namespace Psi\FlexAdmin\Fields;
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 trait FieldSelect
@@ -46,7 +45,7 @@ trait FieldSelect
 
     protected function fromModelTable(): string|null
     {
-        return Schema::hasColumn($this->model->getTable(), $this->key) ? $this->key : null;
+        return in_array($this->key, $this->modelMeta['columns']) ? $this->key : null;
     }
 
     protected function withAsColumn(string $select): string

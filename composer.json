@@ -18,6 +18,7 @@
     "require": {
         "php": "^8.0",
         "illuminate/contracts": "^9.0",
+        "inertiajs/inertia-laravel": "^0.5.4",
         "pestphp/pest-plugin-laravel": "^1.2",
         "spatie/laravel-package-tools": "^1.11"
     },

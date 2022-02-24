@@ -67,7 +67,7 @@ it('should constrain on status')
 
 it('should filter the query by multiple filters')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
-        ->query(createRequest(['filter' => 'type:apartment|color:green', 'status' => '5JOYAE7QO8']))->resource)
+        ->query(createRequest(['filter' => 'type:apartment;color:green', 'status' => '5JOYAE7QO8']))->resource)
     ->toHaveCount(1)
     ->group('collections', 'filter');
 
@@ -155,7 +155,7 @@ it('should return filter options for types')
     ->group("filter");
 
 it('should filter the resource query')
-    ->expect(fn () => Flex::forIndex(Property::class)->query(createRequest(['filter' => 'type:apartment|color:green', 'status' => '5JOYAE7QO8']))->resource)
+    ->expect(fn () => Flex::forIndex(Property::class)->query(createRequest(['filter' => 'type:apartment;color:green', 'status' => '5JOYAE7QO8']))->resource)
     ->toHaveCount(1)
     ->group('collections', 'filter');
 

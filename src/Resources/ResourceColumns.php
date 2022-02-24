@@ -5,6 +5,7 @@ namespace Psi\FlexAdmin\Resources;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Lib\FlexInspect;
 
 trait ResourceColumns
 {
@@ -17,8 +18,10 @@ trait ResourceColumns
 
     public function columns(): Collection
     {
-        return collect($this->fields(null))->map(function (Field $field) {
-            return $field->withPermissions($this->context, $this->model)->model($this->model)->context($this->context)->toMeta();
+        $modelMeta = (new FlexInspect($this->model))->meta;
+
+        return collect($this->fields(null))->map(function (Field $field) use ($modelMeta) {
+            return $field->withPermissions($this->context, $this->model)->model($this->model)->context($this->context)->toMeta($modelMeta);
         })->filter(fn (array $field) => $field['enabled']);
     }
 

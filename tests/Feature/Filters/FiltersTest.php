@@ -41,24 +41,24 @@ it('should have a default type of filter')
 it('should have a default label')
     ->expect(fn () => Filter::make('company')->toArray())
     ->label
-    ->toBe('Companies')
+    ->toBe('Company')
     ->group('filters');
 
 it('should have a default label from snake case')
     ->expect(fn () => Filter::make('company_user')->toArray())
     ->label
-    ->toBe('Company Users')
+    ->toBe('Company User')
     ->group('filters');
 
 it('should have a default label from kebab case')
     ->expect(fn () => Filter::make('company-user')->toArray())
     ->label
-    ->toBe('Company Users')
+    ->toBe('Company User')
     ->group('filters');
 
 it('should have an icon')
     ->expect(fn () => Filter::make('company')->icon('mdi-domain')->toArray())
-    ->prependIcon
+    ->icon
     ->toBe('mdi-domain')
     ->group('filters');
 

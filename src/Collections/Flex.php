@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\CollectsResources;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Resources\Resource;
 
@@ -104,6 +105,17 @@ class Flex extends Resource
     protected bool $defaultFilters = true;
 
     /**
+     * @var array
+     */
+    protected array $flexSort = [];
+
+    /**
+     * Inertia Page Component
+     *
+     * @var string|null
+     */
+    protected ?string $page = null;
+    /**
      * Determines if we should cache meta values
      *
      * @var bool
@@ -112,7 +124,7 @@ class Flex extends Resource
 
     protected Resource $flexResource;
 
-    public const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join'];
+    public const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join', 'render'];
 
     /**
      * Create a flex collection instance
@@ -134,15 +146,24 @@ class Flex extends Resource
              */
             $resource = new $this->collects(null);
         }
-
         // Validate context against list of contexts
         if (! in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
-
         $this->flexResource = $resource;
+    }
 
-        // $this->meta = $resource->withContext($context)->toMeta($this->flexModel);
+    /**
+     * Set the Inertia Page Component
+     *
+     * @param string $page
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
+    public function page(string $page): self
+    {
+        $this->page = $page;
+
+        return $this;
     }
 
     /**
@@ -172,6 +193,15 @@ class Flex extends Resource
         return $this->collection->count();
     }
 
+    public function toResponse($request): \Illuminate\Http\JsonResponse | \Inertia\Response
+    {
+        if ($request->wantsJson()) {
+            return response()->json($this->toArray($request));
+        } else {
+            return Inertia::render($this->page, $this->toArray($request));
+        }
+    }
+
     /**
      * Transform the resource into a JSON array.
      *
@@ -180,34 +210,37 @@ class Flex extends Resource
      */
     public function toArray($request)
     {
+        // Building filters won't build paginated data query results, build filters for deferred filters
+        return $request->boolean('build-filters') ? $this->toQueryFilters($request) : $this->toDataQuery($request);
+    }
 
+    /**
+     * Return results of a data query
+     *
+     * @param Request $request
+     * @return array
+     */
+    protected function toDataQuery(Request $request): array
+    {
         // Resource here is the collected resource instance
         if (is_null($this->resource)) {
             // We haven't executed the query if we have a null resource
             $this->query($request);
         }
+        $pagination = $this->toPagination(sort: $this->flexSort);
 
-        $pagination = $this->toPagination();
-
-        $results = [
+        return [
             // TODO: only need pagination in index context
             'pagination' => $pagination,
             'rowsPerPageOptions' => data_get($pagination, 'rowsPerPageOptions'),
             // TODO: only need columns in index context
             'columns' => $this->toColumns(),
             'visibleColumns' => $this->visibleColumns(),
-
             // Resource rows index, resource for other context
             'rows' => $this->collection->isEmpty() ? [] : $this->toData($request),
-
             // TODO: only need filters in index context
             'filters' => $this->flexFilters,
-            // Applied Filter
-            // applied filter comes from request attributes or cache
-
         ];
-
-        return $results;
     }
 
     protected function toColumns(): array
