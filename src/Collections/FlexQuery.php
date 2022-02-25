@@ -86,14 +86,15 @@ trait FlexQuery
         // Filters
         $filters = $this->deferFilters ? $this->getFilters($attributes) : $this->buildFilters($attributes, $query);
 
-        if ($this->hasFilters($filters)) {
-            $query = $this->applyFilters($query, $filters);
-        }
-        // Search (Search w/in filters)
+        // Search
         if ($this->hasSearch($attributes)) {
             // Search
             // TODO: check for model query scope search
             $query = $this->search($query, $attributes);
+        }
+        // Filter
+        if ($this->hasFilters($filters)) {
+            $query = $this->applyFilters($query, $filters);
         }
         // Sort w/in search, w/in filter
         $query = $this->sortBy($query, $attributes);
