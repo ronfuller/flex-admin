@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Relations;
 
 use Illuminate\Database\Eloquent\Model;

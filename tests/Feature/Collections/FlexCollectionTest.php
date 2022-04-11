@@ -44,7 +44,7 @@ it('should create a collection for a property with short syntax for create')
 
 it('should throw error on missing resource', function () {
     expect(fn () => Flex::forIndex("Psi\LaravelFlexAdmin\Tests\Models\NotThere")->flexModel)
-        ->toThrow('Class "Psi\LaravelFlexAdmin\Tests\Models\NotThere" not found');
+        ->toThrow('not found');
 })
     ->group('collections');
 

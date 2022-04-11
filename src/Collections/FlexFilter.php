@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -41,7 +42,7 @@ trait FlexFilter
      */
     protected function hasFilters(array $filters): bool
     {
-        return $this->withFilters && collect($filters)->contains(fn ($filter) => !is_null($filter['value']));
+        return $this->withFilters && collect($filters)->contains(fn ($filter) => ! is_null($filter['value']));
     }
 
     /**
@@ -54,7 +55,7 @@ trait FlexFilter
     {
         $filters = collect($this->meta['filters']);
 
-        if (!$this->defaultFilters) {
+        if (! $this->defaultFilters) {
             // not using default filters then set any values to null
             $filters = $filters->map(function ($filter) {
                 $filter['value'] = null;
@@ -116,7 +117,7 @@ trait FlexFilter
                     ...$item,
                     ...Arr::only($filterItem, ['value', 'item']),
                     ...[
-                        'is_active' => !is_null($filterItem['value']) && (isset($item['default']) && $item['default'] !== $filterItem['value']),
+                        'is_active' => ! is_null($filterItem['value']) && (isset($item['default']) && $item['default'] !== $filterItem['value']),
                     ],
                 ];
             }
@@ -135,7 +136,7 @@ trait FlexFilter
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         collect($filters)
-            ->filter(fn ($filter) => !is_null($filter['value']))    // only filters with a value set
+            ->filter(fn ($filter) => ! is_null($filter['value']))    // only filters with a value set
             ->each(function ($filter) use (&$query) {
                 $meta = $filter['meta'];
                 $value = $filter['value'];
@@ -182,7 +183,7 @@ trait FlexFilter
     {
         return [
             'filter' => collect($filters)
-                ->filter(fn ($filter) => !is_null($filter['value']))
+                ->filter(fn ($filter) => ! is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
                 ->join('|'),
         ];
