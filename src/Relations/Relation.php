@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Relations;
 
 use Illuminate\Database\Eloquent\Model;
@@ -108,7 +107,16 @@ class Relation
             self::TYPE_HAS_MANY => $this->buildHasMany(
                 resource: $resource,
                 request: $request
-            )
+            ),
+            self::TYPE_BELONGS_TO_MANY => $this->buildBelongsToMany(
+                resource: $resource,
+                request: $request
+            ),
+            self::TYPE_HAS_ONE => $this->buildHasOne(
+                resource: $resource,
+                request: $request
+            ),
+            default => throw new \Exception("Relation type {$this->relation} is not supported"),
         };
     }
 
@@ -132,5 +140,15 @@ class Relation
             column: $foreignKey,
             value: $id
         )->toArray($request);
+    }
+
+    protected function buildBelongsToMany(Model $resource, Request $request): array
+    {
+        return [];
+    }
+
+    protected function buildHasOne(Model $resource, Request $request): array
+    {
+        return [];
     }
 }
