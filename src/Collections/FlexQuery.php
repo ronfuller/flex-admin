@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
