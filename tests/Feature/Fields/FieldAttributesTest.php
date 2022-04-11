@@ -78,11 +78,15 @@ it('should not be copyable')
     ->toHaveKey('copyable', true)
     ->group('attributes', 'fields');
 
-it('should not be readonlye')
+it('should not be readonly')
     ->expect(fn () => Field::make(null, 'id')->readonly()->meta)
     ->toHaveKey('readonly', true)
     ->group('attributes', 'fields');
 
+it('should be enabled')
+    ->expect(fn () => Field::make(null, 'id')->enabled())
+    ->toBeTrue()
+    ->group('attributes', 'fields');
 
 it('should be sortable')
     ->expect(fn () => Field::make(null, 'id')->sortable()->meta)

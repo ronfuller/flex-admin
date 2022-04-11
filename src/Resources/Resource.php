@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
@@ -107,7 +106,7 @@ class Resource extends JsonResource implements Flexible
 
         $meta = [
             'keys' => $this->keys(),
-            'columns' => $this->columns->all(),
+            'columns' => $this->columns->values()->all(),
             'selects' => $this->selects(),
             'sort' => $this->sort(),
             'sorts' => $this->sorts(),
@@ -124,6 +123,14 @@ class Resource extends JsonResource implements Flexible
         return $meta;
     }
 
+    public function toValues(): array
+    {
+        $mappedFields = $this->toMappedFields(values: true);
+        return $mappedFields
+            ->mapWithKeys(fn ($item, $key) => [$key => $item['value']])
+            ->all();
+    }
+
     /**
      * Creates a fields array
      *
@@ -131,16 +138,12 @@ class Resource extends JsonResource implements Flexible
      */
     public function toFields(): array
     {
-        $mappedFields = $this->toFieldsCollection()->mapWithKeys(function ($item) {
-            ['attributes' => $attributes, 'value' => $value] = $item;    // get the attributes and transformed value
-
-            return [$attributes['name'] => compact('attributes', 'value')];
-        })->all();
+        $mappedFields = $this->toMappedFields()->all();
 
         return [...['uuid' => (string) Str::uuid()], ...$mappedFields];
     }
 
-    public function toFieldsCollection(): Collection
+    public function toFieldsCollection(bool $values = false): Collection
     {
         // cast, formatted attributes from the resource, including mutated attributes
         $attributes = $this->resource->attributesToArray();
@@ -148,11 +151,17 @@ class Resource extends JsonResource implements Flexible
         /**
          * @var \Illuminate\Support\Collection
          */
-        $fields = collect($this->fields($this->keys))->filter()->values();
+        $fields = collect($this->fields($this->keys));
 
-        return $fields->map(function (Field $field) use ($attributes) {
+        if ($values) {
+            $fields = $fields->filter(fn (Field|null $field) => $field ? $field->addToValues : false);
+        }
+        $fields = $fields->filter()->values();
+
+        $fieldsCollection = $fields->map(function (Field $field) use ($attributes) {
             return  $field->model($this->resource)->toArray($attributes);    // get the attributes and transformed value
         });
+        return $fieldsCollection;
     }
 
     /**
@@ -179,18 +188,29 @@ class Resource extends JsonResource implements Flexible
         $result = empty($fields) ? [] : $fields;
         $result['actions'] = $actions;
 
+        $values = $this->toValues();
+        $result['values'] = $values;
+
         if ($this->context !== Field::CONTEXT_INDEX) {
             $result['panels'] = $panels;
             $result['relations'] = $relations;
         }
-
         return $result;
+    }
+
+    protected function toMappedFields(bool $values = false): Collection
+    {
+        return $this->toFieldsCollection(values: $values)->mapWithKeys(function ($item) {
+            ['attributes' => $attributes, 'value' => $value] = $item;    // get the attributes and transformed value
+
+            return [$attributes['name'] => compact('attributes', 'value')];
+        });
     }
 
     protected function withFields()
     {
         // return fields array if not using panels
-        return ! $this->withPanels();
+        return !$this->withPanels();
     }
 
     /**
@@ -215,7 +235,7 @@ class Resource extends JsonResource implements Flexible
     protected function resourceTitle(string $slug): string
     {
         $modelKey = $this->modelKeyName();
-        $modelTitle = (string) Str::of($modelKey)->replace("_", " ")->title();
+        $modelTitle = (string) Str::of($modelKey)->replace('_', ' ')->title();
 
         return (string) Str::of($slug)->title()->append(" {$modelTitle}");
     }
@@ -245,7 +265,7 @@ class Resource extends JsonResource implements Flexible
             'delete' => 'delete',
         ];
         $routeMethod = $slugRouteMethods[$slug];
-        $routeName = $pluralModel . "." . $slugResourceRoutes[$slug];
+        $routeName = $pluralModel . '.' . $slugResourceRoutes[$slug];
         $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? [['name' => $modelKey, 'field' => $routeKeyName]] : [];
 
         return [$routeName, $routeMethod, $routeParams];
@@ -258,7 +278,7 @@ class Resource extends JsonResource implements Flexible
      */
     private function modelPluralName(): string
     {
-        return (string) Str::of($this->resource->qualifyColumn('id'))->before('.')->replace("_", "-");
+        return (string) Str::of($this->resource->qualifyColumn('id'))->before('.')->replace('_', '-');
     }
 
     /**
@@ -268,6 +288,6 @@ class Resource extends JsonResource implements Flexible
      */
     private function modelKeyName(): string
     {
-        return (string) Str::of($this->modelPluralName())->singular()->replace("-", "_");
+        return (string) Str::of($this->modelPluralName())->singular()->replace('-', '_');
     }
 }

@@ -1,7 +1,8 @@
 <?php
-
 namespace Psi\FlexAdmin\Relations;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 
@@ -19,14 +20,13 @@ class Relation
      */
     public Flex $collection;
 
-
     public const
-        TYPE_BELONGS_TO = "belongsTo",
-        TYPE_HAS_MANY = "hasMany",
-        TYPE_BELONGS_TO_MANY = "belongsToMany",
-        TYPE_HAS_ONE = "hasOne";
+        TYPE_BELONGS_TO = 'belongsTo',
+        TYPE_HAS_MANY = 'hasMany',
+        TYPE_BELONGS_TO_MANY = 'belongsToMany',
+        TYPE_HAS_ONE = 'hasOne';
 
-    final public function __construct(protected string $relationKey, protected string $relation)
+    final public function __construct(public string $relationKey, protected string $relation)
     {
     }
 
@@ -95,5 +95,40 @@ class Relation
             'conditions' => $this->relatedConditions ?? null,
 
         ];
+    }
+
+    public function build(Model $resource, Request $request): array
+    {
+        return match ($this->relation) {
+            self::TYPE_BELONGS_TO => $this->buildBelongsTo(
+                resource: $resource,
+                request: $request
+            ),
+            self::TYPE_HAS_MANY => $this->buildHasMany(
+                resource: $resource,
+                request: $request
+            )
+        };
+    }
+
+    protected function buildBelongsTo(Model $resource, Request $request): array
+    {
+        $foreignKey = (string) str($this->relationKey)->snake() . '_id';
+        $id = $resource->getAttribute($foreignKey);
+        if (is_null($id)) {
+            throw new \Exception("Could not locate foreign key {$foreignKey} on model");
+        }
+        return data_get($this->collection->byId($id)->toArray($request), 'data');
+    }
+
+    protected function buildHasMany(Model $resource, Request $request): array
+    {
+        $foreignKey = $resource->getForeignKey();
+        $id = $resource->getKey();
+
+        return $this->collection->where(
+            column: $foreignKey,
+            value: $id
+        )->toArray($request);
     }
 }

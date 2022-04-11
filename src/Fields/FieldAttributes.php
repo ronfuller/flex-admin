@@ -34,6 +34,7 @@ trait FieldAttributes
         return $this->meta['enabled'];
     }
 
+
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */

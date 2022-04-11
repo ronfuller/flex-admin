@@ -1,8 +1,6 @@
 <?php
 
-
 use Illuminate\Http\Request;
-
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Http\Resources\ApplicationGroupResource;
 use Psi\FlexAdmin\Tests\Http\Resources\CompanyResource;
@@ -74,8 +72,8 @@ it('should return all columns including non-renderable')
         ->withContext(Field::CONTEXT_INDEX)
         ->toMeta(new Property()))
     ->columns
-    ->toHaveKey("0.name", "propertyId")
-    ->toHaveKey("0.render", false)
+    ->toHaveKey('0.name', 'propertyId')
+    ->toHaveKey('0.render', false)
     ->group('resources');
 
 it('should return collection meta with searches')
@@ -128,6 +126,7 @@ it('should return an id field')
     ->toHaveKey('propertyId')
     ->group('resources');
 
+//
 it('should return a text field')
     ->expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)
@@ -148,10 +147,10 @@ it('should return a text field value and attributes')
 
 it('should create a resource permission')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->wrapResourcePermission('view'))
-    ->toBe("properties.view")
+    ->toBe('properties.view')
     ->group('resources');
 
 it('should create a resource permission for edit action for an application group resource')
     ->expect(fn () => (new ApplicationGroupResource($this->applicationGroup))->withContext(Field::CONTEXT_INDEX)->wrapResourcePermission('edit'))
-    ->toBe("application-groups.edit")
+    ->toBe('application-groups.edit')
     ->group('resources');

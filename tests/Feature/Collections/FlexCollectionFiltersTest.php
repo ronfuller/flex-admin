@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Route;
 use Psi\FlexAdmin\Collections\Flex;
@@ -14,11 +13,11 @@ beforeEach(function () {
     $this->properties = Property::factory()->count(25)
         ->forCompany()
         ->state(new Sequence(
-            ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue',], 'status' => $this->status, 'type' => 'townhome'],
-            ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green',], 'status' => $this->status, 'type' => 'apartment'],
-            ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'blue',], 'status' => $this->status, 'type' => 'home'],
-            ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue',], 'status' => $this->status, 'type' => 'duplex'],
-            ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'red',], 'status' => $this->status, 'type' => 'commercial'],
+            ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue', ], 'status' => $this->status, 'type' => 'townhome'],
+            ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green', ], 'status' => $this->status, 'type' => 'apartment'],
+            ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'blue', ], 'status' => $this->status, 'type' => 'home'],
+            ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue', ], 'status' => $this->status, 'type' => 'duplex'],
+            ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'red', ], 'status' => $this->status, 'type' => 'commercial'],
             ['created_at' => now(),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now(),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now()->subDays(45),  'status' => 'AJU2Z14UUQ'],
@@ -27,18 +26,18 @@ beforeEach(function () {
             ['created_at' => now()->subDays(85),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now()->subMonth()->firstOfMonth()->addDays(2), 'status' => '9850G5PW2O'],
             ['created_at' => now()->subMonth()->firstOfMonth()->addDays(4), 'status' => '9850G5PW2O'],
-            ['created_at' => now()->subMonth()->firstOfQuarter()->addDays(2), 'status' => 'JN6ZSAJLHM'],
-            ['created_at' => now()->subMonth()->firstOfQuarter()->addDays(4), 'status' => 'JN6ZSAJLHM'],
-            ['created_at' => now()->subHours(1),  'status' => '0NYYUYW9DF',],
-            ['created_at' => now()->subHours(2),  'status' => '0NYYUYW9DF',],
-            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(2),  'status' => 'O4IGPQ4FGW',],
-            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(4),  'status' => 'O4IGPQ4FGW',],
-            ['created_at' => now()->firstOfYear()->addDays(1),  'status' => '5R2O5O63MQ',],
-            ['created_at' => now()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ',],
-            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ',],
-            ['created_at' => now()->subYear()->firstOfYear()->addDays(1),  'status' => '4FI6DUVKNC',],
-            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC',],
-            ['created_at' => now()->subYears(2)->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC',],
+            ['created_at' => now()->firstOfQuarter()->addHours(2), 'status' => 'JN6ZSAJLHM'],
+            ['created_at' => now()->firstOfQuarter()->addHours(4), 'status' => 'JN6ZSAJLHM'],
+            ['created_at' => now()->subHours(1),  'status' => '0NYYUYW9DF', ],
+            ['created_at' => now()->subHours(2),  'status' => '0NYYUYW9DF', ],
+            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(2),  'status' => 'O4IGPQ4FGW', ],
+            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(4),  'status' => 'O4IGPQ4FGW', ],
+            ['created_at' => now()->firstOfYear()->addDays(1),  'status' => '5R2O5O63MQ', ],
+            ['created_at' => now()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ', ],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ', ],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(1),  'status' => '4FI6DUVKNC', ],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC', ],
+            ['created_at' => now()->subYears(2)->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC', ],
         ))
         ->create();
     $this->user = User::factory()->create(
@@ -63,7 +62,6 @@ it('should constrain on status')
         ->count())
     ->toBe(5)
     ->group('collections', 'constraint');
-
 
 it('should filter the query by multiple filters')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
@@ -111,7 +109,6 @@ it('should filter the query by last 90 days')
     ->toHaveCount(6)
     ->group('collections', 'filter');
 
-
 it('should filter the query by this month')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:This Month', 'status' => 'AJU2Z14UUQ']))->resource)
     ->toHaveCount(2)
@@ -144,7 +141,7 @@ it('should filter the query by last year')
 
 it('should throw error on invalid date range filter', function () {
     expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)->withoutDefaultFilters()->query(createRequest(['filter' => 'created_at:invalid', 'status' => 'O4IGPQ4FGW']))->resource)
-        ->toThrow("Error in date range filter");
+        ->toThrow('Error in date range filter');
 })->group('collections', 'filter');
 
 it('should return filter options for types')
@@ -152,13 +149,12 @@ it('should return filter options for types')
     ->filters
     ->toHaveKey('1.options.0.label', 'Apartment')
     ->toHaveKey('1.options.4.label', 'Townhome')
-    ->group("filter");
+    ->group('filter');
 
 it('should filter the resource query')
     ->expect(fn () => Flex::forIndex(Property::class)->query(createRequest(['filter' => 'type:apartment;color:green', 'status' => '5JOYAE7QO8']))->resource)
     ->toHaveCount(1)
     ->group('collections', 'filter');
-
 
 it('should create filter options for query')
     ->expect(fn () => Flex::forIndex(Property::class)

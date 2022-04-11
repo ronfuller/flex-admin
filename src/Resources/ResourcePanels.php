@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Collection;
@@ -14,7 +13,6 @@ trait ResourcePanels
      * @var bool
      */
     protected bool $withPanels = true;
-
 
     /**
      * Key for default panel
@@ -59,7 +57,7 @@ trait ResourcePanels
         $fieldPanels = $fieldsCollection->each(function ($field) use ($panelCollection) {
             $key = data_get($field, 'attributes.panel');
 
-            if (! empty($key)) {
+            if (!empty($key)) {
                 /**
                  * @var Panel | null
                  */

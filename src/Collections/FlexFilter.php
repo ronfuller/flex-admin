@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +41,7 @@ trait FlexFilter
      */
     protected function hasFilters(array $filters): bool
     {
-        return $this->withFilters && collect($filters)->contains(fn ($filter) => ! is_null($filter['value']));
+        return $this->withFilters && collect($filters)->contains(fn ($filter) => !is_null($filter['value']));
     }
 
     /**
@@ -55,7 +54,7 @@ trait FlexFilter
     {
         $filters = collect($this->meta['filters']);
 
-        if (! $this->defaultFilters) {
+        if (!$this->defaultFilters) {
             // not using default filters then set any values to null
             $filters = $filters->map(function ($filter) {
                 $filter['value'] = null;
@@ -117,7 +116,7 @@ trait FlexFilter
                     ...$item,
                     ...Arr::only($filterItem, ['value', 'item']),
                     ...[
-                        'is_active' => ! is_null($filterItem['value']) && ($item['default'] !== $filterItem['value']),
+                        'is_active' => !is_null($filterItem['value']) && ($item['default'] !== $filterItem['value']),
                     ],
                 ];
             }
@@ -136,7 +135,7 @@ trait FlexFilter
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         collect($filters)
-            ->filter(fn ($filter) => ! is_null($filter['value']))    // only filters with a value set
+            ->filter(fn ($filter) => !is_null($filter['value']))    // only filters with a value set
             ->each(function ($filter) use (&$query) {
                 $meta = $filter['meta'];
                 $value = $filter['value'];
@@ -183,27 +182,27 @@ trait FlexFilter
     {
         return [
             'filter' => collect($filters)
-                ->filter(fn ($filter) => ! is_null($filter['value']))
+                ->filter(fn ($filter) => !is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
-                ->join("|"),
+                ->join('|'),
         ];
     }
 
     protected function filterToAttribute(array $filter)
     {
-        return $filter['name'] . ":" .  $filter['value'][$filter['optionValue']];
+        return $filter['name'] . ':' . $filter['value'][$filter['optionValue']];
     }
 
     protected function parseFilter(array $attributes): array
     {
         // Filter params come in with the format param1:value1;param2:value2        // colon, semicolon cannot exists in param values
-        $filterParts = \explode(";", $attributes['filter']);
+        $filterParts = \explode(';', $attributes['filter']);
 
-        return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(":")->trim() => $this->valueOf((string) Str::of($part)->after(":")->trim())])->all();
+        return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(':')->trim() => $this->valueOf((string) Str::of($part)->after(':')->trim())])->all();
     }
 
     private function valueOf(string $value)
     {
-        return is_numeric($value) ? (Str::of($value)->contains(".") ? (float) $value : (int) $value) : $value;
+        return is_numeric($value) ? (Str::of($value)->contains('.') ? (float) $value : (int) $value) : $value;
     }
 }

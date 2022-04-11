@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Database\Eloquent\Factories\Sequence;
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
 use function PHPUnit\Framework\assertTrue;
-
 use Psi\FlexAdmin\Tests\Http\Controllers\PropertyController;
 use Psi\FlexAdmin\Tests\Models\ApplicationGroup;
 use Psi\FlexAdmin\Tests\Models\Company;
@@ -15,7 +13,6 @@ use Psi\FlexAdmin\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
 uses(DatabaseTransactions::class)->in('Feature');
-
 
 expect()->extend('toBeArrayList', function () {
     assertTrue(array_is_list($this->value), 'Failed asserting that value is an array list');
@@ -53,7 +50,7 @@ uses()
 
 uses()
     ->beforeEach(function () {
-        $this->property = Property::factory()->create(
+        $this->property = Property::factory()->forCompany()->create(
             [
                 'name' => 'Test Property',
             ]
@@ -72,14 +69,20 @@ uses()
         $this->properties = Property::factory()->count(5)
             ->forCompany()
             ->state(new Sequence(
-                ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue',], 'status' => 'success', 'type' => 'townhome'],
-                ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green',], 'status' => 'fail', 'type' => 'apartment'],
-                ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'violet',], 'status' => 'fail', 'type' => 'home'],
-                ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue green',], 'status' => 'fail', 'type' => 'duplex'],
-                ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'light blue',], 'status' => 'fail', 'type' => 'commercial'],
+                ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue', ], 'status' => 'success', 'type' => 'townhome'],
+                ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green', ], 'status' => 'fail', 'type' => 'apartment'],
+                ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'violet', ], 'status' => 'fail', 'type' => 'home'],
+                ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue green', ], 'status' => 'fail', 'type' => 'duplex'],
+                ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'light blue', ], 'status' => 'fail', 'type' => 'commercial'],
             ))
             ->create();
-        $this->user = User::first();
+        //$this->user = User::first();
+
+        $this->user = User::factory()->create(
+            [
+                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.delete', 'properties.create', 'companies.view', 'companies.edit'],
+            ]
+        );
         actingAs($this->user);
         Route::resource('properties', PropertyController::class)->middleware(['web']);
     })

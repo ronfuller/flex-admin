@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -107,6 +106,11 @@ class PropertyResource extends Resource implements Flexible
                 ->constrainable()
                 ->valueOnly(),
 
+            Field::make($keys, 'company_id')
+                ?->name('companyId')
+                ->hideFromIndex()
+                ->valueOnly(),
+
             Field::make($keys, 'name')
                 ?->selectable()
                 ->sortable()
@@ -171,7 +175,9 @@ class PropertyResource extends Resource implements Flexible
         return [
             Relation::belongsTo('company')
                 ->whenDetailorEdit()
-                ->as(Flex::forDetail(Company::class)),
+                ->as(
+                    Flex::forDetail(Company::class)
+                ),
         ];
     }
 

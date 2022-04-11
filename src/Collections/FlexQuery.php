@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +25,7 @@ trait FlexQuery
      */
     public function query(Request $request): self
     {
-        $this->toQuery($request);
+        $this->context === 'index' ? $this->toQuery($request) : $this->toWhereQuery($request);
 
         return $this;
     }
@@ -63,6 +62,24 @@ trait FlexQuery
         return $this->flexFilters = $this->buildFilters($attributes, $query);
     }
 
+    protected function toWhereQuery(Request $request)
+    {
+        // Have we created the meta for the query from the flex resource?
+        if (is_null($this->meta)) {
+            $this->meta = $this->getCollectionMeta($this->flexResource);
+        }
+
+        // Request Attributes
+        $attributes = $request->all();
+        /**
+         * @var Builder
+         */
+        $query = $this->preFilterQuery($attributes); // Selects, Joins, Authorization, Constraints
+
+        $resource = $query->get();
+        $this->resource = $this->collectResource($resource);
+    }
+
     /**
      * Create query and execute possibly deferring filter options build
      *
@@ -71,7 +88,6 @@ trait FlexQuery
      */
     protected function toQuery(Request $request)
     {
-
         // Have we created the meta for the query from the flex resource?
         if (is_null($this->meta)) {
             $this->meta = $this->getCollectionMeta($this->flexResource);
@@ -115,6 +131,9 @@ trait FlexQuery
             $query = $this->withJoins($query);
         }
 
+        if ($this->hasWhereParams()) {
+            $query = $this->withWhereParams($query);
+        }
 
         // if( $this->hasRelations()){
         //     $query = $query->withRelations();

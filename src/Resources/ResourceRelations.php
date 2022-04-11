@@ -1,9 +1,9 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Http\Request;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Relations\Relation;
 
 trait ResourceRelations
 {
@@ -28,13 +28,18 @@ trait ResourceRelations
 
     protected function toRelations(Request $request): array
     {
-        return $this->relations($request);
+        return collect($this->relations($request))->mapWithKeys(function (Relation $relation) use ($request) {
+            return [$relation->relationKey => $relation->build(
+                resource: $this->resource,
+                request: $request
+            )];
+        })->all();
     }
 
     protected function toJoins()
     {
         return $this->columns
-            ->filter(fn ($column) => ! empty($column['join']))
+            ->filter(fn ($column) => !empty($column['join']))
             ->unique(fn ($column) => $column['join'][0])
             ->values()
             ->map(fn ($column) => $column['join'])

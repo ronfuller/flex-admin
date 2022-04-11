@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Fields;
 
 trait FieldValue
@@ -16,7 +15,7 @@ trait FieldValue
      *
      * @var bool
      */
-    protected $addToValues = false;
+    public $addToValues = false;
 
     /**
      * Default value if not set
@@ -49,7 +48,7 @@ trait FieldValue
      */
     public function append(string $append): self
     {
-        $this->value = $this->value ? $this->value . " " . $append : $this->value;
+        $this->value = $this->value ? $this->value . ' ' . $append : $this->value;
 
         return $this;
     }

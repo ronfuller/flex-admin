@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +23,7 @@ class Flex extends Resource
     use FlexRelations;
     use FlexCache;
     use FlexScope;
+    use FlexParams;
 
     /**
      * The resource that this resource collects.
@@ -81,14 +81,12 @@ class Flex extends Resource
      */
     public Model $flexModel;
 
-
     /**
      * Array of filters including updated value
      *
      * @var array
      */
     public array $flexFilters = [];
-
 
     /**
      * Determines if we build filter options immediately
@@ -110,11 +108,16 @@ class Flex extends Resource
     protected array $flexSort = [];
 
     /**
+     * @var array
+     */
+    protected array $whereParams = [];
+
+    /**
      * Inertia Page Component
      *
      * @var string|null
      */
-    protected ?string $page = null;
+    public ?string $page = null;
     /**
      * Determines if we should cache meta values
      *
@@ -147,7 +150,7 @@ class Flex extends Resource
             $resource = new $this->collects(null);
         }
         // Validate context against list of contexts
-        if (! in_array($context, Field::CONTEXTS)) {
+        if (!in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
         $this->flexResource = $resource;
@@ -177,7 +180,7 @@ class Flex extends Resource
             return $this->collects;
         }
         $modelClass = get_class($this->flexModel);
-        $class = config('flex-admin.resource_path') . "\\" . Str::afterLast($modelClass, '\\') . "Resource";
+        $class = config('flex-admin.resource_path') . '\\' . Str::afterLast($modelClass, '\\') . 'Resource';
 
         return class_exists($class) ? $class : throw new \Exception("Could not find resource for {$modelClass}");
     }
@@ -210,8 +213,12 @@ class Flex extends Resource
      */
     public function toArray($request)
     {
-        // Building filters won't build paginated data query results, build filters for deferred filters
-        return $request->boolean('build-filters') ? $this->toQueryFilters($request) : $this->toDataQuery($request);
+        if ($this->context === 'index') {
+            // Building filters won't build paginated data query results, build filters for deferred filters
+            return $request->boolean('build-filters') ? $this->toQueryFilters($request) : $this->toIndexQuery($request);
+        } else {
+            return $this->toDataQuery($request);
+        }
     }
 
     /**
@@ -221,6 +228,24 @@ class Flex extends Resource
      * @return array
      */
     protected function toDataQuery(Request $request): array
+    {
+        // Resource here is the collected resource instance
+        if (is_null($this->resource)) {
+            // We haven't executed the query if we have a null resource
+            $this->query($request);
+        }
+        return [
+            'data' => $this->collection->isEmpty() ? [] : $this->toData($request)[0]
+        ];
+    }
+
+    /**
+     * Return results of a data query
+     *
+     * @param Request $request
+     * @return array
+     */
+    protected function toIndexQuery(Request $request): array
     {
         // Resource here is the collected resource instance
         if (is_null($this->resource)) {
@@ -262,11 +287,19 @@ class Flex extends Resource
     protected function toData(Request $request): array
     {
         // use the first resource in the collection to build actions
-        $actions = $this->collection->first()->toActions();
+        /**
+         * @var Resource
+         */
+        $resource = $this->collection->first();
+        $actions = $resource->toActions(context: $this->context);
 
         // We'll pass actions to the resource to build the array of data
-        return $this->collection->map(function ($resource) use ($request, $actions) {
-            return $resource->withContext($this->context)->withKeys($this->meta['keys'])->withActions($actions)->toArray($request);
+        return $this->collection->map(function (Resource $resource) use ($request, $actions) {
+            return $resource
+                ->withContext($this->context)
+                ->withKeys($this->meta['keys'])
+                ->withActions($actions)
+                ->toArray($request);
         })->all();
     }
 }

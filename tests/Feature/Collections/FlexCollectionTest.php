@@ -1,15 +1,25 @@
 <?php
 
-
 use function Pest\Laravel\getJson;
+use Illuminate\Support\Facades\Route;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Http\Resources\PropertyResource;
 use Psi\FlexAdmin\Tests\Models\Property;
+use Psi\FlexAdmin\Tests\Models\Company;
+
+beforeEach(function () {
+    Route::resource('companies', TestController::class);
+});
 
 it('should create a collection for a property')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)->flexModel)
     ->toBeInstanceOf(Property::class)
+    ->group('collections');
+
+it('should create an Inertia Page')
+    ->expect(fn () => Flex::forIndex(Property::class)->page('Admin')->page)
+    ->toBe('Admin')
     ->group('collections');
 
 it('should create a collection for a property with short syntax')
@@ -40,7 +50,7 @@ it('should throw error on missing resource', function () {
 
 it('should throw error on invalid context', function () {
     expect(fn () => Flex::for(Property::class, 'invalid-context')->flexModel)
-        ->toThrow("Unknown context");
+        ->toThrow('Unknown context');
 })
     ->group('collections');
 
@@ -81,22 +91,44 @@ it('should create rows for a large data set', function () {
 })
     ->group('collections');
 
-
 it('should cache the column meta', function () {
     config(['flex-admin.cache_enabled' => true]);
     $count = 100;
     $properties = Property::factory()->count($count)->forCompany()->create();
     $response = getJson("/properties?count={$count}")
         ->assertOk();
-    expect(collect(array_keys(session()->all()))->contains(fn ($key) => str($key)->contains("property-index")))->toBeTrue();
+    expect(collect(array_keys(session()->all()))->contains(fn ($key) => str($key)->contains('property-index')))->toBeTrue();
 })
     ->group('collections');
 
+it('should have a detail resource with a belongsTo relationship', function () {
+    $property = Property::factory()->forCompany()->create();
+
+    $result = Flex::forDetail(Property::class)
+        ->byId($property->id)
+        ->toArray(createRequest());
+    expect($result)->ray()->toHaveKey('data');
+    expect($result)->data->toHaveKeys(['actions', 'values', 'panels', 'relations']);
+    expect(data_get($result, 'data.actions'))->toHaveCount(3);
+    expect(data_get($result, 'data.values'))->toHaveCount(3);
+    expect(data_get($result, 'data.relations'))->toHaveKey('company');
+})->group('collections');
+
+it('should have a detail resource with a hasMany relationship', function () {
+    $properties = Property::factory(5)->forCompany()->create();
+
+    $result = Flex::forDetail(Company::class)
+        ->byId($properties->first()->company_id)
+        ->toArray(createRequest());
+    expect($result)->ray()->toHaveKey('data');
+})->group('collections');
 
     /*
         Full Signature
 
         Flex::for(Class,Context)
+            ->byId()    // detail, edit
+            ->where()
             ->withoutCache()
 
            ->authorizeScope(string '' )
@@ -124,7 +156,7 @@ it('should cache the column meta', function () {
             ->withoutDefaultFilters()
             ->withoutDeferredFilters()
 
-            ->wrapper(string $elemen)
+            ->wrapper(string $element)
 
             ->query()
             ->count()
