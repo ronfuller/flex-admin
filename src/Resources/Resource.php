@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
@@ -126,6 +127,7 @@ class Resource extends JsonResource implements Flexible
     public function toValues(): array
     {
         $mappedFields = $this->toMappedFields(values: true);
+
         return $mappedFields
             ->mapWithKeys(fn ($item, $key) => [$key => $item['value']])
             ->all();
@@ -161,6 +163,7 @@ class Resource extends JsonResource implements Flexible
         $fieldsCollection = $fields->map(function (Field $field) use ($attributes) {
             return  $field->model($this->resource)->toArray($attributes);    // get the attributes and transformed value
         });
+
         return $fieldsCollection;
     }
 
@@ -195,6 +198,7 @@ class Resource extends JsonResource implements Flexible
             $result['panels'] = $panels;
             $result['relations'] = $relations;
         }
+
         return $result;
     }
 
@@ -210,7 +214,7 @@ class Resource extends JsonResource implements Flexible
     protected function withFields()
     {
         // return fields array if not using panels
-        return !$this->withPanels();
+        return ! $this->withPanels();
     }
 
     /**

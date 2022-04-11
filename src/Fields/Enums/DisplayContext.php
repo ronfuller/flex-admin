@@ -18,7 +18,8 @@ enum DisplayContext: string
             self::CREATE => '{entity}.create',
         };
     }
-    static public function values(): array
+
+    public static function values(): array
     {
         return collect(self::cases())->map(fn ($enum) => $enum->value)->all();
     }

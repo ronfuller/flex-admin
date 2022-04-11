@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Relations;
 
 use Illuminate\Database\Eloquent\Model;
@@ -118,6 +119,7 @@ class Relation
         if (is_null($id)) {
             throw new \Exception("Could not locate foreign key {$foreignKey} on model");
         }
+
         return data_get($this->collection->byId($id)->toArray($request), 'data');
     }
 

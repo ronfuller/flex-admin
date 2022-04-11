@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -150,7 +151,7 @@ class Flex extends Resource
             $resource = new $this->collects(null);
         }
         // Validate context against list of contexts
-        if (!in_array($context, Field::CONTEXTS)) {
+        if (! in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
         $this->flexResource = $resource;
@@ -234,8 +235,9 @@ class Flex extends Resource
             // We haven't executed the query if we have a null resource
             $this->query($request);
         }
+
         return [
-            'data' => $this->collection->isEmpty() ? [] : $this->toData($request)[0]
+            'data' => $this->collection->isEmpty() ? [] : $this->toData($request)[0],
         ];
     }
 
