@@ -136,10 +136,12 @@ it('should have a detail resource with a hasMany relationship', function () {
            ->filterScope()
            ->searchScope()
 
-           ->indexScope()
-           ->detailScope()
-           ->editScope()
-           ->createScope()
+           ->indexScope()       // replacment scope for INDEX context
+           ->detailScope()      // replacment scope for DETAIL context
+           ->editScope()        // replacment scope for EDIT context
+           ->createScope()      // replacemnent scope for CREATE context
+
+           ->withScope()  // add additinal scopes to query
 
            ->withoutAuthorize()
            ->withoutConstraints()

@@ -24,6 +24,7 @@ class Flex extends Resource
     use FlexCache;
     use FlexScope;
     use FlexParams;
+    use FlexAuthorization;
 
     /**
      * The resource that this resource collects.

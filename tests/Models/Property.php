@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -66,7 +65,7 @@ class Property extends Model
 
     public function scopeAuthorize($query, array $attributes)
     {
-        return $query;
+        return $query->where('properties.name', 'like', "{$attributes['name']}%");
     }
 
     public function scopeOrder($query, array $attributes)
@@ -102,6 +101,11 @@ class Property extends Model
     public function scopeCreate($query, array $attributes)
     {
         return $query;
+    }
+
+    public function scopeOther($query, array $attributes)
+    {
+        return $query->where('properties.name', 'like', "{$attributes['name']}%");
     }
 
     /**

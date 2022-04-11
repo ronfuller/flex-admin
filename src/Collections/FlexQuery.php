@@ -135,19 +135,14 @@ trait FlexQuery
             $query = $this->withWhereParams($query);
         }
 
-        // if( $this->hasRelations()){
-        //     $query = $query->withRelations();
-        // }
-
         // Authorization
-        // if( $this->hasAuthorization()){
-        //     $query = $this->authorize($query, $attributes);
-        // }
+        if ($this->hasAuthorization()) {
+            $query = $this->authorize($query, $attributes);
+        }
 
-        // (model query scope)
-        // if( $this->hasQueryScope()){
-        //     $query = $this->callQueryScope($query,$attributes);
-        // }
+        if ($this->hasQueryScopes()) {
+            $query = $this->queryScopes($query, $attributes);
+        }
 
         // Constraints
         if ($this->hasConstraint($attributes)) {
