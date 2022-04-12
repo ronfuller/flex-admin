@@ -4,9 +4,17 @@ namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Http\Request;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Relations\Relation;
 
 trait ResourceRelations
 {
+    /**
+     * Include resource relations
+     *
+     * @var bool
+     */
+    protected bool $withRelations = true;
+
     public function withoutRelations(): self
     {
         $this->withRelations = false;
@@ -21,7 +29,12 @@ trait ResourceRelations
 
     protected function toRelations(Request $request): array
     {
-        return $this->relations($request);
+        return collect($this->relations($request))->mapWithKeys(function (Relation $relation) use ($request) {
+            return [$relation->relationKey => $relation->build(
+                resource: $this->resource,
+                request: $request
+            )];
+        })->all();
     }
 
     protected function toJoins()

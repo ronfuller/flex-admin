@@ -2,14 +2,23 @@
 
 namespace Psi\FlexAdmin\Fields;
 
+use Psi\FlexAdmin\Fields\Enums\DisplayContext;
+
 trait FieldDisplay
 {
+    /**
+     * Defines the contexts in which the resource field is displayed
+     *
+     * @var array
+     */
+    public $display;
+
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function indexOnly(): self
     {
-        $this->display = [self::CONTEXT_INDEX => true];
+        $this->display = [DisplayContext::INDEX->value => true];
 
         return $this;
     }
@@ -19,7 +28,7 @@ trait FieldDisplay
      */
     public function detailOnly(): self
     {
-        $this->display = [self::CONTEXT_DETAIL => true];
+        $this->display = [DisplayContext::DETAIL->value => true];
 
         return $this;
     }
@@ -29,7 +38,7 @@ trait FieldDisplay
      */
     public function editOnly(): self
     {
-        $this->display = [self::CONTEXT_EDIT => true];
+        $this->display = [DisplayContext::EDIT->value => true];
 
         return $this;
     }
@@ -39,7 +48,7 @@ trait FieldDisplay
      */
     public function createOnly(): self
     {
-        $this->display = [self::CONTEXT_CREATE => true];
+        $this->display = [DisplayContext::CREATE->value => true];
 
         return $this;
     }
@@ -49,7 +58,7 @@ trait FieldDisplay
      */
     public function hideFromIndex(bool $condition = true): self
     {
-        $this->display[self::CONTEXT_INDEX] = $condition ? false : true;
+        $this->display[DisplayContext::INDEX->value] = $condition ? false : true;
 
         return $this;
     }
@@ -59,7 +68,7 @@ trait FieldDisplay
      */
     public function hideFromDetail(bool $condition = true): self
     {
-        $this->display[self::CONTEXT_DETAIL] = $condition ? false : true;
+        $this->display[DisplayContext::DETAIL->value] = $condition ? false : true;
 
         return $this;
     }
@@ -69,7 +78,7 @@ trait FieldDisplay
      */
     public function hideFromCreate(): self
     {
-        $this->display[self::CONTEXT_CREATE] = false;
+        $this->display[DisplayContext::CREATE->value] = false;
 
         return $this;
     }
@@ -79,14 +88,14 @@ trait FieldDisplay
      */
     public function hideFromEdit(): self
     {
-        $this->display[self::CONTEXT_EDIT] = false;
+        $this->display[DisplayContext::EDIT->value] = false;
 
         return $this;
     }
 
     protected function setDefaultDisplay()
     {
-        $this->display = collect(self::CONTEXTS)->mapWithKeys(fn ($context) => [$context => true])->all();
+        $this->display = collect(DisplayContext::values())->mapWithKeys(fn ($context) => [$context => true])->all();
     }
 
     private function displayContext(string $context): bool

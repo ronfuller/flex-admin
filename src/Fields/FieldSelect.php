@@ -2,12 +2,18 @@
 
 namespace Psi\FlexAdmin\Fields;
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 trait FieldSelect
 {
     // TODO: Add depends field, include in selects for mutated attributes
+
+    /**
+     * Select query column
+     *
+     * @var string|null
+     */
+    protected string|null $select = null;
 
     public function select(string $key): self
     {
@@ -39,7 +45,7 @@ trait FieldSelect
 
     protected function fromModelTable(): string|null
     {
-        return Schema::hasColumn($this->model->getTable(), $this->key) ? $this->key : null;
+        return in_array($this->key, $this->modelMeta['columns']) ? $this->key : null;
     }
 
     protected function withAsColumn(string $select): string

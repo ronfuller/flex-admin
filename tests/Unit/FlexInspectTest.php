@@ -19,11 +19,11 @@ it('should inspect model meta')
     ->filterFunctions
     ->toHaveCount(1)
     ->filterAttributes
-    ->toHaveCount(2)
+    ->toHaveCount(3)
     ->columns
     ->toHaveCount(11);
 
-it('should inspect model meta for KebabCase model name')
+it('should inspect model meta for Pascal Case model name')
     ->expect(fn () => (new FlexInspect(new ApplicationGroup()))->meta)
     ->toMatchArray([
         'name' => 'application_group',

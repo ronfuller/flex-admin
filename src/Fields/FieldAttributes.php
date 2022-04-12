@@ -7,11 +7,31 @@ use Illuminate\Support\Str;
 trait FieldAttributes
 {
     /**
+     * Holds the meta for the resource field
+     *
+     * @var array
+     */
+    public $meta = [
+        'enabled' => true,
+        'sortable' => false,
+        'filterable' => false,
+        'constrainable' => false,
+        'searchable' => false,
+        'selectable' => false,
+        'copyable' => false,
+        'align' => 'left',
+        'hidden' => false,
+        'readonly' => false,
+    ];
+
+    public $attributes = [];
+
+    /**
      * @return bool
      */
     public function enabled(): bool
     {
-        return $this->attributes['enabled'];
+        return $this->meta['enabled'];
     }
 
     /**
@@ -19,7 +39,18 @@ trait FieldAttributes
      */
     public function name(string $name): self
     {
-        $this->attributes['name'] = $name;
+        $this->meta['name'] = $name;
+        $this->meta['field'] = $name;   // Quasar wants the field name in the field key
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function align(string $align): self
+    {
+        $this->meta['align'] = $align;
 
         return $this;
     }
@@ -29,7 +60,17 @@ trait FieldAttributes
      */
     public function attributes(array $attributes): self
     {
-        $this->attributes = array_merge($this->attributes, $attributes);
+        $this->attributes = [...$this->attributes, ...$attributes];
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function meta(array $meta): self
+    {
+        $this->meta = [...$this->meta, ...$meta];
 
         return $this;
     }
@@ -39,7 +80,7 @@ trait FieldAttributes
      */
     public function copyable(): self
     {
-        $this->attributes['copyable'] = true;
+        $this->meta['copyable'] = true;
 
         return $this;
     }
@@ -49,7 +90,7 @@ trait FieldAttributes
      */
     public function selectable(): self
     {
-        $this->attributes['selectable'] = true;
+        $this->meta['selectable'] = true;
 
         return $this;
     }
@@ -59,7 +100,7 @@ trait FieldAttributes
      */
     public function constrainable(): self
     {
-        $this->attributes['constrainable'] = true;
+        $this->meta['constrainable'] = true;
 
         return $this;
     }
@@ -69,7 +110,7 @@ trait FieldAttributes
      */
     public function sortable(): self
     {
-        $this->attributes['sortable'] = true;
+        $this->meta['sortable'] = true;
 
         return $this;
     }
@@ -79,6 +120,7 @@ trait FieldAttributes
      */
     public function icon(string $icon): self
     {
+        // Icon may be per resource instance
         $this->attributes['icon'] = $icon;
 
         return $this;
@@ -89,7 +131,7 @@ trait FieldAttributes
      */
     public function readonly(): self
     {
-        $this->attributes['readonly'] = true;
+        $this->meta['readonly'] = true;
 
         return $this;
     }
@@ -99,7 +141,7 @@ trait FieldAttributes
      */
     public function hidden(): self
     {
-        $this->attributes['hidden'] = true;
+        $this->meta['hidden'] = true;
 
         return $this;
     }
@@ -111,7 +153,8 @@ trait FieldAttributes
      */
     protected function setDefaultName(): void
     {
-        $this->attributes['name'] = (string) Str::of($this->key)->camel();
+        $this->meta['name'] = (string) Str::of($this->key)->camel();
+        $this->meta['field'] = $this->meta['name']; // Quasar wants field key for row name
     }
 
     /**
@@ -121,6 +164,6 @@ trait FieldAttributes
      */
     protected function setDefaultLabel(): void
     {
-        $this->attributes['label'] = (string) Str::of($this->key)->kebab()->replace("_", " ")->replace("-", " ")->title();
+        $this->meta['label'] = (string) Str::of($this->key)->kebab()->replace("_", " ")->replace("-", " ")->title();
     }
 }

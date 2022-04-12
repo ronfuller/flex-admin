@@ -3,12 +3,18 @@
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Filters\Filter;
 
 trait FlexFilter
 {
+    /**
+     * Without default filters
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function withoutDefaultFilters(): self
     {
         $this->defaultFilters = false;
@@ -16,6 +22,11 @@ trait FlexFilter
         return $this;
     }
 
+    /**
+     * Without deferred filters
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function withoutDeferredFilters(): self
     {
         $this->deferFilters = false;
@@ -46,16 +57,20 @@ trait FlexFilter
 
         if (! $this->defaultFilters) {
             // not using default filters then set any values to null
-            $filters->each(fn ($filter) => $filter->value(null));
-        }
+            $filters = $filters->map(function ($filter) {
+                $filter['value'] = null;
 
-        // Filters will include default filters with values if set
+                return $filter;
+            });
+        }
+        // filters will include default filters with values if set
+
         // Determine if we are filtering from the query string
         if (isset($attributes['filter'])) {
             $filters = $this->filtersFromAttributes($filters, $attributes);
         }
 
-        return $filters->map(fn ($filter) => $filter->toArray())->all();
+        return $filters->all();
     }
 
     /**
@@ -69,13 +84,14 @@ trait FlexFilter
     {
         $attrFilter = $this->parseFilter($attributes);
 
-        return $filters->each(function (Filter $filter) use ($attrFilter) {
-            if (isset($attrFilter[$filter->name])) {
+        return $filters->map(function ($filter) use ($attrFilter) {
+            if (isset($attrFilter[$filter['name']])) {
                 // Value for the filter comes from the attributes
-                $filter->value($attrFilter[$filter->name]);
-                // Once we set the value, we need a filter item, so have the filter set the item
-                $filter->setItem();
+                $filter['value'] = $attrFilter[$filter['name']];
+                $filter['item'] = $this->flexResource->getFilter($filter['name'])->getItem($filter['value']);
             }
+
+            return $filter;
         });
     }
 
@@ -88,11 +104,25 @@ trait FlexFilter
     protected function buildFilters(array $attributes, Builder $query): array
     {
         $filters = $this->getFilters($attributes);
-
         // the filter items in the array should be filter class objects, not arrays
+        return collect($this->meta['filters'])->map(function ($filter) use ($query, $filters) {
+            $item = [
+                ...$filter,
+                ...['options' => $this->flexResource->getFilter($filter['name'])->build($this->flexModel, $query)->toOptions()],
 
-        return collect($this->meta['filters'])->map(function ($filter) use ($query) {
-            return $filter->build($this->flexModel, $query)->toArray();
+            ];
+            $filterItem = collect($filters)->firstWhere('name', $filter['name']);
+            if ($filterItem) {
+                $item = [
+                    ...$item,
+                    ...Arr::only($filterItem, ['value', 'item']),
+                    ...[
+                        'is_active' => ! is_null($filterItem['value']) && (isset($item['default']) && $item['default'] !== $filterItem['value']),
+                    ],
+                ];
+            }
+
+            return $item;
         })->all();
     }
 
@@ -130,10 +160,14 @@ trait FlexFilter
         switch ($type) {
             case 'value':
                 return $query->where($column, '=', $value);
-            case 'range':
-                return $query->whereIn($column, $value);
+
+                // TODO: Implement range filter
+                // case 'range':
+                //     return $query->whereIn($column, $value);
             case 'date-range':
                 return $query->where($column, '>', $this->getStartDateTime($value))->where($column, '<=', $this->getEndDateTime($value));
+
+                // TODO: implement default route with error
         }
 
         return $query;
@@ -151,25 +185,25 @@ trait FlexFilter
             'filter' => collect($filters)
                 ->filter(fn ($filter) => ! is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
-                ->join("|"),
+                ->join('|'),
         ];
     }
 
     protected function filterToAttribute(array $filter)
     {
-        return $filter['name'] . ":" .  $filter['value'][$filter['optionValue']];
+        return $filter['name'] . ':' . $filter['value'][$filter['optionValue']];
     }
 
     protected function parseFilter(array $attributes): array
     {
         // Filter params come in with the format param1:value1;param2:value2        // colon, semicolon cannot exists in param values
-        $filterParts = \explode("|", $attributes['filter']);
+        $filterParts = \explode(';', $attributes['filter']);
 
-        return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(":")->trim() => $this->valueOf((string) Str::of($part)->after(":")->trim())])->all();
+        return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(':')->trim() => $this->valueOf((string) Str::of($part)->after(':')->trim())])->all();
     }
 
     private function valueOf(string $value)
     {
-        return is_numeric($value) ? (Str::of($value)->contains(".") ? (float) $value : (int) $value) : $value;
+        return is_numeric($value) ? (Str::of($value)->contains('.') ? (float) $value : (int) $value) : $value;
     }
 }

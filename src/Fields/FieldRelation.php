@@ -5,6 +5,20 @@ namespace Psi\FlexAdmin\Fields;
 trait FieldRelation
 {
     /**
+     * Related model that the field is on
+     *
+     * @var string|null
+     */
+    protected string|null $onModel = null;
+
+    /**
+     * Meta information on the related model
+     *
+     * @var array|null
+     */
+    protected array|null $onModelMeta = null;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function on(string $model): self

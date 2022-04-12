@@ -7,6 +7,20 @@ use Illuminate\Support\Str;
 trait FieldPermissions
 {
     /**
+     * Context permissions
+     *
+     * @var array
+     */
+    public $permissions = [];
+
+
+    /**
+     *
+     * @var bool
+     */
+    protected $withPermissions = true;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function withoutPermissions(): self
@@ -61,7 +75,8 @@ trait FieldPermissions
      */
     public function withPermissions(string $context, mixed $model): self
     {
-        $this->attributes['enabled'] = $this->authorizeEnabledContext($context, $model);
+        // Don't renable if turned off through context
+        $this->meta['enabled'] = $this->meta['enabled'] ? $this->authorizeEnabledContext($context, $model) : false;
 
         return $this;
     }

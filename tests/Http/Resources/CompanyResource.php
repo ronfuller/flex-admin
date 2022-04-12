@@ -2,9 +2,12 @@
 
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
+use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Relations\Relation;
 use Psi\FlexAdmin\Resources\Flexible;
 use Psi\FlexAdmin\Resources\Resource;
+use Psi\FlexAdmin\Tests\Models\Property;
 
 class CompanyResource extends Resource implements Flexible
 {
@@ -49,7 +52,13 @@ class CompanyResource extends Resource implements Flexible
 
     public function relations($request): array
     {
-        return [];
+        return [
+            Relation::hasMany('properties')
+                ->whenDetailorEdit()
+                ->as(
+                    Flex::forIndex(Property::class)->withoutFilters()
+                ),
+        ];
     }
 
     public function actions(): array

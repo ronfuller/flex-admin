@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 trait FlexQuery
 {
+    /**
+     * Without pagination
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function withoutPagination(): self
     {
         $this->paginate = false;
@@ -14,13 +19,23 @@ trait FlexQuery
         return $this;
     }
 
+    /**
+     * Query
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function query(Request $request): self
     {
-        $this->toQuery($request);
+        $this->context === 'index' ? $this->toQuery($request) : $this->toWhereQuery($request);
 
         return $this;
     }
 
+    /**
+     * Query Filters
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
     public function queryFilters(Request $request): self
     {
         $this->toQueryFilters($request);
@@ -32,16 +47,38 @@ trait FlexQuery
      * Create filters with options from query
      *
      * @param Request $request
-     * @return void
+     * @return array
      */
-    protected function toQueryFilters(Request $request)
+    protected function toQueryFilters(Request $request): array
     {
+        // Have we created the meta for the query from the flex resource?
+        if (is_null($this->meta)) {
+            $this->meta = $this->getCollectionMeta($this->flexResource);
+        }
         // Request Attributes
         $attributes = $request->all();
         // Selects, Joins, Authorization, Constraints
         $query = $this->preFilterQuery($attributes);
         // Filters
-        $this->flexFilters = $this->buildFilters($attributes, $query);
+        return $this->flexFilters = $this->buildFilters($attributes, $query);
+    }
+
+    protected function toWhereQuery(Request $request)
+    {
+        // Have we created the meta for the query from the flex resource?
+        if (is_null($this->meta)) {
+            $this->meta = $this->getCollectionMeta($this->flexResource);
+        }
+
+        // Request Attributes
+        $attributes = $request->all();
+        /**
+         * @var Builder
+         */
+        $query = $this->preFilterQuery($attributes); // Selects, Joins, Authorization, Constraints
+
+        $resource = $query->get();
+        $this->resource = $this->collectResource($resource);
     }
 
     /**
@@ -52,6 +89,11 @@ trait FlexQuery
      */
     protected function toQuery(Request $request)
     {
+        // Have we created the meta for the query from the flex resource?
+        if (is_null($this->meta)) {
+            $this->meta = $this->getCollectionMeta($this->flexResource);
+        }
+
         // Request Attributes
         $attributes = $request->all();
         /**
@@ -61,14 +103,15 @@ trait FlexQuery
         // Filters
         $filters = $this->deferFilters ? $this->getFilters($attributes) : $this->buildFilters($attributes, $query);
 
-        if ($this->hasFilters($filters)) {
-            $query = $this->applyFilters($query, $filters);
-        }
-        // Search (Search w/in filters)
+        // Search
         if ($this->hasSearch($attributes)) {
             // Search
             // TODO: check for model query scope search
             $query = $this->search($query, $attributes);
+        }
+        // Filter
+        if ($this->hasFilters($filters)) {
+            $query = $this->applyFilters($query, $filters);
         }
         // Sort w/in search, w/in filter
         $query = $this->sortBy($query, $attributes);
@@ -89,20 +132,18 @@ trait FlexQuery
             $query = $this->withJoins($query);
         }
 
-
-        // if( $this->hasRelations()){
-        //     $query = $query->withRelations();
-        // }
+        if ($this->hasWhereParams()) {
+            $query = $this->withWhereParams($query);
+        }
 
         // Authorization
-        // if( $this->hasAuthorization()){
-        //     $query = $this->authorize($query, $attributes);
-        // }
+        if ($this->hasAuthorization()) {
+            $query = $this->authorize($query, $attributes);
+        }
 
-        // (model query scope)
-        // if( $this->hasQueryScope()){
-        //     $query = $this->callQueryScope($query,$attributes);
-        // }
+        if ($this->hasQueryScopes()) {
+            $query = $this->queryScopes($query, $attributes);
+        }
 
         // Constraints
         if ($this->hasConstraint($attributes)) {

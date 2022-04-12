@@ -99,7 +99,7 @@ class Filter
 
     public function icon($icon): self
     {
-        $this->attributes['prependIcon'] = $icon;
+        $this->attributes['icon'] = $icon;
 
         return $this;
     }
@@ -151,7 +151,7 @@ class Filter
     public function fromColumn(string $column = null): self
     {
         $this->source = 'column';
-        $this->sourceMeta = $column ?? (string) Str::of($this->name)->singular()->lower();
+        $this->sourceMeta = $column ?? (string) Str::of($this->name)->lower();
 
         return $this;
     }
@@ -189,11 +189,33 @@ class Filter
         return $this;
     }
 
+    /**
+     * Get the item value using the callable
+     * @param mixed $value
+     * @return array
+     */
+    public function getItem(mixed $value): array
+    {
+        return $this->itemFromValue ? \call_user_func($this->itemFromValue, $value) : ['label' => (string) Str::of($value)->title(), 'value' => $value];
+    }
+
+    /**
+     * Set the item value using the callable
+     *
+     * @return \Psi\FlexAdmin\Filters\Filter
+     */
     public function setItem(): self
     {
-        $this->item = $this->itemFromValue ? \call_user_func($this->itemFromValue, $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
+        if ($this->value) {
+            $this->item = $this->itemFromValue ? \call_user_func($this->itemFromValue, $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
+        }
 
         return $this;
+    }
+
+    public function toOptions()
+    {
+        return $this->options;
     }
 
     public function toArray()
@@ -211,6 +233,7 @@ class Filter
                 'value' => $this->value,
                 'item' => $this->item,
                 'default' => $this->default,
+                'is_active' => $this->value && $this->value !== $this->default,
                 'is_default' => $this->default && $this->value === $this->default,
                 'options' => $this->options,
                 'meta' => $this->meta,
@@ -283,7 +306,7 @@ class Filter
 
     protected function setDefaults()
     {
-        $this->label = $this->label ?? (string) Str::of($this->name)->plural()->title()->replace("_", " ")->replace("-", " ");
-        $this->key = $this->key ?? (string) Str::of($this->name)->singular()->snake();
+        $this->label = $this->label ?? (string) Str::of($this->name)->singular()->title()->replace("_", " ")->replace("-", " ");
+        $this->key = $this->key ?? (string) Str::of($this->name)->lower();
     }
 }

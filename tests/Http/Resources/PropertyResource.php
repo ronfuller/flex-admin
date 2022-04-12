@@ -5,10 +5,10 @@ namespace Psi\FlexAdmin\Tests\Http\Resources;
 use Illuminate\Http\Request;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
-use Psi\FlexAdmin\Fields\Panel;
 use Psi\FlexAdmin\Filters\Filter;
+use Psi\FlexAdmin\Panels\Panel;
+use Psi\FlexAdmin\Relations\Relation;
 use Psi\FlexAdmin\Resources\Flexible;
-use Psi\FlexAdmin\Resources\Relation;
 use Psi\FlexAdmin\Resources\Resource;
 use Psi\FlexAdmin\Tests\Models\Company;
 
@@ -107,6 +107,11 @@ class PropertyResource extends Resource implements Flexible
                 ->constrainable()
                 ->valueOnly(),
 
+            Field::make($keys, 'company_id')
+                ?->name('companyId')
+                ->hideFromIndex()
+                ->valueOnly(),
+
             Field::make($keys, 'name')
                 ?->selectable()
                 ->sortable()
@@ -171,7 +176,9 @@ class PropertyResource extends Resource implements Flexible
         return [
             Relation::belongsTo('company')
                 ->whenDetailorEdit()
-                ->as(Flex::forDetail(Company::class)),
+                ->as(
+                    Flex::forDetail(Company::class)
+                ),
         ];
     }
 
@@ -196,7 +203,7 @@ class PropertyResource extends Resource implements Flexible
                 ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
             Filter::make('type')->default('small')->fromColumn(),
             Filter::make('color')->default('blue')->fromAttribute(),
-            Filter::make('created_at')->fromColumn(),
+            Filter::make('created_at')->fromAttribute(),
         ];
 
         return array_merge($filters, $this->resourceFilters);

@@ -7,6 +7,13 @@ trait FieldSearchable
     public static $SEARCH_TYPES = ['full', 'exact', 'partial'];
 
     /**
+     * Search type - exact, full, partial
+     *
+     * @var string
+     */
+    protected string $searchType;
+
+    /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
     public function searchable(string $type = null): self
@@ -16,7 +23,7 @@ trait FieldSearchable
         }
 
         $this->searchType = $type ?? $this->searchType;
-        $this->attributes['searchable'] = true;
+        $this->meta['searchable'] = true;
 
         return $this;
     }

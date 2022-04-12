@@ -41,7 +41,6 @@ class Action
      */
     protected array $attributes;
 
-
     /**
      * Valid contexts for the action
      *
@@ -127,19 +126,17 @@ class Action
         return $this;
     }
 
-    public function route(string $name, string $method = "get", array $params = []): self
+    public function route(string $name, string $method = 'get', array $params = []): self
     {
         if (! Route::has($name)) {
             throw new \Exception("Could not find route for name = {$name}. You may need to create an API resource");
         }
-        $url = route($name, $params);
-
-        $this->attributes = array_merge($this->attributes, ['external' => false, 'url' => $url, 'target' => '_self', 'asEvent' => false, 'method' => $method]);
+        $this->attributes = array_merge($this->attributes, ['route' => compact('name', 'params'), 'external' => false, 'target' => '_self', 'asEvent' => false, 'method' => $method]);
 
         return $this;
     }
 
-    public function url(string $url, $target = "_blank"): self
+    public function url(string $url, $target = '_blank'): self
     {
         $this->attributes = array_merge($this->attributes, ['external' => true, 'url' => $url, 'target' => $target, 'asEvent' => false]);
 
@@ -236,8 +233,7 @@ class Action
     {
         $this->enabled =
             $this->displayContext($context) &&             // valid for the context?
-            $this->authorized() &&                          // has permission
-            $this->canAct($resource);                       // has capability based on resource
+            $this->authorized();                           // has permission
 
         $this->attributes['disabled'] = ! $this->enabled;    // disabled attribute reflects true value of enabled
 
@@ -248,6 +244,8 @@ class Action
             'enabled' => $this->enabled,
             'type' => $this->type,
             'slug' => $this->slug,
+            'withDisabled' => $this->withDisabled,
+            'canAct' => $this->canAct($resource),
             'attributes' => $this->attributes,
         ];
 
@@ -268,12 +266,13 @@ class Action
 
     protected function canAct(mixed $resource): bool
     {
-        return $resource ? (\method_exists($resource, 'canAct') ? $resource->canAct($this->slug) : true) : true;
+        return  $resource ? \method_exists($resource, 'canAct') : false;
     }
 
     protected function setDefaults()
     {
         $this->attributes = $this->attributes ?? $this->defaultAttributes();
+
         $this->type = $this->type ?? self::TYPE_INLINE;
         $this->dividers = $this->dividers ?? [self::DIVIDER_AFTER => false, self::DIVIDER_BEFORE => false];
         $this->contexts = $this->contexts ?? $this->defaultContexts();
@@ -289,7 +288,7 @@ class Action
 
     protected function defaultAttributes(): array
     {
-        return ['disabled' => false, 'asEvent' => true, 'confirm' => false, 'confirmText' => '', 'divider' => false];
+        return ['disabled' => false, 'asEvent' => true, 'confirm' => false, 'confirmText' => '', 'divider' => false, 'title' => str($this->slug)->replace('-', ' ')->title()];
     }
 
     protected function hasDividers(): bool

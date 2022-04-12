@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Psi\FlexAdmin\Tests\Models\Traits\HasDateRange;
 
 class Property extends Model
 {
     use HasFactory;
+    use HasDateRange;
 
     public const PROPERTY_TYPES = ['managed', 'private', 'portland', 'local', 'environmental', 'public', 'large', 'small', 'medium'];
     public const PROPERTY_COLORS = ['blue', 'green', 'yellow', 'orange', 'purple', 'red'];
@@ -42,14 +44,17 @@ class Property extends Model
         return collect(self::PROPERTY_COLORS)->sort()->map(fn ($color) => ['label' => (string) Str::of($color)->title(), 'value' => $color])->all();
     }
 
+    public function getFilterCreatedAtAttribute()
+    {
+        return $this->getDateRanges();
+    }
+
     public function canAct(string $slug)
     {
-        switch ($slug) {
-            case 'view-website':
-                return false;
-        }
-
-        return true;
+        return match ($slug) {
+            'view-website' => false,
+            default => true
+        };
     }
 
     public function filterCompany($query)
@@ -57,6 +62,51 @@ class Property extends Model
         $companyIds = $query->select('company_id')->orderBy('company_id')->distinct()->toBase()->get()->pluck('company_id')->all();
 
         return Company::select('id', 'name')->whereIn('id', $companyIds)->orderBy('name')->toBase()->get()->map(fn ($item) => (array) $item)->all();
+    }
+
+    public function scopeAuthorize($query, array $attributes)
+    {
+        return $query->where('properties.name', 'like', "{$attributes['name']}%");
+    }
+
+    public function scopeOrder($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeFilter($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeSearch($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeIndex($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeDetail($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeEdit($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeCreate($query, array $attributes)
+    {
+        return $query;
+    }
+
+    public function scopeOther($query, array $attributes)
+    {
+        return $query->where('properties.name', 'like', "{$attributes['name']}%");
     }
 
     /**

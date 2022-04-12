@@ -28,12 +28,12 @@ beforeEach(function () {
 
 
 it('should parse filter values')
-    ->expect(fn () => (new FlexFilterWrapper())->wrapParseFilter(['filter' => 'company:1|property:2']))
+    ->expect(fn () => (new FlexFilterWrapper())->wrapParseFilter(['filter' => 'company:1;property:2']))
     ->toBe(['company' => 1, 'property' => 2])
     ->group('filter');
 
 it('should parse filter values with floats, spaces, dashes')
-    ->expect(fn () => (new FlexFilterWrapper())->wrapParseFilter(['filter' => 'company:1.0|property:2|type:  this | some_thing: else-or-else']))
+    ->expect(fn () => (new FlexFilterWrapper())->wrapParseFilter(['filter' => 'company:1.0;property:2;type:  this ; some_thing: else-or-else']))
     ->toBe(['company' => 1.0, 'property' => 2, 'type' => 'this', 'some_thing' => 'else-or-else'])
     ->group('filter');
 
@@ -74,7 +74,7 @@ it('should create attributes from multiple filters')
     ->group('filter');
 
 it('should get filters from attributes')
-    ->expect(fn () => (new FlexFilterWrapper())->wrapGetFilters(['filter' => 'company:123|type:small']))
+    ->expect(fn () => (new FlexFilterWrapper())->wrapGetFilters(['filter' => 'company:123;type:small']))
     ->toHaveKey("0.value", 123)
     ->toHaveKey("1.value", 'small')
     ->toHaveKey("1.item.label", 'Small')
