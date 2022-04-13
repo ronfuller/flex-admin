@@ -8,17 +8,15 @@ it('should create a resource route for view action')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->wrapResourceRoute('view'))
     ->sequence(
         fn ($name) => $name->toBe('properties.show'),
-        fn ($method) => $method->toBe("get"),
+        fn ($method) => $method->toBe('get'),
         fn ($params) => $params->toBeArray()
     )->group('resources', 'action');
-
 
 it('should create a resource route for view action for an application group resource')
     ->expect(fn () => (new ApplicationGroupResource($this->applicationGroup))->withContext(Field::CONTEXT_INDEX)->wrapResourceRoute('view'))
     ->toHaveKey('0', 'application-groups.show')
     ->toHaveKey('2', [['name' => 'application_group', 'field' => 'id']])
     ->group('resources', 'action');
-
 
 it('should create a resource route for delete action for an application group resource')
     ->expect(fn () => (new ApplicationGroupResource($this->applicationGroup))->withContext(Field::CONTEXT_INDEX)->wrapResourceRoute('delete'))
@@ -27,23 +25,20 @@ it('should create a resource route for delete action for an application group re
     ->toHaveKey('2', [['name' => 'application_group', 'field' => 'id']])
     ->group('resources', 'action');
 
-
 it('should create a resource route for edit action for an application group resource')
     ->expect(fn () => (new ApplicationGroupResource($this->applicationGroup))->withContext(Field::CONTEXT_INDEX)->wrapResourceRoute('edit'))
     ->toHaveKey('0', 'application-groups.edit')
     ->toHaveKey('2', [['name' => 'application_group', 'field' => 'id']])
     ->group('resources', 'action');
 
-
 it('should create a resource title for edit action for an application group resource')
     ->expect(fn () => (new ApplicationGroupResource($this->applicationGroup))->withContext(Field::CONTEXT_INDEX)->wrapResourceTitle('edit'))
-    ->toBe("Edit Application Group")
+    ->toBe('Edit Application Group')
     ->group('resources', 'action');
-
 
 it('should create a resource title for delete action for a property resource')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->wrapResourceTitle('delete'))
-    ->toBe("Delete Property")
+    ->toBe('Delete Property')
     ->group('resources', 'action');
 
 it('should create default actions', function () {
@@ -65,6 +60,23 @@ it('should set default actions', function () {
 })
     ->group('resources', 'action');
 
+it('should set without default actions', function () {
+    $results = (new PropertyResource($this->property))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->withoutDefaultActions()
+        ->toArray(createRequest());
+    expect($results['actions'])->toBeEmpty();
+})
+    ->group('resources', 'action');
+
+it('should set without default actions via setting controls', function () {
+    $results = (new PropertyResource($this->property))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->setControls(['defaultActions' => []])
+        ->toArray(createRequest());
+    expect($results['actions'])->toBeEmpty();
+})
+    ->group('resources', 'action');
 
 it('should create edit,view only default actions', function () {
     $results = (new ApplicationGroupResource($this->property))
@@ -77,18 +89,16 @@ it('should create edit,view only default actions', function () {
 })
     ->group('resources', 'action');
 
-
 it('should throw error on invalid set default actions', function () {
     expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)
         ->withDefaultActions(['invalid']))
-        ->toThrow("Invalid default actions.");
+        ->toThrow('Invalid default actions.');
 })
     ->group('resources', 'action');
-
 
 it('should return with empty actions', function () {
     $results = (new PropertyResource($this->property))->withoutActions()->withContext(Field::CONTEXT_INDEX)->toArray(createRequest());
     expect($results['actions'])->toHaveCount(0);
 })
-    ->group('resources', 'action');;
+    ->group('resources', 'action'); ;

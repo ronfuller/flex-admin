@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -11,6 +10,29 @@ use Psi\FlexAdmin\Relations\Relation;
 use Psi\FlexAdmin\Resources\Flexible;
 use Psi\FlexAdmin\Resources\Resource;
 use Psi\FlexAdmin\Tests\Models\Company;
+use Psi\FlexAdmin\Tests\Models\Unit;
+
+/**
+ *  ======================
+ *  (new Resource($model))
+ *  ->withContext( $context )
+ *  ->withKeys( $keys )
+ *
+ * ===== ACTIONS
+ *  ->withoutDefaultActions()
+ *  ->withDefaultActions( $actions )
+ *  ->withoutActions()
+ *
+ *  ==== RELATIONS
+ *  ->withoutRelations()
+ *  ->onlyRelations( $relations )
+ *
+ *  ==== OUTPUT
+ *  ->toMeta()
+ *  ->toArray( $request )
+ *  ->toFields()
+ *
+ */
 
 class PropertyResource extends Resource implements Flexible
 {
@@ -54,18 +76,19 @@ class PropertyResource extends Resource implements Flexible
     {
         /*=====
           Field::make(array|null $keys, $key)   // key is usually the column name for the model
-                                // Use option chaining since the field will return null when the field name is not present in the array of valid keys
+                                                // Use option chaining since the field will return null when the field name is not present in the array of valid keys
           ==== ATTRIBUTES ====
-            ?->name()           // optional name for the field, default will be the same as the key
-            ->attributes($attributes) // appends attributes on the field
+            ?->name()                   // optional name for the field, default will be the same as the key
+            ->attributes($attributes)   // appends attributes on the field
             ->copyable()        // sets the copyable attribute to true, default is false
             ->selectable()      // sets the selectable attribute to true, default is false
             ->constrainable()   // the field can be the source for a constraint. Constraints are Query params in the form ?name=value where name is the field name
             ->sortable()        // the field can be used in sort
             ->icon($icon)       // sets an attribute icon
             ->readonly()        // sets readonly attribute to true, default is false
-            ->hidden()          // sets attribute hiddent to true, default is fals
+            ->hidden()          // sets attribute hidden to true, default is false
             ->valueOnly()       // the field will not have a render component, render will be false, component will be null
+            ->addToValues()     // the field [ key => value ] should be included in the values object
           ==== DISPLAY CONTROL ===
             ->indexOnly()       // Field is enabled only for index context
             ->detailOnly()      // Field is enabled only for detail context
@@ -85,21 +108,23 @@ class PropertyResource extends Resource implements Flexible
             ->editPermission($permission)   // Specific permission to use with edit cotnext to enable field, default is create (i.e. users.create)
             ->withPermissions($context,$model) // Enables the field based on the context and model plural name
         === Relation ===
-            ->on(Model)             // indicates the field is on a related model via BelongsTo relationship
+            ->on(Model)                     // indicates the field is on a related model via BelongsTo relationship
         === Render ===
-            ->component($component) // specify the default component to use for rendering
-            ->panel($panel)         // group the field with the panel specified
+            ->component($component)         // specify the default component to use for rendering
+            ->panel($panel)                 // group the field with the panel specified
             ->createComponent($component)   // Specific component to use for create context
             ->detailComponent($component)   // Specific component to use in detail context
             ->editComponent($component)     // Specific component to use in edit context
             ->indexComponent($component)    // Specific component for index context
         === Search ===
-            ->searchable($type)    // indicates field is searchable by full text or partial (i.e. starts with term '$term%') or exact, default is 'full'
+            ->searchable($type)             // indicates field is searchable by full text or partial (i.e. starts with term '$term%') or exact, default is 'full'
         === Sort ===
-            ->defaultSort($sortDir)        // sets the field to be the default sort field and input direction
+            ->defaultSort($sortDir)         // sets the field to be the default sort field and input direction
         === Value ===
-            ->
+            ->default( $value )             // sets a default value for the field
+            ->value( $value )               // sets the field value, can be a callable function
          =====*/
+
         // KEYS NEED TO BE SMART WITH DATA VALUES
         $fields = [
             Field::make($keys, 'id')
@@ -178,6 +203,12 @@ class PropertyResource extends Resource implements Flexible
                 ->whenDetailorEdit()
                 ->as(
                     Flex::forDetail(Company::class)
+                ),
+
+            Relation::hasMany('units')
+                ->whenDetailorEdit()
+                ->as(
+                    Flex::forDetail(Unit::class)
                 ),
         ];
     }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Psi\FlexAdmin\Fields\Field;
+use Psi\FlexAdmin\Resources\Resource;
 use Psi\FlexAdmin\Tests\Http\Resources\ApplicationGroupResource;
 use Psi\FlexAdmin\Tests\Http\Resources\CompanyResource;
 use Psi\FlexAdmin\Tests\Http\Resources\PropertyResource;
@@ -154,3 +155,19 @@ it('should create a resource permission for edit action for an application group
     ->expect(fn () => (new ApplicationGroupResource($this->applicationGroup))->withContext(Field::CONTEXT_INDEX)->wrapResourcePermission('edit'))
     ->toBe('application-groups.edit')
     ->group('resources');
+
+it('should get resource controls')
+    ->expect(fn () => (new PropertyResource($this->property))->getControls())
+    ->toHaveKeys(Resource::CONTROL_PARAMS);
+
+it('should get default resource controls')
+    ->expect(fn () => (new PropertyResource($this->property))->getControls())
+    ->toHaveKey('defaultActions', ['view', 'edit', 'create', 'delete']);
+
+it('should get empty default actions resource controls')
+    ->expect(fn () => (new PropertyResource($this->property))->withoutDefaultActions()->getControls())
+    ->toHaveKey('defaultActions', []);
+
+it('should set default actions resource controls')
+    ->expect(fn () => (new PropertyResource($this->property))->setControls(['defaultActions' => []])->getControls())
+    ->toHaveKey('defaultActions', []);

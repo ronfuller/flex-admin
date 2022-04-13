@@ -107,11 +107,21 @@ it('should have a detail resource with a belongsTo relationship', function () {
     $result = Flex::forDetail(Property::class)
         ->byId($property->id)
         ->toArray(createRequest());
-    expect($result)->ray()->toHaveKey('data');
+    expect($result)->toHaveKey('data');
     expect($result)->data->toHaveKeys(['actions', 'values', 'panels', 'relations']);
     expect(data_get($result, 'data.actions'))->toHaveCount(3);
     expect(data_get($result, 'data.values'))->toHaveCount(3);
     expect(data_get($result, 'data.relations'))->toHaveKey('company');
+})->group('collections');
+
+it('should have a detail resource without actions', function () {
+    $property = Property::factory()->forCompany()->create();
+
+    $result = Flex::forDetail(Property::class)
+        ->withoutActions()
+        ->byId($property->id)
+        ->toArray(createRequest());
+    expect($result)->ray()->data->actions->toBeEmpty();
 })->group('collections');
 
 it('should have a detail resource with a hasMany relationship', function () {
@@ -120,7 +130,17 @@ it('should have a detail resource with a hasMany relationship', function () {
     $result = Flex::forDetail(Company::class)
         ->byId($properties->first()->company_id)
         ->toArray(createRequest());
-    expect($result)->ray()->toHaveKey('data');
+    expect($result)->toHaveKey('data');
+})->group('collections');
+
+it('should have a detail resource without relations', function () {
+    $property = Property::factory()->forCompany()->create();
+
+    $result = Flex::forDetail(Property::class)
+        ->withoutRelations()
+        ->byId($property->id)
+        ->toArray(createRequest());
+    expect($result)->ray()->data->relations->toBeEmpty();
 })->group('collections');
 
     /*
@@ -136,7 +156,10 @@ it('should have a detail resource with a hasMany relationship', function () {
            ->filterScope()
            ->searchScope()
 
-           ->indexScope()       // replacment scope for INDEX context
+           ->withoutDefaultActions()
+           ->withoutActions()
+
+           ->indexScope()       // replacement scope for INDEX context
            ->detailScope()      // replacment scope for DETAIL context
            ->editScope()        // replacment scope for EDIT context
            ->createScope()      // replacemnent scope for CREATE context
@@ -151,6 +174,7 @@ it('should have a detail resource with a hasMany relationship', function () {
 
             ->withoutPagination()
 
+            ->withRelations()
             ->withoutRelations()
             ->withoutRelation(Related)
 

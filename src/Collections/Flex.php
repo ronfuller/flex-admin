@@ -293,6 +293,8 @@ class Flex extends Resource
          * @var Resource
          */
         $resource = $this->collection->first();
+        $resource->setControls($this->getControls());        // cascade control parameters
+
         $actions = $resource->toActions(context: $this->context);
 
         // We'll pass actions to the resource to build the array of data
@@ -301,6 +303,7 @@ class Flex extends Resource
                 ->withContext($this->context)
                 ->withKeys($this->meta['keys'])
                 ->withActions($actions)
+                ->setControls($this->getControls())         // cascade control parameters like actions, relations to the resource
                 ->toArray($request);
         })->all();
     }

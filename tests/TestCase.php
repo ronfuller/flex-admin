@@ -43,6 +43,7 @@ class TestCase extends Orchestra
     protected function setupMigrations()
     {
         Schema::dropAllTables();
+        ray('Setup Migrations');
         collect([
             // Package Migrations
             // '/../database/migrations/create_flex_admins_table.php.stub',
@@ -51,6 +52,7 @@ class TestCase extends Orchestra
             '/database/migrations/2014_10_12_000000_testbench_create_users_table.php',
             '/database/migrations/2022_01_03_000000_testbench_create_companies_table.php',
             '/database/migrations/2022_01_12_000000_testbench_create_properties_table.php',
+            '/database/migrations/2022_04_13_101320_testbench_create_units_table.php',
 
         ])->each(function ($path) {
             $migration = include __DIR__ . $path;
