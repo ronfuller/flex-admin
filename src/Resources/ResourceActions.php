@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Arr;
@@ -55,7 +56,7 @@ trait ResourceActions
     public function withDefaultActions(array $defaultActions = null): self
     {
         // TODO: validate that the array of default actions is in the default list
-        if (!collect($defaultActions)->every(fn ($action) => \in_array($action, ['view', 'edit', 'create', 'delete']))) {
+        if (! collect($defaultActions)->every(fn ($action) => \in_array($action, ['view', 'edit', 'create', 'delete']))) {
             throw new \Exception('Invalid default actions. Must be one of view,edit,create,delete');
         }
         $this->defaultActions = $defaultActions ?? $this->defaultActions;
@@ -100,14 +101,14 @@ trait ResourceActions
     {
         $this->actions = collect($actions)->map(function ($action) {
             // See if we need to build the route Url from the resource params/values
-            if (!empty(data_get($action, 'attributes.route'))) {
+            if (! empty(data_get($action, 'attributes.route'))) {
                 data_set($action, 'attributes.url', $this->buildActionRouteUrl(data_get($action, 'attributes.route')));
             }
             // If we need to check on the model and we haven't already disabled the action
             if ($action['canAct'] && $action['enabled']) {
                 // need to call the can resource method
                 $action['enabled'] = $this->resource->canAct($action['slug']);
-                data_set($action, 'attributes.disabled', !$action['enabled']);
+                data_set($action, 'attributes.disabled', ! $action['enabled']);
             }
 
             return $action;
