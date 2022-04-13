@@ -4,7 +4,7 @@ return [
     /**
      * This value when be shown when the example command is executed
      */
-    'resource_path' => 'App\Http\Resources',
+    'resource_path' => 'Http\Resources',
     'command_output' => 'Output configured in config file',
     'render' => [
         'default_component' => 'text-field',

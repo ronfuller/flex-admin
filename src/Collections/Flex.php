@@ -1,12 +1,10 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\CollectsResources;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Resources\Resource;
@@ -152,7 +150,7 @@ class Flex extends Resource
             $resource = new $this->collects(null);
         }
         // Validate context against list of contexts
-        if (! in_array($context, Field::CONTEXTS)) {
+        if (!in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
         $this->flexResource = $resource;
@@ -182,7 +180,8 @@ class Flex extends Resource
             return $this->collects;
         }
         $modelClass = get_class($this->flexModel);
-        $class = config('flex-admin.resource_path') . '\\' . Str::afterLast($modelClass, '\\') . 'Resource';
+
+        $class = (string) str($modelClass)->replace('Models', config('flex-admin.resource_path'))->append('Resource');
 
         return class_exists($class) ? $class : throw new \Exception("Could not find resource for {$modelClass}");
     }
