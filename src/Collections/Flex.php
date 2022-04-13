@@ -181,7 +181,7 @@ class Flex extends Resource
         }
         $modelClass = get_class($this->flexModel);
 
-        $class = (string) str($modelClass)->replace('Models', config('flex-admin.resource_path'))->append('Resource');
+        $class = (string) str($modelClass)->replace(config('flex-admin.model_path'), config('flex-admin.resource_path'))->append('Resource');
 
         return class_exists($class) ? $class : throw new \Exception("Could not find resource for {$modelClass}");
     }

@@ -5,6 +5,7 @@ return [
      * This value when be shown when the example command is executed
      */
     'resource_path' => 'Http\Resources',
+    'model_path' => 'Models',
     'command_output' => 'Output configured in config file',
     'render' => [
         'default_component' => 'text-field',
