@@ -99,7 +99,7 @@ class Resource extends JsonResource implements Flexible
     /**
      * Set the control parameters for actions and relations
      *
-     * @param [type] ...$args
+     * @param array $args
      * @return self
      */
     public function setControls(array $args): self
