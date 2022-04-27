@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
@@ -61,6 +60,16 @@ trait FieldAttributes
     public function attributes(array $attributes): self
     {
         $this->attributes = [...$this->attributes, ...$attributes];
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function attribute(string $key, mixed $value): self
+    {
+        $this->attributes[$key] = $value;
 
         return $this;
     }
@@ -164,6 +173,6 @@ trait FieldAttributes
      */
     protected function setDefaultLabel(): void
     {
-        $this->meta['label'] = (string) Str::of($this->key)->kebab()->replace("_", " ")->replace("-", " ")->title();
+        $this->meta['label'] = (string) Str::of($this->key)->kebab()->replace('_', ' ')->replace('-', ' ')->title();
     }
 }
