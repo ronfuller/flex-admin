@@ -30,11 +30,21 @@ it('should overwrite the label attribute')
     ->toHaveKey('label', 'Property Name')
     ->group('attributes', 'fields');
 
+it('should set a label')
+    ->expect(fn () => Field::make(null, 'property_title')->label('Property Name')->meta)
+    ->toHaveKeys(['name', 'label'])
+    ->toHaveKey('label', 'Property Name')
+    ->group('attributes', 'fields');
+
 it('should overwrite the name attribute')
     ->expect(fn () => Field::make(null, 'property_title')->meta([
         'name' => 'property',
     ])->meta)
-    ->toHaveKeys(['name', 'label'])
+    ->toHaveKey('name', 'property')
+    ->group('attributes', 'fields');
+
+it('should set a name')
+    ->expect(fn () => Field::make(null, 'property_title')->name('property')->meta)
     ->toHaveKey('name', 'property')
     ->group('attributes', 'fields');
 
