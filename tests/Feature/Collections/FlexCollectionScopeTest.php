@@ -4,6 +4,31 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Tests\Models\Property;
 
+beforeEach(function () {
+    Route::resource('companies', TestController::class);
+});
+
+function createProperties(): array
+{
+    $properties = Property::factory()->count(5)
+        ->forCompany()
+        ->state(
+            new Sequence(
+                ['name' => 'Test 1'],
+                ['name' => 'Test 2'],
+                ['name' => 'Test 3'],
+                ['name' => 'Test 4'],
+                ['name' => 'Test 5'],
+            )
+        )
+        ->create();
+    $companyId = $properties->first()->company_id;
+    Property::factory()->count(5)
+        ->forCompany()
+        ->create();
+    return compact('properties', 'companyId');
+}
+
 it('should have an authorize scope')
     ->expect(fn () => Flex::forIndex(Property::class)->authorizeScope(scope: 'authorize')->scopes)
     ->toHaveKey('authorize', 'authorize')
@@ -84,23 +109,20 @@ it('should fail with invalid edit scope', function () {
         ->toThrow('Scope invalid does not exist');
 })->group('collections', 'scope');
 
+it('should implement an index scope', function () {
+    createProperties();
+    // Index Query on the Property Model Filters by name = 'Test 1'
+    $results = Flex::forIndex(Property::class)
+        ->withoutFilters()
+        ->indexScope('index')
+        ->toArray(
+            request: createRequest()
+        );
+    expect($results)->rows->toHaveCount(1);
+});
+
 it('should implement an authorize scope', function () {
-    $properties = Property::factory()->count(5)
-        ->forCompany()
-        ->state(
-            new Sequence(
-                ['name' => 'Test 1'],
-                ['name' => 'Test 2'],
-                ['name' => 'Test 3'],
-                ['name' => 'Test 4'],
-                ['name' => 'Test 5'],
-            )
-        )
-        ->create();
-    $companyId = $properties->first()->company_id;
-    Property::factory()->count(5)
-        ->forCompany()
-        ->create();
+    createProperties();
 
     $results = Flex::forIndex(Property::class)
         ->withoutFilters()
@@ -112,23 +134,7 @@ it('should implement an authorize scope', function () {
 });
 
 it('should implement an additional scope', function () {
-    $properties = Property::factory()->count(5)
-        ->forCompany()
-        ->state(
-            new Sequence(
-                ['name' => 'Test 1'],
-                ['name' => 'Test 2'],
-                ['name' => 'Test 3'],
-                ['name' => 'Test 4'],
-                ['name' => 'Test 5'],
-            )
-        )
-        ->create();
-    $companyId = $properties->first()->company_id;
-    Property::factory()->count(5)
-        ->forCompany()
-        ->create();
-
+    createProperties();
     $results = Flex::forIndex(Property::class)
         ->withoutFilters()
         ->withScope('other')

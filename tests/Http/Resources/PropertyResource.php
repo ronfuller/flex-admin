@@ -176,6 +176,11 @@ class PropertyResource extends Resource implements Flexible
                 ->searchable('partial')
                 ->icon('mdi-door-open'),
 
+            Field::make($keys, 'unit.title')
+                ?->name('unitTitle')
+                ->value(fn ($resource) => $resource?->unit?->title)
+                ->icon('mdi-door-open'),
+
             Field::make($keys, 'company')
                 ?->filterable()
                 ->on(Company::class)

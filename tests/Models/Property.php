@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -34,6 +33,11 @@ class Property extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function unit()
+    {
+        return $this->hasOne(Unit::class);
+    }
+
     public function getFilterTypeAttribute()
     {
         return collect(self::PROPERTY_TYPES)->sort()->map(fn ($type) => ['label' => (string) Str::of($type)->title(), 'value' => $type])->all();
@@ -64,6 +68,13 @@ class Property extends Model
         return Company::select('id', 'name')->whereIn('id', $companyIds)->orderBy('name')->toBase()->get()->map(fn ($item) => (array) $item)->all();
     }
 
+    public function scopeWithUnit($query, array $attributes)
+    {
+        return $query->with(['unit' => function ($query) {
+            $query->select('id', 'property_id', 'title');
+        }]);
+    }
+
     public function scopeAuthorize($query, array $attributes)
     {
         return $query->where('properties.name', 'like', "{$attributes['name']}%");
@@ -86,7 +97,7 @@ class Property extends Model
 
     public function scopeIndex($query, array $attributes)
     {
-        return $query;
+        return $query->where('properties.name', 'Test 1');
     }
 
     public function scopeDetail($query, array $attributes)

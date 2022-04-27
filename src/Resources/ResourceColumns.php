@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Arr;
@@ -22,12 +21,12 @@ trait ResourceColumns
 
         return collect($this->fields(null))->map(function (Field $field) use ($modelMeta) {
             return $field->withPermissions($this->context, $this->model)->model($this->model)->context($this->context)->toMeta($modelMeta);
-        })->filter(fn (array $field) => $field['enabled']);
+        })->filter(fn (array $field) => $field['enabled'])->values();
     }
 
     public function selects(): array
     {
-        return $this->columns->pluck('select')->all();
+        return $this->columns->pluck('select')->filter()->values()->all();
     }
 
     public function sort(): array

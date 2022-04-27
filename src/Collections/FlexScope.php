@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -129,7 +128,7 @@ trait FlexScope
 
     public function hasQueryScopes(): bool
     {
-        return ! empty($this->withScopes);
+        return !empty($this->withScopes) || !empty(data_get($this->scopes, $this->context, ''));
     }
 
     public function queryScopes(Builder $query, $attributes): Builder
@@ -137,13 +136,16 @@ trait FlexScope
         collect($this->withScopes)->each(function ($scope) use (&$query, $attributes) {
             $query = $query->{$scope}($attributes);
         });
-
+        if (!empty(data_get($this->scopes, $this->context, ''))) {
+            $scope = data_get($this->scopes, $this->context);
+            $query = $query->{$scope}($attributes);
+        }
         return $query;
     }
 
     protected function validateScope(string $scope): void
     {
-        if (! $this->flexModel->hasNamedScope($scope)) {
+        if (!$this->flexModel->hasNamedScope($scope)) {
             throw new \Exception("Scope {$scope} does not exist on the model");
         }
     }

@@ -17,7 +17,7 @@ it('should add fields to default details panel')
         ->withContext(Field::CONTEXT_DETAIL)
         ->toArray(createRequest())['panels'][0])
     ->fields
-    ->toHaveCount(8)
+    ->toHaveCount(9)
     ->each
     ->toHaveKeys(['attributes', 'value'])
     ->group('resources', 'panel');

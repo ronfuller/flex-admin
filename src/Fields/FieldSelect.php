@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
@@ -17,7 +16,7 @@ trait FieldSelect
 
     public function select(string $key): self
     {
-        $this->select = $key;
+        $this->select = str($key)->contains('.') ? null : $key;
 
         return $this;
     }
@@ -50,7 +49,7 @@ trait FieldSelect
 
     protected function withAsColumn(string $select): string
     {
-        return Str::of($select)->contains("->") || $this->onModel ? (string) Str::of($select)->append(" as {$this->key}") : $select;
+        return Str::of($select)->contains('->') || $this->onModel ? (string) Str::of($select)->append(" as {$this->key}") : $select;
     }
 
     protected function withQualifiedColumn(string $select): string
