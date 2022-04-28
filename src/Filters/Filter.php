@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -9,7 +8,6 @@ use Illuminate\Support\Str;
 class Filter
 {
     public mixed $value = null;
-
 
     protected mixed $default = null;
     protected mixed $item = null;
@@ -73,7 +71,6 @@ class Filter
      */
     protected string|null $sourceMeta = null;
 
-
     /**
      * Callable function to get an item from the filter value
      *
@@ -81,13 +78,19 @@ class Filter
      */
     public $itemFromValue;
 
+    /**
+     * Model Query Scope to apply filter
+     *
+     * @var string|null
+     */
+    public $queryScope;
+
     public const SOURCE_FUNCTION = 'function',
         SOURCE_COLUMN = 'column',
         SOURCE_ATTRIBUTE = 'attribute';
 
     final public function __construct(public string $name, public string|null $key = null)
     {
-
         // TODO: validate that overridden attributes don't contain type,name,label
         $this->setDefaults();
     }
@@ -141,6 +144,13 @@ class Filter
         return $this;
     }
 
+    public function withScope(string $scope): self
+    {
+        $this->queryScope = $scope;
+
+        return $this;
+    }
+
     public function itemValue(callable $itemFromValue): self
     {
         $this->itemFromValue = $itemFromValue;
@@ -175,7 +185,7 @@ class Filter
     public function attributes(array $attributes): self
     {
         if (array_intersect(['name', 'label', 'type', 'format', 'value', 'meta'], array_keys($attributes))) {
-            throw new \Exception("Cannot append attributes with reserved keys.");
+            throw new \Exception('Cannot append attributes with reserved keys.');
         }
         $this->attributes = array_merge($this->attributes, $attributes);
 
@@ -233,6 +243,7 @@ class Filter
                 'value' => $this->value,
                 'item' => $this->item,
                 'default' => $this->default,
+                'queryScope' => $this->queryScope,
                 'is_active' => $this->value && $this->value !== $this->default,
                 'is_default' => $this->default && $this->value === $this->default,
                 'options' => $this->options,
@@ -242,10 +253,10 @@ class Filter
         );
     }
 
-    public function build(Model $model,  Builder | null $query): self
+    public function build(Model $model, Builder | null $query): self
     {
         if (is_null($this->source) || is_null($this->sourceMeta)) {
-            throw new \Exception("Cannot build filter without source set.");
+            throw new \Exception('Cannot build filter without source set.');
         }
 
         switch ($this->source) {
@@ -268,21 +279,21 @@ class Filter
 
     protected function optionsFromAttribute(Model $model): array
     {
-        $attribute = 'filter_' .  $this->sourceMeta;
-        $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append("Attribute");
-        if (! \method_exists($model, $filterMutatorMethod)) {
+        $attribute = 'filter_' . $this->sourceMeta;
+        $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append('Attribute');
+        if (!\method_exists($model, $filterMutatorMethod)) {
             throw new \Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
         }
 
-        return $model->getAttribute('filter_' .  $this->sourceMeta);
+        return $model->getAttribute('filter_' . $this->sourceMeta);
     }
 
     protected function optionsFromFunction(Model $model, Builder $query): array
     {
         $filterQuery = clone $query;
-        $method = (string) Str::of($this->sourceMeta)->title()->prepend("filter");
+        $method = (string) Str::of($this->sourceMeta)->title()->prepend('filter');
 
-        if (! \method_exists($model, $method)) {
+        if (!\method_exists($model, $method)) {
             throw new \Exception("Could not find filter function for filter named {$this->sourceMeta}");
         }
 
@@ -306,7 +317,7 @@ class Filter
 
     protected function setDefaults()
     {
-        $this->label = $this->label ?? (string) Str::of($this->name)->singular()->title()->replace("_", " ")->replace("-", " ");
+        $this->label = $this->label ?? (string) Str::of($this->name)->singular()->title()->replace('_', ' ')->replace('-', ' ');
         $this->key = $this->key ?? (string) Str::of($this->name)->lower();
     }
 }

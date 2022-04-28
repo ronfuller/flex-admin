@@ -13,6 +13,26 @@ it('should search on property name')
     ->toBe(1)
     ->group('search', 'collections');
 
+it('should search on company name')
+    ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
+        ->withoutFilters()
+        ->withoutCache()
+        ->searchScope('search')
+        ->query(createRequest(['search' => 'columbia']))
+        ->count())
+    ->toBe(5)
+    ->group('search', 'collections');
+
+it('should show empty results for search on invalid company name')
+    ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
+        ->withoutFilters()
+        ->withoutCache()
+        ->searchScope('search')
+        ->query(createRequest(['search' => 'invalid']))
+        ->count())
+    ->toBe(0)
+    ->group('search', 'collections');
+
 it('should search on full color match with JSON column')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
         ->withoutFilters()

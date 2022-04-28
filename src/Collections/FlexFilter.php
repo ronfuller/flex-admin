@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +41,7 @@ trait FlexFilter
      */
     protected function hasFilters(array $filters): bool
     {
-        return $this->withFilters && collect($filters)->contains(fn ($filter) => ! is_null($filter['value']));
+        return $this->withFilters && collect($filters)->contains(fn ($filter) => !is_null($filter['value']));
     }
 
     /**
@@ -55,7 +54,7 @@ trait FlexFilter
     {
         $filters = collect($this->meta['filters']);
 
-        if (! $this->defaultFilters) {
+        if (!$this->defaultFilters) {
             // not using default filters then set any values to null
             $filters = $filters->map(function ($filter) {
                 $filter['value'] = null;
@@ -104,6 +103,7 @@ trait FlexFilter
     protected function buildFilters(array $attributes, Builder $query): array
     {
         $filters = $this->getFilters($attributes);
+
         // the filter items in the array should be filter class objects, not arrays
         return collect($this->meta['filters'])->map(function ($filter) use ($query, $filters) {
             $item = [
@@ -117,7 +117,7 @@ trait FlexFilter
                     ...$item,
                     ...Arr::only($filterItem, ['value', 'item']),
                     ...[
-                        'is_active' => ! is_null($filterItem['value']) && (isset($item['default']) && $item['default'] !== $filterItem['value']),
+                        'is_active' => !is_null($filterItem['value']) && (isset($item['default']) && $item['default'] !== $filterItem['value']),
                     ],
                 ];
             }
@@ -136,11 +136,11 @@ trait FlexFilter
     protected function applyFilters(Builder $query, array $filters): Builder
     {
         collect($filters)
-            ->filter(fn ($filter) => ! is_null($filter['value']))    // only filters with a value set
+            ->filter(fn ($filter) => !is_null($filter['value']))    // only filters with a value set
             ->each(function ($filter) use (&$query) {
                 $meta = $filter['meta'];
                 $value = $filter['value'];
-                $query = $this->filterByType($query, $value, $meta['column'], $meta['filterType']);
+                $query = $this->filterByType($query, $value, $meta['column'], $meta['filterType'], $filter['queryScope']);
             });
 
         return $query;
@@ -155,9 +155,11 @@ trait FlexFilter
      * @param string $type
      * @return Builder
      */
-    protected function filterByType(Builder $query, mixed $value, string $column, string $type): Builder
+    protected function filterByType(Builder $query, mixed $value, string $column, string $type, string|null $queryScope = null): Builder
     {
         switch ($type) {
+            case 'query':
+                return $this->flexModel->{$queryScope}($query, $value);
             case 'value':
                 return $query->where($column, '=', $value);
 
@@ -183,7 +185,7 @@ trait FlexFilter
     {
         return [
             'filter' => collect($filters)
-                ->filter(fn ($filter) => ! is_null($filter['value']))
+                ->filter(fn ($filter) => !is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
                 ->join('|'),
         ];

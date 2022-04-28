@@ -67,7 +67,9 @@ uses()
 uses()
     ->beforeEach(function () {
         $this->properties = Property::factory()->count(5)
-            ->forCompany()
+            ->for(
+                Company::factory()->state(['name' => 'Columbia'])
+            )
             ->state(new Sequence(
                 ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue', ], 'status' => 'success', 'type' => 'townhome'],
                 ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green', ], 'status' => 'fail', 'type' => 'apartment'],

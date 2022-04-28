@@ -1,6 +1,7 @@
 <?php
 namespace Psi\FlexAdmin\Tests\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,6 +62,11 @@ class Property extends Model
         };
     }
 
+    public function byCompany($query, mixed $value): Builder
+    {
+        return $query->where('companies.id', $value);
+    }
+
     public function filterCompany($query)
     {
         $companyIds = $query->select('company_id')->orderBy('company_id')->distinct()->toBase()->get()->pluck('company_id')->all();
@@ -90,9 +96,9 @@ class Property extends Model
         return $query;
     }
 
-    public function scopeSearch($query, array $attributes)
+    public function scopeSearch($query, string $term)
     {
-        return $query;
+        return $query->whereIn('companies.id', Company::search($term)->toBase()->get()->pluck('id')->all());
     }
 
     public function scopeIndex($query, array $attributes)

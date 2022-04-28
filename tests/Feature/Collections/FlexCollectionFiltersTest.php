@@ -172,3 +172,14 @@ it('should create filter options for query when not deferred')
     ->filters
     ->each(fn ($filter) => $filter->options->not->toBeEmpty())
     ->group('collections', 'filter');
+
+it('should apply filter from a query scope')
+    ->expect(
+        fn () => Flex::forIndex(Property::class)
+            ->withoutDefaultFilters()
+            ->query(createRequest(['filter' => "company:{$this->properties->first()->company->id}"]))
+            ->resource
+            ->total()
+    )
+    ->toBe(25)
+    ->group('collections', 'filter');

@@ -182,7 +182,7 @@ class PropertyResource extends Resource implements Flexible
                 ->icon('mdi-door-open'),
 
             Field::make($keys, 'company')
-                ?->filterable()
+                ?->filterable('query')
                 ->on(Company::class)
                 ->select('id')
                 ->valueOnly(),
@@ -235,6 +235,7 @@ class PropertyResource extends Resource implements Flexible
         $filters = [
             Filter::make('company')
                 ->fromFunction()
+                ->withScope('byCompany')
                 ->option('id', 'name')
                 ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
             Filter::make('type')->default('small')->fromColumn(),

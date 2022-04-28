@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -106,7 +105,6 @@ trait FlexQuery
         // Search
         if ($this->hasSearch($attributes)) {
             // Search
-            // TODO: check for model query scope search
             $query = $this->search($query, $attributes);
         }
         // Filter

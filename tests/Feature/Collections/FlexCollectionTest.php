@@ -121,7 +121,7 @@ it('should have a detail resource without actions', function () {
         ->withoutActions()
         ->byId($property->id)
         ->toArray(createRequest());
-    expect($result)->ray()->data->actions->toBeEmpty();
+    expect($result)->data->actions->toBeEmpty();
 })->group('collections');
 
 it('should have a detail resource with a hasMany relationship', function () {
@@ -140,7 +140,7 @@ it('should have a detail resource without relations', function () {
         ->withoutRelations()
         ->byId($property->id)
         ->toArray(createRequest());
-    expect($result)->ray()->data->relations->toBeEmpty();
+    expect($result)->data->relations->toBeEmpty();
 })->group('collections');
 
     /*

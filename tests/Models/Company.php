@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -24,6 +23,11 @@ class Company extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function scopeSearch($query, string $term)
+    {
+        return $query->where('name', 'like', "%{$term}");
     }
 
     /**

@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +10,12 @@ trait FlexSearch
     protected function search(Builder $query, array $attributes): Builder
     {
         $term = $this->searchTerm($attributes);
+
+        // If we
+        if (Arr::has($this->scopes, 'search')) {
+            $this->validateScope($this->scopes['search']);
+            return $query->{$this->scopes['search']}($term);
+        }
 
         collect($this->meta['searches'])->each(function ($search, $index) use (&$query, $term) {
             ['param' => $param, 'operator' => $operator, 'isJson' => $isJson, 'column' => $column] = $this->searchOptions($search, $term);
@@ -47,9 +52,9 @@ trait FlexSearch
 
     protected function searchOptions(array $search, string $term): array
     {
-        $isJson = Str::contains($search['column'], "->");
-        $operator = "like";
-        $param = "";
+        $isJson = Str::contains($search['column'], '->');
+        $operator = 'like';
+        $param = '';
 
         switch ($search['searchType']) {
             case 'full':
@@ -62,7 +67,7 @@ trait FlexSearch
                 break;
             case 'exact':
                 $param = $term;
-                $operator = "=";
+                $operator = '=';
 
                 break;
         }
@@ -74,8 +79,8 @@ trait FlexSearch
 
     private function jsonColumn(string $column, string $operator): string
     {
-        $name = (string) Str::of($column)->afterLast("->");
+        $name = (string) Str::of($column)->afterLast('->');
 
-        return (string) Str::of($column)->replace($name, "\"$.{$name}\"")->prepend("LOWER(")->append(") {$operator} ?");
+        return (string) Str::of($column)->replace($name, "\"$.{$name}\"")->prepend('LOWER(')->append(") {$operator} ?");
     }
 }
