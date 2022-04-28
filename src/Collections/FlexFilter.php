@@ -156,7 +156,7 @@ trait FlexFilter
      * @param string $type
      * @return Builder
      */
-    protected function filterByType(Builder $query, mixed $value, string $column, string $type, string|null $queryScope = null): Builder
+    protected function filterByType(Builder $query, mixed $value, string|null $column, string $type, string|null $queryScope = null): Builder
     {
         switch ($type) {
             case 'query':
