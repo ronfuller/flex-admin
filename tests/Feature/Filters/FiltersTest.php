@@ -1,6 +1,5 @@
 <?php
 
-
 use Psi\FlexAdmin\Filters\Filter;
 use Psi\FlexAdmin\Tests\Models\Company;
 use Psi\FlexAdmin\Tests\Models\Property;
@@ -56,6 +55,18 @@ it('should have a default label from kebab case')
     ->toBe('Company User')
     ->group('filters');
 
+it('should have a default label from dot notation')
+    ->expect(fn () => Filter::make('company.admin_user')->toArray())
+    ->label
+    ->toBe('Admin User')
+    ->group('filters');
+
+it('should have a label')
+    ->expect(fn () => Filter::make('company.admin_user')->label('My Label')->toArray())
+    ->label
+    ->toBe('My Label')
+    ->group('filters');
+
 it('should have an icon')
     ->expect(fn () => Filter::make('company')->icon('mdi-domain')->toArray())
     ->icon
@@ -85,7 +96,7 @@ it('should throw exception appending reserved keys', function () {
             'label' => 'test label',
         ]
     ))
-        ->toThrow("Cannot append attributes");
+        ->toThrow('Cannot append attributes');
 })
     ->group('filters');
 
@@ -168,7 +179,7 @@ it('should throw error when building without a source set', function () {
     $query = Property::select('id', 'name', 'company_id', 'options')->with('company');
 
     expect(fn () => Filter::make('company')->build($this->property, $query)->toArray())
-        ->toThrow("Cannot build filter without source set");
+        ->toThrow('Cannot build filter without source set');
 })->group('filters');
 
 it('should set options from query column', function () {
@@ -186,14 +197,14 @@ it('should throw error building from an invalid attribute', function () {
     $query = Property::select('id', 'name', 'company_id', 'options')->with('company');
 
     expect(fn () => Filter::make('company')->fromAttribute('invalid')->build($this->property, $query)->toArray())
-        ->toThrow("Attribute missing for filter");
+        ->toThrow('Attribute missing for filter');
 })->group('filters');
 
 it('should throw error building from an invalid function', function () {
     $query = Property::select('id', 'name', 'company_id', 'options')->with('company');
 
     expect(fn () => Filter::make('company')->fromFunction('invalid')->build($this->property, $query)->toArray())
-        ->toThrow("Could not find filter function for filter");
+        ->toThrow('Could not find filter function for filter');
 })->group('filters');
 
 it('should get an item from a callable function', function () {

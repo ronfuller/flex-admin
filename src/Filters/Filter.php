@@ -100,6 +100,13 @@ class Filter
         return new static(...$args);
     }
 
+    public function label(string $label): self
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
     public function icon($icon): self
     {
         $this->attributes['icon'] = $icon;
@@ -317,7 +324,7 @@ class Filter
 
     protected function setDefaults()
     {
-        $this->label = $this->label ?? (string) Str::of($this->name)->singular()->title()->replace('_', ' ')->replace('-', ' ');
+        $this->label = $this->label ?? (string) Str::of($this->name)->after('.')->singular()->title()->replace('_', ' ')->replace('-', ' ');
         $this->key = $this->key ?? (string) Str::of($this->name)->lower();
     }
 }
