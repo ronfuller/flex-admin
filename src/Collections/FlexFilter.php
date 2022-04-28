@@ -117,7 +117,8 @@ trait FlexFilter
                     ...$item,
                     ...Arr::only($filterItem, ['value', 'item']),
                     ...[
-                        'is_active' => !is_null($filterItem['value']) && (isset($item['default']) && $item['default'] !== $filterItem['value']),
+                        'is_active' => !is_null($filterItem['value']) || (isset($item['default']) && $item['default'] !== $filterItem['value']),
+                        'is_default' => (isset($item['default']) && $item['default'] === $filterItem['value']),
                     ],
                 ];
             }
