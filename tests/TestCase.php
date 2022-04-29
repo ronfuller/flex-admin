@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;

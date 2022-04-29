@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -288,7 +289,7 @@ class Filter
     {
         $attribute = 'filter_' . $this->sourceMeta;
         $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append('Attribute');
-        if (!\method_exists($model, $filterMutatorMethod)) {
+        if (! \method_exists($model, $filterMutatorMethod)) {
             throw new \Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
         }
 
@@ -300,7 +301,7 @@ class Filter
         $filterQuery = clone $query;
         $method = (string) Str::of($this->sourceMeta)->title()->prepend('filter');
 
-        if (!\method_exists($model, $method)) {
+        if (! \method_exists($model, $method)) {
             throw new \Exception("Could not find filter function for filter named {$this->sourceMeta}");
         }
 

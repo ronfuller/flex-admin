@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Psi\FlexAdmin\Collections\Flex;
@@ -46,7 +47,7 @@ class CompanyResource extends Resource implements Flexible
 
         ];
 
-        return collect($fields)->filter()->filter(fn (Field $field) => !in_array($field->key, $this->removedKeys))->values()->all();
+        return collect($fields)->filter()->filter(fn (Field $field) => ! in_array($field->key, $this->removedKeys))->values()->all();
     }
 
     public function relations($request): array

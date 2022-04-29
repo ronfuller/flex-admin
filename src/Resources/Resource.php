@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ class Resource extends JsonResource implements Flexible
     use ResourcePanels;
     use ResourceRelations;
 
-    const CONTROL_PARAMS = ['withActions', 'withRelations', 'filterRelations', 'withActions', 'defaultActions'];
+    public const CONTROL_PARAMS = ['withActions', 'withRelations', 'filterRelations', 'withActions', 'defaultActions'];
 
     /**
      * @property Model|null $model
@@ -109,6 +110,7 @@ class Resource extends JsonResource implements Flexible
                 $this->{$param} = data_get($args, $param);
             }
         });
+
         return $this;
     }
 
@@ -237,7 +239,7 @@ class Resource extends JsonResource implements Flexible
     protected function withFields()
     {
         // return fields array if not using panels
-        return !$this->withPanels();
+        return ! $this->withPanels();
     }
 
     /**

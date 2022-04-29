@@ -26,6 +26,7 @@ function createProperties(): array
     Property::factory()->count(5)
         ->forCompany()
         ->create();
+
     return compact('properties', 'companyId');
 }
 
