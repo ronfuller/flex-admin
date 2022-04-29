@@ -93,7 +93,7 @@ class Flex extends Resource
      *
      * @var bool
      */
-    protected bool $deferFilters = true;
+    protected bool $deferFilters = false;
 
     /**
      * Determines if we load default filter values from the resource
