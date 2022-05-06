@@ -77,5 +77,4 @@ it('should get filters from attributes')
     ->toHaveKey('1.value', 'small')
     ->toHaveKey('1.item.label', 'Small')
     ->toHaveKey('1.item.value', 'small')
-    ->group('filter')
-    ->only();
+    ->group('filter');
