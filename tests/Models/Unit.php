@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,7 +13,7 @@ class Unit extends Model
     protected $casts = [
         'available' => 'boolean',
         'available_at' => 'date:m/d/Y',
-        'garage' => 'boolean'
+        'garage' => 'boolean',
     ];
 
     /* === ELOQUENT RELATIONSHIPS === */
