@@ -200,7 +200,7 @@ trait FlexFilter
     protected function parseFilter(array $attributes): array
     {
         // Filter params come in with the format param1:value1;param2:value2        // colon, semicolon cannot exists in param values
-        $filterParts = \explode(';', $attributes['filter']);
+        $filterParts = \explode(';', \urldecode($attributes['filter']));
 
         return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(':')->trim() => $this->valueOf((string) Str::of($part)->after(':')->trim())])->all();
     }

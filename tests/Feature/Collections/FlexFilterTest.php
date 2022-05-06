@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Route;
 use Psi\FlexAdmin\Tests\Feature\Collections\FlexFilterWrapper;
@@ -25,7 +24,6 @@ beforeEach(function () {
     actingAs($this->user);
     Route::resource('properties', TestController::class);
 });
-
 
 it('should parse filter values')
     ->expect(fn () => (new FlexFilterWrapper())->wrapParseFilter(['filter' => 'company:1;property:2']))
@@ -74,9 +72,10 @@ it('should create attributes from multiple filters')
     ->group('filter');
 
 it('should get filters from attributes')
-    ->expect(fn () => (new FlexFilterWrapper())->wrapGetFilters(['filter' => 'company:123;type:small']))
-    ->toHaveKey("0.value", 123)
-    ->toHaveKey("1.value", 'small')
-    ->toHaveKey("1.item.label", 'Small')
-    ->toHaveKey("1.item.value", 'small')
-    ->group('filter');
+    ->expect(fn () => (new FlexFilterWrapper())->wrapGetFilters(['filter' => 'company%3A123;type:small']))
+    ->toHaveKey('0.value', 123)
+    ->toHaveKey('1.value', 'small')
+    ->toHaveKey('1.item.label', 'Small')
+    ->toHaveKey('1.item.value', 'small')
+    ->group('filter')
+    ->only();
