@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +15,7 @@ trait FlexSearch
         // If we
         if (Arr::has($this->scopes, 'search')) {
             $this->validateScope($this->scopes['search']);
+
             return $query->{$this->scopes['search']}($term);
         }
 
