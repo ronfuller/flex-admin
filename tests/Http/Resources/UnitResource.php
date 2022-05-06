@@ -1,12 +1,13 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
 use Psi\FlexAdmin\Actions\Action;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
-use Psi\FlexAdmin\Panels\Panel;
 use Psi\FlexAdmin\Filters\Filter;
+use Psi\FlexAdmin\Panels\Panel;
 use Psi\FlexAdmin\Resources\Relation;
 use Psi\FlexAdmin\Resources\Resource as FlexResource;
 
@@ -51,7 +52,7 @@ class UnitResource extends FlexResource
             Field::make($cols, 'garage')
                 ?->filterable(filterType: 'value')
                 ->align('center')
-                ->component('boolean-field')
+                ->component('boolean-field'),
         ];
     }
 
