@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
