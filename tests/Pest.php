@@ -4,7 +4,9 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 use function PHPUnit\Framework\assertTrue;
+
 use Psi\FlexAdmin\Tests\Http\Controllers\PropertyController;
 use Psi\FlexAdmin\Tests\Models\ApplicationGroup;
 use Psi\FlexAdmin\Tests\Models\Company;

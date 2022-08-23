@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -151,7 +152,7 @@ class Flex extends Resource
             $resource = new $this->collects(null);
         }
         // Validate context against list of contexts
-        if (!in_array($context, Field::CONTEXTS)) {
+        if (! in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
         $this->flexResource = $resource;

@@ -28,7 +28,7 @@ trait FlexCache
 
     protected function getCollectionMetaFromSource(Resource $resource): array
     {
-        $meta = $resource->withContext($this->context)->toMeta(new $this->flexModel);
+        $meta = $resource->withContext($this->context)->toMeta(new $this->flexModel());
         if ($this->shouldCacheMeta()) {
             session()->put($this->getCacheKey(), $meta);
         }

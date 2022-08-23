@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use function Pest\Laravel\getJson;
+
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Http\Resources\PropertyResource;

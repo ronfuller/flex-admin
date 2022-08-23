@@ -171,7 +171,7 @@ trait FlexFilter
             case 'date-range':
                 return $query->where($column, '>', $this->getStartDateTime($value))->where($column, '<=', $this->getEndDateTime($value));
 
-            // TODO: implement default route with error
+                // TODO: implement default route with error
         }
 
         return $query;
