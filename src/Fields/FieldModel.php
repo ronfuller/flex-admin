@@ -8,8 +8,7 @@ use Psi\FlexAdmin\Lib\FlexInspect;
 trait FieldModel
 {
     /**
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      */
     protected Model $model;
 

@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route as Route;
 use Psi\FlexAdmin\Actions\Action;
 use Psi\FlexAdmin\Fields\Field;
@@ -43,8 +42,7 @@ it('should have a slug')
 it('should have a default title')
     ->expect(fn () => Action::make('view-website')->toArray())
     ->toHaveKey('attributes.title', 'View Website')
-    ->group('actions');;
-
+    ->group('actions');
 
 it('should have default attributes')
     ->expect(fn () => Action::make('view-website')->toArray()['attributes'])
@@ -66,20 +64,20 @@ it('should have confirm text')
 it('should have a before divider')
     ->expect(fn () => Action::make('view-website')->divideBefore()->toArray())
     ->toHaveCount(2)
-    ->toHaveKey("0.divider", true)
+    ->toHaveKey('0.divider', true)
     ->group('actions');
 
 it('should have an after divider')
     ->expect(fn () => Action::make('view-website')->divideAfter()->toArray())
     ->toHaveCount(2)
-    ->toHaveKey("1.divider", true)
+    ->toHaveKey('1.divider', true)
     ->group('actions');
 
 it('should have a before and after divider')
     ->expect(fn () => Action::make('view-website')->divideBoth()->toArray())
     ->toHaveCount(3)
-    ->toHaveKey("0.divider", true)
-    ->toHaveKey("2.divider", true)
+    ->toHaveKey('0.divider', true)
+    ->toHaveKey('2.divider', true)
     ->group('actions');
 
 it('should have a title')
@@ -103,7 +101,7 @@ it('should have a url')
     ->group('actions');
 
 it('should have a url with target self')
-    ->expect(fn () => Action::make('view-website')->url('https://pacificscreening.com', "_self")->toArray()['attributes'])
+    ->expect(fn () => Action::make('view-website')->url('https://pacificscreening.com', '_self')->toArray()['attributes'])
     ->toMatchArray([
         'url' => 'https://pacificscreening.com',
         'target' => '_self',
@@ -137,7 +135,7 @@ it('should merge attributes')
 it('should throw error on invalid route', function () {
     Route::resource('tests', TestController::class);
     expect(fn () => Action::make('view-website')->route('tests.bad-route', 'get', ['test' => 1])->toArray()['attributes'])
-        ->toThrow("Could not find route");
+        ->toThrow('Could not find route');
 })
     ->group('actions');
 
@@ -177,7 +175,6 @@ it('should show in index when inline')
     ->toHaveKey('enabled', true)
     ->group('actions');
 
-
 it('should be enabled for indexing when grouped')
     ->expect(fn () => Action::make('view-website')->grouped()->toArray(Field::CONTEXT_INDEX))
     ->toHaveKey('enabled', true)
@@ -215,13 +212,11 @@ it('should be indicate resource has canAct')
     ->toHaveKey('canAct', true)
     ->group('actions');
 
-
 // view-company canAct returns true on property model
 it('should be show when the model does not have a canAct method')
     ->expect(fn () => Action::make('view-company')->permission('properties.view-any')->toArray(Field::CONTEXT_INDEX, $this->user))
     ->toHaveKey('canAct', false)
     ->group('actions');
-
 
 it('should have the type of the extended class')
     ->expect(fn () => UrlAction::make('view-website'))

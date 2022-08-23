@@ -81,6 +81,6 @@ class Panel
 
     protected function defaultTitle(): string
     {
-        return (string) Str::of($this->key)->title()->replace("_", " ");
+        return (string) Str::of($this->key)->title()->replace('_', ' ');
     }
 }

@@ -101,4 +101,4 @@ it('should return with empty actions', function () {
     $results = (new PropertyResource($this->property))->withoutActions()->withContext(Field::CONTEXT_INDEX)->toArray(createRequest());
     expect($results['actions'])->toHaveCount(0);
 })
-    ->group('resources', 'action'); ;
+    ->group('resources', 'action');

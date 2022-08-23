@@ -1,11 +1,9 @@
 <?php
 
-
 use Psi\FlexAdmin\Panels\Panel;
 
 beforeEach(function () {
 });
-
 
 it('should make a panel')
     ->expect(fn () => Panel::make('details'))

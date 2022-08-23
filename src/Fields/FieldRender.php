@@ -25,7 +25,6 @@ trait FieldRender
      */
     protected $panel;
 
-
     /**
      * Determines whether to render the field with the component
      *

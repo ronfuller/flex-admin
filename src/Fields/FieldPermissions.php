@@ -13,9 +13,7 @@ trait FieldPermissions
      */
     public $permissions = [];
 
-
     /**
-     *
      * @var bool
      */
     protected $withPermissions = true;
@@ -84,7 +82,7 @@ trait FieldPermissions
     private function authorizeEnabledContext(string $context, mixed $model): bool
     {
         $permission = Str::of($this->permissions[$context])->contains('{entity}') ?
-            $model->qualifyColumn((string) Str::of($this->permissions[$context])->replace("{entity}.", "")) : $this->permissions[$context];
+            $model->qualifyColumn((string) Str::of($this->permissions[$context])->replace('{entity}.', '')) : $this->permissions[$context];
 
         return $this->withPermissions ? (auth()->check() ? auth()->user()->can($permission) : true) : true;
     }

@@ -28,8 +28,7 @@ trait FlexCache
 
     protected function getCollectionMetaFromSource(Resource $resource): array
     {
-        $meta = $resource->withContext($this->context)->toMeta($this->flexModel);
-
+        $meta = $resource->withContext($this->context)->toMeta(new $this->flexModel);
         if ($this->shouldCacheMeta()) {
             session()->put($this->getCacheKey(), $meta);
         }
@@ -49,7 +48,7 @@ trait FlexCache
 
     private function getCacheKey(): string
     {
-        return $this->cacheKey ?? str(request()->url() . "-" . get_class($this->flexModel) . "-" . $this->context)->replaceMatches("/[^A-Za-z0-9]++/", "-")->lower();
+        return $this->cacheKey ?? str(request()->url().'-'.get_class($this->flexModel).'-'.$this->context)->replaceMatches('/[^A-Za-z0-9]++/', '-')->lower();
     }
 
     private function shouldCacheMeta(): bool

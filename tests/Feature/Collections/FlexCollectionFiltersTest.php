@@ -13,11 +13,11 @@ beforeEach(function () {
     $this->properties = Property::factory()->count(25)
         ->forCompany()
         ->state(new Sequence(
-            ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue', ], 'status' => $this->status, 'type' => 'townhome'],
-            ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green', ], 'status' => $this->status, 'type' => 'apartment'],
-            ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'blue', ], 'status' => $this->status, 'type' => 'home'],
-            ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue', ], 'status' => $this->status, 'type' => 'duplex'],
-            ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'red', ], 'status' => $this->status, 'type' => 'commercial'],
+            ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue'], 'status' => $this->status, 'type' => 'townhome'],
+            ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green'], 'status' => $this->status, 'type' => 'apartment'],
+            ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'blue'], 'status' => $this->status, 'type' => 'home'],
+            ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue'], 'status' => $this->status, 'type' => 'duplex'],
+            ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'red'], 'status' => $this->status, 'type' => 'commercial'],
             ['created_at' => now(),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now(),  'status' => 'AJU2Z14UUQ'],
             ['created_at' => now()->subDays(45),  'status' => 'AJU2Z14UUQ'],
@@ -28,16 +28,16 @@ beforeEach(function () {
             ['created_at' => now()->subMonth()->firstOfMonth()->addDays(4), 'status' => '9850G5PW2O'],
             ['created_at' => now()->firstOfQuarter()->addHours(2), 'status' => 'JN6ZSAJLHM'],
             ['created_at' => now()->firstOfQuarter()->addHours(4), 'status' => 'JN6ZSAJLHM'],
-            ['created_at' => now()->subHours(1),  'status' => '0NYYUYW9DF', ],
-            ['created_at' => now()->subHours(2),  'status' => '0NYYUYW9DF', ],
-            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(2),  'status' => 'O4IGPQ4FGW', ],
-            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(4),  'status' => 'O4IGPQ4FGW', ],
-            ['created_at' => now()->firstOfYear()->addDays(1),  'status' => '5R2O5O63MQ', ],
-            ['created_at' => now()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ', ],
-            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ', ],
-            ['created_at' => now()->subYear()->firstOfYear()->addDays(1),  'status' => '4FI6DUVKNC', ],
-            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC', ],
-            ['created_at' => now()->subYears(2)->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC', ],
+            ['created_at' => now()->subHours(1),  'status' => '0NYYUYW9DF'],
+            ['created_at' => now()->subHours(2),  'status' => '0NYYUYW9DF'],
+            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(2),  'status' => 'O4IGPQ4FGW'],
+            ['created_at' => now()->subQuarter()->firstOfQuarter()->addDays(4),  'status' => 'O4IGPQ4FGW'],
+            ['created_at' => now()->firstOfYear()->addDays(1),  'status' => '5R2O5O63MQ'],
+            ['created_at' => now()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ'],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '5R2O5O63MQ'],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(1),  'status' => '4FI6DUVKNC'],
+            ['created_at' => now()->subYear()->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC'],
+            ['created_at' => now()->subYears(2)->firstOfYear()->addDays(2),  'status' => '4FI6DUVKNC'],
         ))
         ->create();
     $this->user = User::factory()->create(

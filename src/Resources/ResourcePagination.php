@@ -5,13 +5,11 @@ namespace Psi\FlexAdmin\Resources;
 trait ResourcePagination
 {
     /**
-     *
      * @var int - pagination option to use for default pagination per page
      */
     protected int|null $perPage;
 
     /**
-     *
      * @var array
      */
     protected array|null $perPageOptions;

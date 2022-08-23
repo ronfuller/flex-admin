@@ -26,7 +26,7 @@ trait ResourceFilters
     /**
      * Get a filter by name
      *
-     * @param string $name
+     * @param  string  $name
      * @return mixed
      */
     public function getFilter(string $name): mixed
@@ -37,8 +37,8 @@ trait ResourceFilters
     /**
      * Returns filters for the resource
      *
-     * @param bool $asArrayItems , returns the items as array element instead of the Filter class object
-     * @param Model|null $model  , allows for a model input to determine column information
+     * @param  bool  $asArrayItems , returns the items as array element instead of the Filter class object
+     * @param  Model|null  $model  , allows for a model input to determine column information
      * @return array
      */
     public function toFilters(bool $asArrayItems = true, Model $model = null): array

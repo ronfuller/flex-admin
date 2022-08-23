@@ -1,6 +1,5 @@
 <?php
 
-
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Relations\Relation;

@@ -5,8 +5,7 @@ use Psi\FlexAdmin\Tests\Models\Company;
 use Psi\FlexAdmin\Tests\Models\Property;
 
 it('should have a related model')
-    ->expect(fn () =>
-    Field::make(null, 'companyName')
+    ->expect(fn () => Field::make(null, 'companyName')
         ->on(Company::class)
         ->select('name')
         ->model(new Property())
@@ -21,8 +20,7 @@ it('should have a related model')
     ->group('relations', 'fields');
 
 it('should have a related model join')
-    ->expect(fn () =>
-    Field::make(null, 'companyName')
+    ->expect(fn () => Field::make(null, 'companyName')
         ->on(Company::class)
         ->select('name')
         ->model(new Property())

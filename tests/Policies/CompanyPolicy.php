@@ -24,7 +24,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  User $user
+     * @param  User  $user
      * @param  Company  $Company
      * @return \Illuminate\Auth\Access\Response|bool
      */
@@ -47,7 +47,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  User $user
+     * @param  User  $user
      * @param  Company  $company
      * @return \Illuminate\Auth\Access\Response|bool
      */

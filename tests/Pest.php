@@ -72,11 +72,11 @@ uses()
                 Company::factory()->state(['name' => 'Columbia'])
             )
             ->state(new Sequence(
-                ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue', ], 'status' => 'success', 'type' => 'townhome'],
-                ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green', ], 'status' => 'fail', 'type' => 'apartment'],
-                ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'violet', ], 'status' => 'fail', 'type' => 'home'],
-                ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue green', ], 'status' => 'fail', 'type' => 'duplex'],
-                ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'light blue', ], 'status' => 'fail', 'type' => 'commercial'],
+                ['created_at' => now()->subDays(5), 'name' => 'Everest', 'options' => ['color' => 'blue'], 'status' => 'success', 'type' => 'townhome'],
+                ['created_at' => now()->subDays(3), 'name' => 'Cascade', 'options' => ['color' => 'green'], 'status' => 'fail', 'type' => 'apartment'],
+                ['created_at' => now()->subDays(10), 'name' => 'Denali', 'options' => ['color' => 'violet'], 'status' => 'fail', 'type' => 'home'],
+                ['created_at' => now()->subDays(13), 'name' => 'Cameroon', 'options' => ['color' => 'blue green'], 'status' => 'fail', 'type' => 'duplex'],
+                ['created_at' => now()->subDays(35), 'name' => 'Rainier', 'options' => ['color' => 'light blue'], 'status' => 'fail', 'type' => 'commercial'],
             ))
             ->create();
         //$this->user = User::first();

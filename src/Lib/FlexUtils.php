@@ -17,13 +17,13 @@ class FlexUtils
     /**
      * Return the title for the given slug (i.e. Edit Property)
      *
-     * @param string $slug
+     * @param  string  $slug
      * @return string
      */
     public function title(string $slug): string
     {
         $modelKey = $this->meta['name'];
-        $modelTitle = (string) Str::of($modelKey)->replace("_", " ")->title();
+        $modelTitle = (string) Str::of($modelKey)->replace('_', ' ')->title();
 
         return (string) Str::of($slug)->title()->append(" {$modelTitle}");
     }
@@ -31,7 +31,7 @@ class FlexUtils
     /**
      * Return the permissions for the given slug (i.e. properties.edit)
      *
-     * @param string $slug
+     * @param  string  $slug
      * @return string
      */
     public function permission(string $slug): string
@@ -44,8 +44,8 @@ class FlexUtils
     /**
      * Build the route for the given slug (i.e. application-groups.show)
      *
-     * @param string $slug
-     * @param mixed $model
+     * @param  string  $slug
+     * @param  mixed  $model
      * @return array
      */
     public function route(string $slug, mixed $model): array
@@ -67,7 +67,7 @@ class FlexUtils
             'delete' => 'delete',
         ];
         $routeMethod = $slugRouteMethods[$slug];
-        $routeName = $pluralModel . "." . $slugResourceRoutes[$slug];
+        $routeName = $pluralModel.'.'.$slugResourceRoutes[$slug];
 
         $routeParam = in_array($slug, ['view', 'edit', 'delete']) ? [$modelKey => $model->getAttribute($routeKeyName)] : [];
 

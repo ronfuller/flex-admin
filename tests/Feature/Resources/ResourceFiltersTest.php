@@ -23,8 +23,8 @@ it('should have filters as filter items')
 it('should have filter items for default values')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toMeta(new Property()))
     ->filters
-    ->toHaveKey("1.item", ['label' => 'Small', 'value' => 'small'])
-    ->toHaveKey("2.item", ['label' => 'Blue', 'value' => 'blue'])
+    ->toHaveKey('1.item', ['label' => 'Small', 'value' => 'small'])
+    ->toHaveKey('2.item', ['label' => 'Blue', 'value' => 'blue'])
     ->group('resources', 'filter');
 
 it('should have empty filters when without filters is set')
@@ -41,7 +41,7 @@ it('should create filters with meta information')
 it('should throw error when creating a filter on a non-filterable key', function () {
     $filter = Filter::make('name')->fromAttribute();
     expect(fn () => (new PropertyResource($this->property))->addFilter($filter)->withContext(Field::CONTEXT_INDEX)->toMeta(new Property()))
-        ->toThrow("Filter for key = name is not filterable");
+        ->toThrow('Filter for key = name is not filterable');
 })
     ->group('resources', 'filter');
 

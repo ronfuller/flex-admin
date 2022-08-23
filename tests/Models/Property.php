@@ -15,6 +15,7 @@ class Property extends Model
     use HasDateRange;
 
     public const PROPERTY_TYPES = ['managed', 'private', 'portland', 'local', 'environmental', 'public', 'large', 'small', 'medium'];
+
     public const PROPERTY_COLORS = ['blue', 'green', 'yellow', 'orange', 'purple', 'red'];
 
     protected $casts = [

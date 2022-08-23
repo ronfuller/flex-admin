@@ -44,7 +44,7 @@ class FlexInspect
         $methods = \get_class_methods($model);
 
         return collect($methods)
-            ->filter(fn ($method) => Str::of($method)->startsWith("filter"))
+            ->filter(fn ($method) => Str::of($method)->startsWith('filter'))
             ->values()->map(fn ($function) => (string) Str::of($function)->replace('filter', '')->lower())
             ->all();
     }
@@ -54,13 +54,13 @@ class FlexInspect
         $methods = \get_class_methods($model);
 
         return collect($methods)
-            ->filter(fn ($method) => Str::of($method)->startsWith("getFilter") && Str::of($method)->endsWith("Attribute"))
+            ->filter(fn ($method) => Str::of($method)->startsWith('getFilter') && Str::of($method)->endsWith('Attribute'))
             ->values()->map(fn ($function) => (string) Str::of($function)->replace('getFilter', '')->replace('Attribute', '')->lower())
             ->all();
     }
 
     protected function pluralName($model): string
     {
-        return (string) Str::of($model->getQualifiedKeyName())->before('.')->replace("_", "-");
+        return (string) Str::of($model->getQualifiedKeyName())->before('.')->replace('_', '-');
     }
 }

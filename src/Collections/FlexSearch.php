@@ -34,7 +34,7 @@ trait FlexSearch
     /**
      * Determines if the search key is found in the attribute list
      *
-     * @param array $attributes
+     * @param  array  $attributes
      * @return bool
      */
     protected function hasSearch(array $attributes): bool

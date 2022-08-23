@@ -49,7 +49,7 @@ trait FieldValue
      */
     public function append(string $append): self
     {
-        $this->value = $this->value ? $this->value . ' ' . $append : $this->value;
+        $this->value = $this->value ? $this->value.' '.$append : $this->value;
 
         return $this;
     }
