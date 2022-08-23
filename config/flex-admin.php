@@ -9,10 +9,10 @@ return [
     'command_output' => 'Output configured in config file',
     'render' => [
         'default_component' => 'text-field',
-        'default_panel' => 'details'
+        'default_panel' => 'details',
     ],
     'search' => [
-        'attribute' => 'search'
+        'attribute' => 'search',
     ],
     'sort' => [
         'attribute' => 'sort',
@@ -24,10 +24,10 @@ return [
             /**
              * Indicates attribute is true/false and true value indicates direction as specified by attribute, set to null if sort attribute contains text 'asc' or 'desc
              */
-            'flag' => 'desc'
-        ]
+            'flag' => 'desc',
+        ],
     ],
     'pagination' => [
-        'per_page_options' => [5, 15, 25, 50, 75, 100]
-    ]
+        'per_page_options' => [5, 15, 25, 50, 75, 100],
+    ],
 ];

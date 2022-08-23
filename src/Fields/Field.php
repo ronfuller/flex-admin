@@ -10,11 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $attributes
  * @property array $permissions
  * @property array $meta
- *
- *
- *
  */
-
 class Field
 {
     use Makeable;
@@ -31,9 +27,15 @@ class Field
     use FieldRelation;
 
     public const
-        CONTEXT_INDEX = 'index',
-        CONTEXT_DETAIL = 'detail',
-        CONTEXT_EDIT = 'edit',
+        CONTEXT_INDEX = 'index';
+
+    public const
+        CONTEXT_DETAIL = 'detail';
+
+    public const
+        CONTEXT_EDIT = 'edit';
+
+    public const
         CONTEXT_CREATE = 'create';
 
     // only default contexts
@@ -52,12 +54,22 @@ class Field
     ];
 
     public const
-        FILTER_VALUE = "value",
-        FILTER_RANGE = "range",
-        FILTER_DATE_RANGE = "date-range",
-        FILTER_LTE = "lte",
-        FILTER_GTE = "gte",
-        FILTER_BETWEEN = "between";
+        FILTER_VALUE = 'value';
+
+    public const
+        FILTER_RANGE = 'range';
+
+    public const
+        FILTER_DATE_RANGE = 'date-range';
+
+    public const
+        FILTER_LTE = 'lte';
+
+    public const
+        FILTER_GTE = 'gte';
+
+    public const
+        FILTER_BETWEEN = 'between';
 
     public const FILTER_TYPES =
     [
@@ -72,7 +84,7 @@ class Field
     /**
      * Key determines the default field name, is the primary identifier for the field
      *
-     * @param string $key
+     * @param  string  $key
      */
     final public function __construct(public string $key)
     {
@@ -82,7 +94,7 @@ class Field
     /**
      * Sets the context for the field
      *
-     * @param string $context
+     * @param  string  $context
      * @return self
      */
     public function context(string $context): self

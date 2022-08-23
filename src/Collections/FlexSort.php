@@ -9,7 +9,7 @@ trait FlexSort
     public function sortBy(Builder $query, array $attributes): Builder
     {
         if (empty($this->meta['sort'])) {
-            throw new \Exception("Error. Default sort is required for resource.");
+            throw new \Exception('Error. Default sort is required for resource.');
         }
         // Get the default sort
         ['sort' => $sort, 'sortDir' => $sortDir, 'name' => $sortName] = $this->meta['sort'];

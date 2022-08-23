@@ -46,7 +46,7 @@ trait FlexQuery
     /**
      * Create filters with options from query
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function toQueryFilters(Request $request): array
@@ -84,7 +84,7 @@ trait FlexQuery
     /**
      * Create query and execute possibly deferring filter options build
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return void
      */
     protected function toQuery(Request $request)

@@ -9,25 +9,24 @@ it('should be searchable')
     ->toHaveKey('searchable', true)
     ->group('search', 'fields');
 
-
 it('should have a searchable type')
     ->expect(fn () => Field::make(null, 'name')
         ->searchable('full')
         ->model(new Property())
         ->toMeta())
     ->toHaveKey('searchType', 'full')
-    ->group('search', 'fields');;
+    ->group('search', 'fields');
 
 it('should have a default searchable type')
     ->expect(fn () => Field::make(null, 'name')
         ->model(new Property())
         ->toMeta())
     ->toHaveKey('searchType', 'full')
-    ->group('search', 'fields');;
+    ->group('search', 'fields');
 
 it('should throw error on invalid searchable type', function () {
     expect(fn () => Field::make(null, 'name')
         ->searchable('invalid'))
-        ->toThrow("Invalid search type");
+        ->toThrow('Invalid search type');
 })
-    ->group('search', 'fields');;
+    ->group('search', 'fields');

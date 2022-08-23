@@ -11,6 +11,7 @@ class Filter
     public mixed $value = null;
 
     protected mixed $default = null;
+
     protected mixed $item = null;
 
     /**
@@ -86,9 +87,11 @@ class Filter
      */
     public $queryScope;
 
-    public const SOURCE_FUNCTION = 'function',
-        SOURCE_COLUMN = 'column',
-        SOURCE_ATTRIBUTE = 'attribute';
+    public const SOURCE_FUNCTION = 'function';
+
+    public const SOURCE_COLUMN = 'column';
+
+    public const SOURCE_ATTRIBUTE = 'attribute';
 
     final public function __construct(public string $name, public string|null $key = null)
     {
@@ -209,7 +212,8 @@ class Filter
 
     /**
      * Get the item value using the callable
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      * @return array
      */
     public function getItem(mixed $value): array
@@ -287,13 +291,13 @@ class Filter
 
     protected function optionsFromAttribute(Model $model): array
     {
-        $attribute = 'filter_' . $this->sourceMeta;
+        $attribute = 'filter_'.$this->sourceMeta;
         $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append('Attribute');
         if (! \method_exists($model, $filterMutatorMethod)) {
             throw new \Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
         }
 
-        return $model->getAttribute('filter_' . $this->sourceMeta);
+        return $model->getAttribute('filter_'.$this->sourceMeta);
     }
 
     protected function optionsFromFunction(Model $model, Builder $query): array

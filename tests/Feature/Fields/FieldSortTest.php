@@ -1,6 +1,5 @@
 <?php
 
-
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Models\Property;
 

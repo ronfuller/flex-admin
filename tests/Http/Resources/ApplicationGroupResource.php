@@ -10,7 +10,7 @@ class ApplicationGroupResource extends Resource implements Flexible
     /**
      * Create fields for resource
      *
-     * @param array|null|null $cols input list of columns enabled for the resource in context, null is prior to column availability
+     * @param  array|null|null  $cols input list of columns enabled for the resource in context, null is prior to column availability
      * @return array
      */
     public function fields(array|null $keys = null): array

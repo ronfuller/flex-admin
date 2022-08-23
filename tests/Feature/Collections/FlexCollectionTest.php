@@ -143,53 +143,53 @@ it('should have a detail resource without relations', function () {
     expect($result)->data->relations->toBeEmpty();
 })->group('collections');
 
-    /*
-        Full Signature
+/*
+    Full Signature
 
-        Flex::for(Class,Context)
-            ->byId()    // detail, edit
-            ->where()
-            ->withoutCache()
+    Flex::for(Class,Context)
+        ->byId()    // detail, edit
+        ->where()
+        ->withoutCache()
 
-           ->authorizeScope(string '' )
-           ->orderScope(string '')
-           ->filterScope()
-           ->searchScope()
+       ->authorizeScope(string '' )
+       ->orderScope(string '')
+       ->filterScope()
+       ->searchScope()
 
-           ->withoutDefaultActions()
-           ->withoutActions()
+       ->withoutDefaultActions()
+       ->withoutActions()
 
-           ->indexScope()       // replacement scope for INDEX context
-           ->detailScope()      // replacment scope for DETAIL context
-           ->editScope()        // replacment scope for EDIT context
-           ->createScope()      // replacemnent scope for CREATE context
+       ->indexScope()       // replacement scope for INDEX context
+       ->detailScope()      // replacment scope for DETAIL context
+       ->editScope()        // replacment scope for EDIT context
+       ->createScope()      // replacemnent scope for CREATE context
 
-           ->withScope()  // add additinal scopes to query
+       ->withScope()  // add additinal scopes to query
 
-           ->withoutAuthorize()
-           ->withoutConstraints()
+       ->withoutAuthorize()
+       ->withoutConstraints()
 
-           ->withScopes(['',''])
-           ->withoutGlobalScopes([''])
+       ->withScopes(['',''])
+       ->withoutGlobalScopes([''])
 
-            ->withoutPagination()
+        ->withoutPagination()
 
-            ->withRelations()
-            ->withoutRelations()
-            ->withoutRelation(Related)
+        ->withRelations()
+        ->withoutRelations()
+        ->withoutRelation(Related)
 
-            ->withoutFilters()
-            ->withoutDefaultFilters()
-            ->withoutDeferredFilters()
+        ->withoutFilters()
+        ->withoutDefaultFilters()
+        ->withoutDeferredFilters()
 
-            ->wrapper(string $element)
+        ->wrapper(string $element)
 
-            ->query()
-            ->count()
+        ->query()
+        ->count()
 
-            ->transform( callable )
+        ->transform( callable )
 
-            ->toArray()
-            ->toResponse()
+        ->toArray()
+        ->toResponse()
 
 */

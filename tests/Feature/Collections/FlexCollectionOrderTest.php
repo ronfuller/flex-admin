@@ -30,7 +30,7 @@ it('should throw an error when there is no default sort order', function () {
         ->withoutFilters()
         ->withoutCache()
         ->query(createRequest()))
-        ->toThrow("Error. Default sort is required for resource.");
+        ->toThrow('Error. Default sort is required for resource.');
 })->group('collections', 'order');
 
 it('should throw an error when there is an invalid sort direction', function () {
@@ -39,15 +39,14 @@ it('should throw an error when there is an invalid sort direction', function () 
         ->withoutFilters()
         ->withoutCache()
         ->query(createRequest(['sort' => 'type', 'descending' => 'abc'])))
-        ->toThrow("Invalid sort direction");
+        ->toThrow('Invalid sort direction');
 })->group('collections', 'order');
-
 
 it('should have an ordered query type desc')
     ->expect(fn () => Flex::for(Property::class, Field::CONTEXT_INDEX)
         ->withoutFilters()
         ->withoutCache()
-        ->query(createRequest(['sort' => 'type', 'descending' => "true"]))
+        ->query(createRequest(['sort' => 'type', 'descending' => 'true']))
         ->resource->first())
     ->type
     ->toBe('townhome')

@@ -10,8 +10,11 @@ class FlexFilterWrapper
     use FlexFilter;
 
     protected $meta;
+
     protected $defaultFilters = true;
+
     protected $flexResource;
+
     private $flexFilters;
 
     public function wrapParseFilter(array $attributes)

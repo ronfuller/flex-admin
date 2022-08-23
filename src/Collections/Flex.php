@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -119,6 +118,7 @@ class Flex extends Resource
      * @var string|null
      */
     public ?string $page = null;
+
     /**
      * Determines if we should cache meta values
      *
@@ -134,8 +134,8 @@ class Flex extends Resource
      * Create a flex collection instance
      *
      * @param  string  $model
-     * @param string $context
-     * @param Resource $resource
+     * @param  string  $context
+     * @param  resource  $resource
      * @return void
      */
     final public function __construct(string $model, string $context, Resource $resource = null)
@@ -151,7 +151,7 @@ class Flex extends Resource
             $resource = new $this->collects(null);
         }
         // Validate context against list of contexts
-        if (! in_array($context, Field::CONTEXTS)) {
+        if (!in_array($context, Field::CONTEXTS)) {
             throw new \Exception("Unknown context {$context}");
         }
         $this->flexResource = $resource;
@@ -160,7 +160,7 @@ class Flex extends Resource
     /**
      * Set the Inertia Page Component
      *
-     * @param string $page
+     * @param  string  $page
      * @return \Psi\FlexAdmin\Collections\Flex
      */
     public function page(string $page): self
@@ -226,7 +226,7 @@ class Flex extends Resource
     /**
      * Return results of a data query
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function toDataQuery(Request $request): array
@@ -245,7 +245,7 @@ class Flex extends Resource
     /**
      * Return results of a data query
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function toIndexQuery(Request $request): array
@@ -284,7 +284,7 @@ class Flex extends Resource
     /**
      * Create the transformed resource
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function toData(Request $request): array
@@ -294,8 +294,6 @@ class Flex extends Resource
          * @var Resource
          */
         $resource = $this->collection->first();
-        $resource->setControls($this->getControls());        // cascade control parameters
-
         $actions = $resource->toActions(context: $this->context);
 
         // We'll pass actions to the resource to build the array of data

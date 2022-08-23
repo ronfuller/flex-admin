@@ -22,8 +22,8 @@ trait FlexConstraint
     /**
      * Constrain the query by the column, value from the attributes
      *
-     * @param Builder $query
-     * @param array $attributes
+     * @param  Builder  $query
+     * @param  array  $attributes
      * @return Builder
      */
     public function constrain(Builder $query, array $attributes): Builder

@@ -37,7 +37,7 @@ trait FlexFilter
     /**
      * Checks for any filter with a value set
      *
-     * @param array $filters
+     * @param  array  $filters
      * @return bool
      */
     protected function hasFilters(array $filters): bool
@@ -48,7 +48,7 @@ trait FlexFilter
     /**
      * Gets the filters from the resource w/out building options and sets values based on attributes or cache
      *
-     * @param array $attributes
+     * @param  array  $attributes
      * @return array
      */
     protected function getFilters(array $attributes): array
@@ -76,8 +76,8 @@ trait FlexFilter
     /**
      * Update filter values from the input attributes
      *
-     * @param Collection $filters
-     * @param array $attributes
+     * @param  Collection  $filters
+     * @param  array  $attributes
      * @return Collection
      */
     protected function filtersFromAttributes(Collection $filters, array $attributes): Collection
@@ -98,7 +98,7 @@ trait FlexFilter
     /**
      * Build the filter options from the input filter meta
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return array
      */
     protected function buildFilters(array $attributes, Builder $query): array
@@ -131,8 +131,8 @@ trait FlexFilter
     /**
      * Apply the filter to the query
      *
-     * @param Builder $query
-     * @param array $filters
+     * @param  Builder  $query
+     * @param  array  $filters
      * @return Builder
      */
     protected function applyFilters(Builder $query, array $filters): Builder
@@ -151,10 +151,10 @@ trait FlexFilter
     /**
      * Create the filter by type of filter
      *
-     * @param Builder $query
-     * @param mixed $value
-     * @param string $column
-     * @param string $type
+     * @param  Builder  $query
+     * @param  mixed  $value
+     * @param  string  $column
+     * @param  string  $type
      * @return Builder
      */
     protected function filterByType(Builder $query, mixed $value, string|null $column, string $type, string|null $queryScope = null): Builder
@@ -171,7 +171,7 @@ trait FlexFilter
             case 'date-range':
                 return $query->where($column, '>', $this->getStartDateTime($value))->where($column, '<=', $this->getEndDateTime($value));
 
-                // TODO: implement default route with error
+            // TODO: implement default route with error
         }
 
         return $query;
@@ -180,7 +180,7 @@ trait FlexFilter
     /**
      * Create a filter attribute from a filter array
      *
-     * @param array $filters
+     * @param  array  $filters
      * @return array
      */
     protected function filtersAsAttributes(array $filters): array
@@ -195,7 +195,7 @@ trait FlexFilter
 
     protected function filterToAttribute(array $filter)
     {
-        return $filter['name'] . ':' . $filter['value'][$filter['optionValue']];
+        return $filter['name'].':'.$filter['value'][$filter['optionValue']];
     }
 
     protected function parseFilter(array $attributes): array

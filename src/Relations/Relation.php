@@ -22,9 +22,15 @@ class Relation
     public Flex $collection;
 
     public const
-        TYPE_BELONGS_TO = 'belongsTo',
-        TYPE_HAS_MANY = 'hasMany',
-        TYPE_BELONGS_TO_MANY = 'belongsToMany',
+        TYPE_BELONGS_TO = 'belongsTo';
+
+    public const
+        TYPE_HAS_MANY = 'hasMany';
+
+    public const
+        TYPE_BELONGS_TO_MANY = 'belongsToMany';
+
+    public const
         TYPE_HAS_ONE = 'hasOne';
 
     final public function __construct(public string $relationKey, protected string $relation)
@@ -123,7 +129,7 @@ class Relation
 
     protected function buildBelongsTo(Model $resource, Request $request): array
     {
-        $foreignKey = (string) str($this->relationKey)->snake() . '_id';
+        $foreignKey = (string) str($this->relationKey)->snake().'_id';
         $id = $resource->getAttribute($foreignKey);
         if (is_null($id)) {
             throw new \Exception("Could not locate foreign key {$foreignKey} on model");
