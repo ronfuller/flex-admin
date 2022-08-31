@@ -145,7 +145,7 @@ class Field
 
     public function toAttributes(): array
     {
-        return [...['key' => $this->key, 'name' => $this->meta['name'], 'panel' => $this->panel], ...$this->attributes];
+        return [...['key' => $this->key, 'name' => $this->meta['name'], 'label' => $this->meta['label'], 'panel' => $this->panel], ...$this->attributes];
     }
 
     public function toValue(array $attributes): mixed
