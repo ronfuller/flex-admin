@@ -1,30 +1,29 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
 
 trait FlexSort
 {
-    public function sortBy(Builder $query, array $attributes): Builder
-    {
-        if (empty($this->meta['sort'])) {
-            throw new \Exception('Error. Default sort is required for resource.');
-        }
-        // Get the default sort
-        ['sort' => $sort, 'sortDir' => $sortDir, 'name' => $sortName] = $this->meta['sort'];
+    // public function sortBy(Builder $query, array $attributes): Builder
+    // {
+    //     if (empty($this->meta['sort'])) {
+    //         throw new \Exception('Error. Default sort is required for resource.');
+    //     }
+    //     // Get the default sort
+    //     ['sort' => $sort, 'sortDir' => $sortDir, 'name' => $sortName] = $this->meta['sort'];
 
-        // See if there are order by attribute names in the attributes
-        if ($this->hasSort($attributes)) {
-            ['sort' => $sort, 'name' => $sortName] = $this->getSort($attributes);
-            $sortDir = $this->getSortDirection($attributes);
-        }
+    //     // See if there are order by attribute names in the attributes
+    //     if ($this->hasSort($attributes)) {
+    //         ['sort' => $sort, 'name' => $sortName] = $this->getSort($attributes);
+    //         $sortDir = $this->getSortDirection($attributes);
+    //     }
 
-        $this->flexSort = $this->buildSort($sortName, $sortDir);
-        $query = $query->orderBy($sort, $sortDir);
+    //     $this->flexSort = $this->buildSort($sortName, $sortDir);
+    //     $query = $query->orderBy($sort, $sortDir);
 
-        return $query;
-    }
+    //     return $query;
+    // }
 
     protected function buildSort(string $sortName, string $sortDir)
     {

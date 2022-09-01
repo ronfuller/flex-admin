@@ -1,39 +1,26 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Psi\FlexAdmin\Concerns\HasControls;
 use Psi\FlexAdmin\Fields\Field;
 
 class Resource extends JsonResource implements Flexible
 {
+    use HasControls;
+
     use ResourceColumns;
     use ResourcePagination;
-    use ResourceFilters;
+    //use ResourceFilters;
     use ResourceFlexible;
     use ResourceActions;
     use ResourcePanels;
     use ResourceRelations;
 
-    public const CONTROL_PARAMS = ['withActions', 'withRelations', 'filterRelations', 'withActions', 'defaultActions'];
-
     /**
-     * @property Model|null $model
-     *
-     * @method \Psi\FlexAdmin\Resources\Resource withContext(string $context)
-     * @method \Psi\FlexAdmin\Resources\Resource withKeys(array $keys)
-     * @method array toMeta(Model $model)
-     * @method \Illuminate\Support\Collection toFields()
-     * @method array toArray(\Illuminate\Http\Request $request)
-     * @method array toFilters(bool $asArrayItems , Model $model)
-     */
-    /**
-     * Instance of Eloquent Model
-     *
      * @var Model
      */
     public Model | null $model = null;
@@ -97,28 +84,6 @@ class Resource extends JsonResource implements Flexible
     }
 
     /**
-     * Set the control parameters for actions and relations
-     *
-     * @param  array  $args
-     * @return self
-     */
-    public function setControls(array $args): self
-    {
-        collect(self::CONTROL_PARAMS)->each(function ($param) use ($args) {
-            if (Arr::has($args, $param)) {
-                $this->{$param} = data_get($args, $param);
-            }
-        });
-
-        return $this;
-    }
-
-    public function getControls(): array
-    {
-        return collect(self::CONTROL_PARAMS)->mapWithKeys(fn ($param) => [$param => $this->{$param}])->all();
-    }
-
-    /**
      * Creates the meta for the resource including keys, columns, filters,sorts, pagination
      *
      * @param  Model  $model
@@ -132,19 +97,13 @@ class Resource extends JsonResource implements Flexible
         $meta = [
             'keys' => $this->keys(),
             'columns' => $this->columns->values()->all(),
-            'selects' => $this->selects(),
-            'sort' => $this->sort(),
-            'sorts' => $this->sorts(),
-            'filters' => $this->toFilters(),
-            'joins' => $this->toJoins(),
-            'searches' => $this->searches(),
-            'constraints' => $this->constraints(),
+            'sortables' => $this->sortables(),
+            'filterables' => $this->filterables(),
+            'searchables' => $this->searchables(),
             'perPage' => $this->perPage(),
             'perPageOptions' => $this->perPageOptions(),
             'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all(),
         ];
-
-        // TODO: validate meta, must contain a default sort, sortable can't be false if default sort, can't have multiple default sorts
         return $meta;
     }
 
@@ -238,7 +197,7 @@ class Resource extends JsonResource implements Flexible
     protected function withFields()
     {
         // return fields array if not using panels
-        return ! $this->withPanels();
+        return !$this->withPanels();
     }
 
     /**
@@ -293,7 +252,7 @@ class Resource extends JsonResource implements Flexible
             'delete' => 'delete',
         ];
         $routeMethod = $slugRouteMethods[$slug];
-        $routeName = $pluralModel.'.'.$slugResourceRoutes[$slug];
+        $routeName = $pluralModel . '.' . $slugResourceRoutes[$slug];
         $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? [['name' => $modelKey, 'field' => $routeKeyName]] : [];
 
         return [$routeName, $routeMethod, $routeParams];

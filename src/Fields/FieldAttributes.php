@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
@@ -14,10 +13,9 @@ trait FieldAttributes
     public $meta = [
         'enabled' => true,
         'sortable' => false,
-        'filterable' => false,
-        'constrainable' => false,
-        'searchable' => false,
         'selectable' => false,
+        'filterable' => false,
+        'searchable' => false,
         'copyable' => false,
         'align' => 'left',
         'hidden' => false,
@@ -111,16 +109,6 @@ trait FieldAttributes
     public function selectable(): self
     {
         $this->meta['selectable'] = true;
-
-        return $this;
-    }
-
-    /**
-     * @return \Psi\FlexAdmin\Fields\Field
-     */
-    public function constrainable(): self
-    {
-        $this->meta['constrainable'] = true;
 
         return $this;
     }

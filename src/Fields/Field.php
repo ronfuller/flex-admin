@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,14 +16,14 @@ class Field
     use FieldPermissions;
     use FieldDisplay;
     use FieldAttributes;
-    use FieldSort;
+    // use FieldSort;
     use FieldValue;
-    use FieldSelect;
+    // use FieldSelect;
     use FieldRender;
     use FieldSearchable;
-    use FieldModel;
+    // use FieldModel;
     use FieldFilter;
-    use FieldRelation;
+    // use FieldRelation;
 
     public const
         CONTEXT_INDEX = 'index';
@@ -116,12 +115,12 @@ class Field
     public function toMeta(array|null $modelMeta = null): array
     {
         // Meta information for the primary model for the field
-        $this->modelMeta = $modelMeta ?? $this->modelMeta($this->model);
+        // $this->modelMeta = $modelMeta ?? $this->modelMeta($this->model);
 
         // If this field is on another model, we need that meta
-        if ($this->onModel) {
-            $this->onModelMeta = $this->modelMeta(new $this->onModel());
-        }
+        // if ($this->onModel) {
+        //     $this->onModelMeta = $this->modelMeta(new $this->onModel());
+        // }
 
         return array_merge(
             $this->meta,
@@ -130,15 +129,15 @@ class Field
                 'render' => $this->render,
                 'component' => $this->component,
                 'key' => $this->key,
-                'select' => $this->getSelect(),
-                'sort' => $this->getColumn(),
-                'column' => $this->getColumn(),
-                'defaultSort' => $this->defaultSort,
-                'sortDir' => $this->sortDir,
-                'searchType' => $this->searchType,
+                // 'select' => $this->getSelect(),
+                // 'sort' => $this->getColumn(),
+                // 'column' => $this->getColumn(),
+                // 'defaultSort' => $this->defaultSort,
+                // 'sortDir' => $this->sortDir,
+                // 'searchType' => $this->searchType,
                 'filterType' => $this->filterType,
                 'addToValues' => $this->addToValues,
-                'join' => $this->join(),
+                // 'join' => $this->join(),
             ]
         );
     }
@@ -184,7 +183,7 @@ class Field
         $this->setDefaultDisplay();
         $this->setDefaultComponents();
         $this->setDefaultRender();
-        $this->setDefaultSearchType();
+        //    $this->setDefaultSearchType();
         $this->setDefaultName();
         $this->setDefaultLabel();
         $this->setDefaultValue();

@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -7,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Psi\FlexAdmin\Tests\Models\Builders\PropertyBuilder;
 use Psi\FlexAdmin\Tests\Models\Traits\HasDateRange;
 
 class Property extends Model
@@ -136,6 +136,11 @@ class Property extends Model
     protected static function newFactory()
     {
         return \Psi\FlexAdmin\Tests\Factories\PropertyFactory::new();
+    }
+
+    public function newEloquentBuilder($query): PropertyBuilder
+    {
+        return new PropertyBuilder($query);
     }
 
     protected static function booted()
