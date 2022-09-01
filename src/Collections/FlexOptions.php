@@ -55,6 +55,24 @@ trait FlexOptions
     protected bool $withRelations = true;
 
     /**
+     * Convert Fields to Associative Array Object
+     *
+     * @var bool
+     */
+    protected bool $fieldsAsObject = false;
+
+    /**
+     * Set the Inertia Page Component
+     *
+     * @return \Psi\FlexAdmin\Collections\Flex
+     */
+    public function fieldsAsObject(): self
+    {
+        $this->fieldsAsObject = true;
+        return $this;
+    }
+
+    /**
      * Set the Inertia Page Component
      *
      * @param  string  $page

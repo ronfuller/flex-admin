@@ -147,10 +147,10 @@ class Flex
     /**
      * Generates an Inertia Response
      *
-     * @param [type] $request
-     * @return void
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse | \Inertia\Response
      */
-    public function toResponse($request): \Illuminate\Http\JsonResponse | \Inertia\Response
+    public function toResponse(Request $request): \Illuminate\Http\JsonResponse | \Inertia\Response
     {
         if ($request->wantsJson()) {
             return response()->json($this->toArray($request));
@@ -229,11 +229,24 @@ class Flex
 
     protected function transformResource(Resource $resource, array $actions, Request $request)
     {
-        return $resource
+        $data = $resource
             ->withContext($this->context)
             ->withKeys($this->meta['keys'])
             ->withActions($actions)
             ->setControls($this->getControls())         // cascade control parameters like actions, relations to the resource
             ->toArray($request);
+
+        return $this->fieldsAsObject ? $this->transformFields($data) : $data;
+    }
+
+    public function transformFields(array $data): array
+    {
+        $fields = collect($data['panels'])->each(function ($panel, $index) use (&$data) {
+            $fields = collect($panel['fields'])
+                ->mapWithKeys(fn ($item) => [data_get($item, 'attributes.name') => $item])
+                ->all();
+            data_set($data, "panels.{$index}.fields", $fields);
+        });
+        return $data;
     }
 }

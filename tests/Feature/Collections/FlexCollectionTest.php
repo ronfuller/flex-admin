@@ -115,6 +115,17 @@ it('should have a detail resource with a BelongsTo relationship', function () {
 })
     ->group('collections');
 
+it('should have a detail resource with transformed fields', function () {
+    $property = Property::factory()->forCompany()->create()->load('company');
+
+    $result = Flex::forDetail($property)
+        ->fieldsAsObject()
+        ->toArray(createRequest());
+    expect(data_get($result, 'data.panels.0.fields'))->toHaveKeys(['name', 'createdAt', 'updatedAt', 'status']);
+})
+
+    ->group('collections');
+
 it('should have a detail resource without actions', function () {
     $property = Property::factory()->forCompany()->create();
 
