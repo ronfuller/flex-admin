@@ -124,9 +124,22 @@ class Flex
      * @param mixed $resultQuery
      * @return self
      */
-    public function setQueryResults(mixed $resultQuery): self
+    public function setResultQuery(mixed $resultQuery): self
     {
         $this->resultQuery = $resultQuery;
+        $this->paginate = is_a($this->resultQuery, 'Illuminate\Pagination\LengthAwarePaginator');
+        return $this;
+    }
+
+    /**
+     * Ability to set query results generated from an external query builder exec
+     *
+     * @param Model $resultModel
+     * @return self
+     */
+    public function setResultModel(Model $resultModel): self
+    {
+        $this->resultModel = $resultModel;
 
         return $this;
     }
@@ -184,7 +197,7 @@ class Flex
     {
         $resource = new $this->resource($this->resultModel);
         $actions = $resource->toActions(context: $this->context);
-        return $this->transformResource($resource, $actions, $request);
+        return ['data' => $this->transformResource($resource, $actions, $request)];
     }
 
     /**

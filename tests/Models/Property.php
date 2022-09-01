@@ -36,9 +36,9 @@ class Property extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function unit()
+    public function units()
     {
-        return $this->hasOne(Unit::class);
+        return $this->hasMany(Unit::class);
     }
 
     public function getFilterTypeAttribute()
