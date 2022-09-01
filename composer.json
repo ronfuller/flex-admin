@@ -51,7 +51,7 @@
         "analyze": "vendor/bin/phpstan analyse",
         "test": [
             "vendor/bin/pest --filter=setup",
-            "vendor/bin/pest --exclude-group=setup --parallel --processes=4"
+            "vendor/bin/pest --exclude-group=setup --parallel --processes=2"
         ],
         "test-coverage": "vendor/bin/pest --coverage"
     },
