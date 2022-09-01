@@ -35,6 +35,7 @@ use Psi\FlexAdmin\Tests\Models\Unit;
 class PropertyResource extends Resource implements Flexible
 {
     protected array $resourceFields = [];
+    protected array $resourceFilters = [];
     protected array $resourceActions = [];
 
     /**
@@ -56,12 +57,12 @@ class PropertyResource extends Resource implements Flexible
      * @param  Filter  $filter
      * @return \Psi\FlexAdmin\Tests\Http\Resources\PropertyResource
      */
-    // public function addFilter(Filter $filter): self
-    // {
-    //     array_push($this->resourceFilters, $filter);
+    public function addFilter(Filter $filter): self
+    {
+        array_push($this->resourceFilters, $filter);
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     /**
      * Create fields for resource
@@ -128,9 +129,11 @@ class PropertyResource extends Resource implements Flexible
 
             Field::make($keys, 'name')
                 ?->selectable()
-                ->sortable(),
+                ->sortable()
+                ->defaultSort('desc'),
 
             Field::make($keys, 'created_at')
+                ?->filterable('date-range')
                 ?->selectable()
                 ->icon('mdi-domain'),
 
@@ -140,15 +143,19 @@ class PropertyResource extends Resource implements Flexible
                 ->component('html-field'),
 
             Field::make($keys, 'color')
+                ?->filterable()
+                ?->searchable()
                 ?->sortable()
                 ->icon('mdi-palette'),
 
             Field::make($keys, 'status')
                 ?->sortable()
+                ->filterable()
                 ->icon('mdi-check-circle'),
 
             Field::make($keys, 'type')
                 ?->sortable()
+                ->filterable()
                 ->icon('mdi-door-open'),
 
             Field::make($keys, 'unitTitle')
@@ -156,8 +163,9 @@ class PropertyResource extends Resource implements Flexible
                 ->value(fn ($resource) => $resource?->unit?->title)
                 ->icon('mdi-door-open'),
 
-            Field::make($keys, 'companyId')
+            Field::make($keys, 'company')
                 ?->value(fn ($resource) => $resource?->company?->id)
+                ->filterable()
                 ->valueOnly(),
 
             Field::make($keys, 'companyName')
@@ -204,21 +212,22 @@ class PropertyResource extends Resource implements Flexible
         ];
     }
 
-    // public function filters(): array
-    // {
-    //     $filters = [
-    //         Filter::make('company')
-    //             ->fromFunction()
-    //             ->withScope('byCompany')
-    //             ->option('id', 'name')
-    //             ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
-    //         Filter::make('type')->default('small')->fromColumn(),
-    //         Filter::make('color')->default('blue')->fromAttribute(),
-    //         Filter::make('created_at')->fromAttribute(),
-    //     ];
+    public function filters(): array
+    {
+        $filters = [
+            Filter::make('company')
+                ->fromFunction()
+                ->withScope('byCompany')
+                ->option('id', 'name')
+                ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
+            Filter::make('type')->default('small')->fromColumn(),
+            Filter::make('status')->fromColumn(),
+            Filter::make('color')->default('blue')->fromAttribute(),
+            Filter::make('created_at')->fromAttribute(),
+        ];
 
-    //     return array_merge($filters, $this->resourceFilters);
-    // }
+        return array_merge($filters, $this->resourceFilters);
+    }
 
     public function wrapResourcePermission(string $slug)
     {

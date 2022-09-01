@@ -38,13 +38,10 @@ trait ResourceColumns
             ->all();
     }
 
-    public function sortables(): array
+    public function sort(): array
     {
-        return $this->columns
-            ->filter(fn ($column) => $column['sortable'])
-            ->values()
-            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'column']))
-            ->all();
+        $defaultSort = $this->columns->firstWhere('defaultSort', true);
+        return $defaultSort ? Arr::only($defaultSort, ['key', 'name', 'sort', 'sortDir']) : [];
     }
 
     public function filterables(): array
@@ -52,7 +49,16 @@ trait ResourceColumns
         return $this->columns
             ->filter(fn ($column) => $column['filterable'])
             ->values()
-            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'column']))
+            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'column', 'filterType']))
+            ->all();
+    }
+
+    public function sortables(): array
+    {
+        return $this->columns
+            ->filter(fn ($column) => $column['sortable'])
+            ->values()
+            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'sort', 'sortDir']))
             ->all();
     }
 }

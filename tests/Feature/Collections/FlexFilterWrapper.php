@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Feature\Collections;
 
 use Psi\FlexAdmin\Collections\FlexFilter;
@@ -34,7 +33,7 @@ class FlexFilterWrapper
             Filter::make('type')->default(['label' => 'Small', 'value' => 'small'])->fromColumn(),
             Filter::make('color')->default('blue')->fromAttribute(),
         ];
-        $this->flexResource = $this;
+        $this->resource = $this;
         $this->meta = [
             'filters' => collect($this->flexFilters)->map(fn ($filter) => $filter->toArray())->all(),
         ];

@@ -21,13 +21,24 @@ trait FlexQuery
          */
         $query = $this->model->index($attributes);
 
+        $filters = $this->buildFilters($attributes, $query);
+        // We'll return filters for display
+        $this->flexFilters = $filters;
+
+        // Either search or filter, not both
         if ($this->hasSearch($attributes)) {
             // Search
             $query->search($this->searchTerm($attributes));
+        } elseif ($this->hasFilters($filters)) {
+            // Filter
+            $filterValues = $this->filterValues($filters);
+            $query->filter($filterValues);
         }
 
+        ['sort' => $sort, 'sortDir' => $sortDir] = $this->sortBy($attributes);
+
         // Sort w/in search, w/in filter
-        $query->sortBy($attributes);
+        $query->sortBy(sort: $sort, sortDir: $sortDir);
 
         // Paginate results
         $this->resultQuery = $this->paginate ? $query->paginate($this->getPerPage($attributes))->withQueryString() : $query->get();

@@ -18,10 +18,12 @@ class Flex
     use FlexQuery;
     use FlexSearch;
     use FlexSort;
+    use FlexFilter;
     use FlexPagination;
     use FlexColumns;
     use FlexOptions;
     use FlexResource;
+    use FlexSort;
     /**
      * The  flex resource class
      *
@@ -150,7 +152,7 @@ class Flex
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         return $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
     }
@@ -168,10 +170,9 @@ class Flex
         }
         $this->collectToResource();
 
-        //'filters' => $this->flexFilters,
-
         return [
             'columns' => $this->toColumns(),
+            'filters' => $this->flexFilters,
             'visibleColumns' => $this->visibleColumns(),
             'rowsPerPageOptions' => data_get($this->paginationMeta, 'rowsPerPageOptions'),
             'pagination' => $this->paginationMeta,

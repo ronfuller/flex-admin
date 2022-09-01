@@ -1,10 +1,10 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Psi\FlexAdmin\Tests\Models\Builders\CompanyBuilder;
 
 class Company extends Model
 {
@@ -39,5 +39,10 @@ class Company extends Model
     protected static function newFactory()
     {
         return \Psi\FlexAdmin\Tests\Factories\CompanyFactory::new();
+    }
+
+    public function newEloquentBuilder($query): CompanyBuilder
+    {
+        return new CompanyBuilder($query);
     }
 }

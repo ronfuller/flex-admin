@@ -16,7 +16,7 @@ class Field
     use FieldPermissions;
     use FieldDisplay;
     use FieldAttributes;
-    // use FieldSort;
+    use FieldSort;
     use FieldValue;
     // use FieldSelect;
     use FieldRender;
@@ -130,10 +130,10 @@ class Field
                 'component' => $this->component,
                 'key' => $this->key,
                 // 'select' => $this->getSelect(),
-                // 'sort' => $this->getColumn(),
+                'sort' => $this->key,
                 // 'column' => $this->getColumn(),
-                // 'defaultSort' => $this->defaultSort,
-                // 'sortDir' => $this->sortDir,
+                'defaultSort' => $this->defaultSort,
+                'sortDir' => $this->sortDir,
                 // 'searchType' => $this->searchType,
                 'filterType' => $this->filterType,
                 'addToValues' => $this->addToValues,

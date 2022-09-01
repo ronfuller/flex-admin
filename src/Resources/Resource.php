@@ -14,7 +14,7 @@ class Resource extends JsonResource implements Flexible
 
     use ResourceColumns;
     use ResourcePagination;
-    //use ResourceFilters;
+    use ResourceFilters;
     use ResourceFlexible;
     use ResourceActions;
     use ResourcePanels;
@@ -97,9 +97,10 @@ class Resource extends JsonResource implements Flexible
         $meta = [
             'keys' => $this->keys(),
             'columns' => $this->columns->values()->all(),
+            'sort' => $this->sort(),
             'sortables' => $this->sortables(),
-            'filterables' => $this->filterables(),
-            'searchables' => $this->searchables(),
+            'filters' => $this->toFilters(),
+            'searches' => $this->searchables(),
             'perPage' => $this->perPage(),
             'perPageOptions' => $this->perPageOptions(),
             'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all(),

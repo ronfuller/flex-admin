@@ -51,6 +51,7 @@ it('should throw error on missing resource', function () {
 
 it('should output to an array with rows data', function () {
     expect(Flex::forIndex(Property::class)
+        ->withoutDefaultFilters()
         ->toArray(createRequest()))
         ->rows
         ->toHaveCount(5);
@@ -60,6 +61,7 @@ it('should output to an array with rows data', function () {
 it('should paginate output data', function () {
     Property::factory()->count(20)->forCompany()->create();
     expect(Flex::forIndex(Property::class)
+        ->withoutDefaultFilters()
         ->toArray(createRequest(['perPage' => 15])))
         ->rows
         ->toHaveCount(15);
@@ -70,6 +72,7 @@ it('should not paginate output data', function () {
     Property::factory()->count(20)->forCompany()->create();
     expect(Flex::forIndex(Property::class)
         ->withoutPagination()
+        ->withoutDefaultFilters()
         ->toArray(createRequest(['perPage' => 5])))
         ->rows
         ->toHaveCount(25);
@@ -78,6 +81,7 @@ it('should not paginate output data', function () {
 
 it('should have default actions for rows data')
     ->expect(fn () => Flex::forIndex(Property::class)
+        ->withoutDefaultFilters()
         ->toArray(createRequest()))
     ->rows
     ->toHaveCount(5)
@@ -90,7 +94,7 @@ it('should create rows for a large data set', function () {
     $count = 100;
     $properties = Property::factory()->count($count)->forCompany()->create();
     ray()->measure();
-    $data = Flex::forIndex(Property::class)->toArray(createRequest(['perPage' => $count]));
+    $data = Flex::forIndex(Property::class)->withoutDefaultFilters()->toArray(createRequest(['perPage' => $count]));
     ray()->measure();
     expect($data['rows'])->toHaveCount($count);
 })
