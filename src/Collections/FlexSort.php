@@ -1,12 +1,9 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
-
-use Illuminate\Database\Eloquent\Builder;
 
 trait FlexSort
 {
-    public function sortBy(Builder $query, array $attributes): Builder
+    public function sortBy(array $attributes): array
     {
         if (empty($this->meta['sort'])) {
             throw new \Exception('Error. Default sort is required for resource.');
@@ -21,9 +18,8 @@ trait FlexSort
         }
 
         $this->flexSort = $this->buildSort($sortName, $sortDir);
-        $query = $query->orderBy($sort, $sortDir);
 
-        return $query;
+        return compact('sort', 'sortDir');
     }
 
     protected function buildSort(string $sortName, string $sortDir)

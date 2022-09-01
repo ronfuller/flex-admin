@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Psi\FlexAdmin\Collections\Flex;
@@ -37,27 +36,25 @@ class CompanyResource extends Resource implements Flexible
         $fields = [
             Field::make($keys, 'id')
                 ?->name('companyId')
-                ->constrainable()
                 ->valueOnly(),
 
             Field::make($keys, 'name')
                 ?->selectable()
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
         ];
 
-        return collect($fields)->filter()->filter(fn (Field $field) => ! in_array($field->key, $this->removedKeys))->values()->all();
+        return collect($fields)->filter()->filter(fn (Field $field) => !in_array($field->key, $this->removedKeys))->values()->all();
     }
 
     public function relations($request): array
     {
         return [
-            Relation::hasMany('properties')
-                ->whenDetailorEdit()
-                ->as(
-                    Flex::forIndex(Property::class)->withoutFilters()
-                ),
+            // Relation::hasMany('properties')
+            //     ->whenDetailorEdit()
+            //     ->as(
+            //         Flex::forIndex(Property::class)->withoutFilters()
+            //     ),
         ];
     }
 

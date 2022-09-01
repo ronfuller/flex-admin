@@ -98,7 +98,7 @@ trait ResourceActions
      * @param  array  $actions
      * @return \Psi\FlexAdmin\Resources\Resource
      */
-    protected function withActions(array $actions): self
+    public function withActions(array $actions): self
     {
         $this->actions = collect($actions)->map(function ($action) {
             // See if we need to build the route Url from the resource params/values

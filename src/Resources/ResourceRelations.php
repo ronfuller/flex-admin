@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Http\Request;
@@ -61,15 +60,15 @@ trait ResourceRelations
             })->filter()->all();
     }
 
-    protected function toJoins()
-    {
-        return $this->columns
-            ->filter(fn ($column) => ! empty($column['join']))
-            ->unique(fn ($column) => $column['join'][0])
-            ->values()
-            ->map(fn ($column) => $column['join'])
-            ->all();
-    }
+    // protected function toJoins()
+    // {
+    //     return $this->columns
+    //         ->filter(fn ($column) => ! empty($column['join']))
+    //         ->unique(fn ($column) => $column['join'][0])
+    //         ->values()
+    //         ->map(fn ($column) => $column['join'])
+    //         ->all();
+    // }
 
     private function includeRelation(string $key): bool
     {

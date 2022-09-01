@@ -1,10 +1,8 @@
 <?php
-
 namespace Psi\FlexAdmin\Relations;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 
 class Relation
@@ -13,13 +11,6 @@ class Relation
      * @var array
      */
     protected array $relatedConditions;
-
-    /**
-     * Callable Function to build collection/resource
-     *
-     * @var \Psi\FlexAdmin\Collections\Flex
-     */
-    public Flex $collection;
 
     public const
         TYPE_BELONGS_TO = 'belongsTo';
@@ -33,23 +24,28 @@ class Relation
     public const
         TYPE_HAS_ONE = 'hasOne';
 
-    final public function __construct(public string $relationKey, protected string $relation)
+    final public function __construct(public string $relationKey, public string $relation, public Model $model)
     {
     }
 
-    public static function belongsTo(string $relationKey)
+    public static function belongsTo(string $relationKey, Model $model)
     {
-        return new static($relationKey, self::TYPE_BELONGS_TO);
+        return new static($relationKey, self::TYPE_BELONGS_TO, $model);
     }
 
-    public static function hasMany(string $relationKey)
+    public static function hasOne(string $relationKey, Model $model)
     {
-        return new static($relationKey, self::TYPE_HAS_MANY);
+        return new static($relationKey, self::TYPE_HAS_ONE, $model);
     }
 
-    public static function belongsToMany(string $relationKey)
+    public static function hasMany(string $relationKey, Model $model)
     {
-        return new static($relationKey, self::TYPE_BELONGS_TO_MANY);
+        return new static($relationKey, self::TYPE_HAS_MANY, $model);
+    }
+
+    public static function belongsToMany(string $relationKey, Model $model)
+    {
+        return new static($relationKey, self::TYPE_BELONGS_TO_MANY, $model);
     }
 
     public function whenIndex(): self
@@ -87,9 +83,9 @@ class Relation
         return $this;
     }
 
-    public function as(Flex $collection): self
+    public function as(string $related): self
     {
-        $this->collection = $collection;
+        $this->related = $related;
 
         return $this;
     }
@@ -106,6 +102,9 @@ class Relation
 
     public function build(Model $resource, Request $request): array
     {
+        if (!$this->model->relationLoaded($this->relationKey)) {
+            return [];
+        }
         return match ($this->relation) {
             self::TYPE_BELONGS_TO => $this->buildBelongsTo(
                 resource: $resource,
@@ -129,24 +128,12 @@ class Relation
 
     protected function buildBelongsTo(Model $resource, Request $request): array
     {
-        $foreignKey = (string) str($this->relationKey)->snake().'_id';
-        $id = $resource->getAttribute($foreignKey);
-        if (is_null($id)) {
-            throw new \Exception("Could not locate foreign key {$foreignKey} on model");
-        }
-
-        return data_get($this->collection->byId($id)->toArray($request), 'data');
+        return (new $this->related($resource))->toArray($request);
     }
 
     protected function buildHasMany(Model $resource, Request $request): array
     {
-        $foreignKey = $resource->getForeignKey();
-        $id = $resource->getKey();
-
-        return $this->collection->where(
-            column: $foreignKey,
-            value: $id
-        )->toArray($request);
+        return [];
     }
 
     protected function buildBelongsToMany(Model $resource, Request $request): array

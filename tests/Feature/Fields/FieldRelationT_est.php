@@ -28,4 +28,4 @@ it('should have a related model join')
     ->toBeArray()
     ->join
     ->toBe(['companies', 'companies.id', '=', 'properties.company_id'])
-    ->group('relatioins', 'fields');
+    ->group('relations', 'fields');

@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Arr;
@@ -25,48 +24,24 @@ trait ResourceColumns
         })->filter(fn (array $field) => $field['enabled'])->values();
     }
 
-    public function selects(): array
-    {
-        return $this->columns->pluck('select')->filter()->values()->all();
-    }
-
-    public function sort(): array
-    {
-        $defaultSort = $this->columns->firstWhere('defaultSort', true);
-
-        return $defaultSort ? Arr::only($defaultSort, ['key', 'name', 'sort', 'sortDir']) : [];
-    }
-
     public function keys(): array
     {
         return $this->columns->pluck('key')->all();
     }
 
-    public function constraints(): array
-    {
-        return $this->columns
-            ->filter(fn ($column) => $column['constrainable'])
-            ->values()
-            ->map(fn ($column) => Arr::only($column, ['key', 'column', 'name']))
-            ->all();
-    }
-
-    public function searches(): array
+    public function searchables(): array
     {
         return $this->columns
             ->filter(fn ($column) => $column['searchable'])
             ->values()
-            ->map(fn ($column) => Arr::only($column, ['key', 'column', 'searchType']))
+            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'column']))
             ->all();
     }
 
-    public function sorts(): array
+    public function sort(): array
     {
-        return $this->columns
-            ->filter(fn ($column) => $column['sortable'])
-            ->values()
-            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'sort', 'sortDir']))
-            ->all();
+        $defaultSort = $this->columns->firstWhere('defaultSort', true);
+        return $defaultSort ? Arr::only($defaultSort, ['key', 'name', 'sort', 'sortDir']) : [];
     }
 
     public function filterables(): array
@@ -75,6 +50,15 @@ trait ResourceColumns
             ->filter(fn ($column) => $column['filterable'])
             ->values()
             ->map(fn ($column) => Arr::only($column, ['key', 'name', 'column', 'filterType']))
+            ->all();
+    }
+
+    public function sortables(): array
+    {
+        return $this->columns
+            ->filter(fn ($column) => $column['sortable'])
+            ->values()
+            ->map(fn ($column) => Arr::only($column, ['key', 'name', 'sort', 'sortDir']))
             ->all();
     }
 }

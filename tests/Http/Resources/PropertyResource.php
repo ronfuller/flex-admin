@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -36,9 +35,7 @@ use Psi\FlexAdmin\Tests\Models\Unit;
 class PropertyResource extends Resource implements Flexible
 {
     protected array $resourceFields = [];
-
     protected array $resourceFilters = [];
-
     protected array $resourceActions = [];
 
     /**
@@ -83,8 +80,9 @@ class PropertyResource extends Resource implements Flexible
             ->attributes($attributes)   // appends attributes on the field
             ->copyable()        // sets the copyable attribute to true, default is false
             ->selectable()      // sets the selectable attribute to true, default is false
-            ->constrainable()   // the field can be the source for a constraint. Constraints are Query params in the form ?name=value where name is the field name
             ->sortable()        // the field can be used in sort
+            ->searchable()
+            ->filterable()
             ->icon($icon)       // sets an attribute icon
             ->readonly()        // sets readonly attribute to true, default is false
             ->hidden()          // sets attribute hidden to true, default is false
@@ -99,17 +97,13 @@ class PropertyResource extends Resource implements Flexible
             ->hidefromDetail()  // Disabled from detail context, only effects enabled attribute
             ->hideFromEdit()    // Disabled form edit context, only effects enabled attribute
             ->hideFromCreate()  // Disabled from create context, only effects enabled attribute
-        ==== FILTER ===
-           ->filterable($filterType) // Indicates field is filterable, specify type of of filter (i.e. value, range)
         ==== PERMISSIONS ===
-            ->withoutPermissions() // Ignore permissions when rendering to array and enabling field
+            ->withoutPermissions()          // Ignore permissions when rendering to array and enabling field
             ->indexPermission($permission)  // Specific permission to use with index context to enable field, default is view-any (i.e. users.view-any)
             ->detailPermission($permission) // Specific permission to use with detail context to enable field, default is view (i.e. users.view)
             ->createPermission($permission) // Specific permission to use with create context to enable field, default is edit (i.e. users.edit)
             ->editPermission($permission)   // Specific permission to use with edit cotnext to enable field, default is create (i.e. users.create)
             ->withPermissions($context,$model) // Enables the field based on the context and model plural name
-        === Relation ===
-            ->on(Model)                     // indicates the field is on a related model via BelongsTo relationship
         === Render ===
             ->component($component)         // specify the default component to use for rendering
             ->panel($panel)                 // group the field with the panel specified
@@ -117,10 +111,6 @@ class PropertyResource extends Resource implements Flexible
             ->detailComponent($component)   // Specific component to use in detail context
             ->editComponent($component)     // Specific component to use in edit context
             ->indexComponent($component)    // Specific component for index context
-        === Search ===
-            ->searchable($type)             // indicates field is searchable by full text or partial (i.e. starts with term '$term%') or exact, default is 'full'
-        === Sort ===
-            ->defaultSort($sortDir)         // sets the field to be the default sort field and input direction
         === Value ===
             ->default( $value )             // sets a default value for the field
             ->value( $value )               // sets the field value, can be a callable function
@@ -130,7 +120,6 @@ class PropertyResource extends Resource implements Flexible
         $fields = [
             Field::make($keys, 'id')
                 ?->name('propertyId')
-                ->constrainable()
                 ->valueOnly(),
 
             Field::make($keys, 'company_id')
@@ -141,62 +130,52 @@ class PropertyResource extends Resource implements Flexible
             Field::make($keys, 'name')
                 ?->selectable()
                 ->sortable()
-                ->defaultSort('desc')
-                ->searchable(),
+                ->defaultSort('desc'),
 
             Field::make($keys, 'created_at')
                 ?->filterable('date-range')
-                ->selectable()
+                ?->selectable()
                 ->icon('mdi-domain'),
 
             Field::make($keys, 'updated_at')
-                ?->filterable()
-                ->selectable()
+                ?->selectable()
                 ->icon('mdi-calendar')
                 ->component('html-field'),
 
             Field::make($keys, 'color')
                 ?->filterable()
-                ->searchable()
-                ->sortable()
-                ->constrainable()
-                ->select('options->color')
+                ?->searchable()
+                ?->sortable()
                 ->icon('mdi-palette'),
 
             Field::make($keys, 'status')
-                ?->filterable()
-                ->searchable('exact')
-                ->sortable()
-                ->constrainable()
+                ?->sortable()
+                ->filterable()
                 ->icon('mdi-check-circle'),
 
             Field::make($keys, 'type')
-                ?->filterable()
-                ->sortable()
-                ->constrainable()
-                ->searchable('partial')
+                ?->sortable()
+                ->filterable()
                 ->icon('mdi-door-open'),
 
-            Field::make($keys, 'unit.title')
+            Field::make($keys, 'unitTitle')
                 ?->name('unitTitle')
                 ->value(fn ($resource) => $resource?->unit?->title)
                 ->icon('mdi-door-open'),
 
             Field::make($keys, 'company')
-                ?->filterable('query')
-                ->on(Company::class)
-                ->select('id')
+                ?->value(fn ($resource) => $resource?->company?->id)
+                ->filterable()
                 ->valueOnly(),
 
             Field::make($keys, 'companyName')
-                ?->on(Company::class)
-                ->select('name')
+                ?->value(fn ($resource) => $resource?->company?->name)
                 ->icon('mdi-domain'),
 
             Field::make($keys, 'companyEmployees')
-                ?->on(Company::class)
-                ->select('settings->employees')
+                ?->value(fn ($resource) => $resource?->company?->settings['employees'])
                 ->icon('mdi-domain'),
+
         ];
 
         return array_merge($fields, $this->resourceFields);
@@ -205,17 +184,19 @@ class PropertyResource extends Resource implements Flexible
     public function relations(Request $request): array
     {
         return [
-            Relation::belongsTo('company')
-                ->whenDetailorEdit()
-                ->as(
-                    Flex::forDetail(Company::class)
-                ),
 
-            Relation::hasMany('units')
+            Relation::belongsTo(
+                relationKey: 'company',
+                model: $this->resource
+            )
                 ->whenDetailorEdit()
-                ->as(
-                    Flex::forDetail(Unit::class)
-                ),
+                ->as(CompanyResource::class),
+
+            // Relation::hasMany('units')
+            //     ->whenDetailorEdit()
+            //     ->as(
+            //         Flex::forDetail(Unit::class)
+            //     ),
         ];
     }
 
@@ -240,6 +221,7 @@ class PropertyResource extends Resource implements Flexible
                 ->option('id', 'name')
                 ->itemValue(fn ($value) => Company::select('id', 'name')->find($value)->toArray()),
             Filter::make('type')->default('small')->fromColumn(),
+            Filter::make('status')->fromColumn(),
             Filter::make('color')->default('blue')->fromAttribute(),
             Filter::make('created_at')->fromAttribute(),
         ];

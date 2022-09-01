@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Http\Request;
@@ -39,5 +38,5 @@ interface Flexible
      *
      * @return array
      */
-    public function filters(): array;
+    // public function filters(): array;
 }

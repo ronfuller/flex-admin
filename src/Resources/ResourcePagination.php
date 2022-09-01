@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Resources;
 
 trait ResourcePagination
@@ -35,36 +34,12 @@ trait ResourcePagination
         return $this;
     }
 
-    public function toPagination(array $sort): array
-    {
-        // TODO: Handle transform , append
-        return $this->paginate ? [...$sort, ...[
-            // Quasar Specific Fields
-            'page' => $this->resource->currentPage(),
-            'rowsPerPage' => $this->resource->perPage(),
-            'rowsNumber' => $this->resource->total(),
-
-            'currentPage' => $this->resource->currentPage(),
-            'from' => $this->resource->firstItem(),
-            'lastPage' => $this->resource->lastPage(),
-            'path' => $this->resource->path(),
-            'perPage' => $this->resource->perPage(),
-            'total' => $this->resource->total(),
-            'to' => $this->resource->lastItem(),
-            'nextUrl' => $this->resource->nextPageUrl(),
-            'previousUrl' => $this->resource->previousPageUrl(),
-            'previous' => $this->resource->onFirstPage(),
-            'next' => $this->resource->hasMorePages(),
-            'rowsPerPageOptions' => $this->perPageOptions(),
-        ]] : [];
-    }
-
-    protected function perPage()
+    public function perPage()
     {
         return $this->perPage ?? $this->model->getPerPage();
     }
 
-    protected function perPageOptions()
+    public function perPageOptions()
     {
         return $this->perPageOptions ?? config('flex-admin.pagination.per_page_options');
     }

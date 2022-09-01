@@ -58,11 +58,6 @@ it('should not be searchable by default')
     ->toHaveKey('searchable', false)
     ->group('attributes', 'fields');
 
-it('should not be constrainable by default')
-    ->expect(fn () => Field::make(null, 'id')->meta)
-    ->toHaveKey('constrainable', false)
-    ->group('attributes', 'fields');
-
 it('should not be filterable by default')
     ->expect(fn () => Field::make(null, 'id')->meta)
     ->toHaveKey('filterable', false)
@@ -101,6 +96,11 @@ it('should be enabled')
 it('should be sortable')
     ->expect(fn () => Field::make(null, 'id')->sortable()->meta)
     ->toHaveKey('sortable', true)
+    ->group('attributes', 'fields');
+
+it('should be searchable')
+    ->expect(fn () => Field::make(null, 'id')->searchable()->meta)
+    ->toHaveKey('searchable', true)
     ->group('attributes', 'fields');
 
 it('should be selectable')

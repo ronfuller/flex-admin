@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -8,27 +7,51 @@ use Illuminate\Http\Request;
 trait FlexQuery
 {
     /**
-     * Without pagination
-     *
-     * @return \Psi\FlexAdmin\Collections\Flex
-     */
-    public function withoutPagination(): self
-    {
-        $this->paginate = false;
-
-        return $this;
-    }
-
-    /**
      * Query
      *
      * @return \Psi\FlexAdmin\Collections\Flex
      */
-    public function query(Request $request): self
+    protected function query(Request $request): void
     {
-        $this->context === 'index' ? $this->toQuery($request) : $this->toWhereQuery($request);
+        // Request Attributes
+        $attributes = $request->all();
 
-        return $this;
+        /**
+         * @var Builder
+         */
+        $query = $this->model->index($attributes);
+
+        $filters = $this->buildFilters($attributes, $query);
+        // We'll return filters for display
+        $this->flexFilters = $filters;
+
+        // Either search or filter, not both
+        if ($this->hasSearch($attributes)) {
+            // Search
+            $query->search($this->searchTerm($attributes));
+        } elseif ($this->hasFilters($filters)) {
+            // Filter
+            $filterValues = $this->filterValues($filters);
+            $query->filter($filterValues);
+        }
+
+        ['sort' => $sort, 'sortDir' => $sortDir] = $this->sortBy($attributes);
+
+        // Sort w/in search, w/in filter
+        $query->sortBy(sort: $sort, sortDir: $sortDir);
+
+        // Paginate results
+        $this->resultQuery = $this->paginate ? $query->paginate($this->getPerPage($attributes))->withQueryString() : $query->get();
+    }
+
+    protected function collectToResource()
+    {
+        // Creates a collection of resource instances
+        $this->resourceCollection = $this->resource->collection($this->resultQuery);
+        $this->collection = $this->resourceCollection->collection;
+
+        // We need the ResourceCollection instance here
+        $this->toPaginationMeta($this->flexSort, $this->resourceCollection);
     }
 
     /**
@@ -63,24 +86,6 @@ trait FlexQuery
         return $this->flexFilters = $this->buildFilters($attributes, $query);
     }
 
-    protected function toWhereQuery(Request $request)
-    {
-        // Have we created the meta for the query from the flex resource?
-        if (is_null($this->meta)) {
-            $this->meta = $this->getCollectionMeta($this->flexResource);
-        }
-
-        // Request Attributes
-        $attributes = $request->all();
-        /**
-         * @var Builder
-         */
-        $query = $this->preFilterQuery($attributes); // Selects, Joins, Authorization, Constraints
-
-        $resource = $query->get();
-        $this->resource = $this->collectResource($resource);
-    }
-
     /**
      * Create query and execute possibly deferring filter options build
      *
@@ -89,13 +94,9 @@ trait FlexQuery
      */
     protected function toQuery(Request $request)
     {
-        // Have we created the meta for the query from the flex resource?
-        if (is_null($this->meta)) {
-            $this->meta = $this->getCollectionMeta($this->flexResource);
-        }
-
         // Request Attributes
         $attributes = $request->all();
+
         /**
          * @var Builder
          */
@@ -113,43 +114,12 @@ trait FlexQuery
             $query = $this->applyFilters($query, $filters);
         }
         // Sort w/in search, w/in filter
-        $query = $this->sortBy($query, $attributes);
+        $query = $query->sortBy($query, $attributes);
         // Paginate
         $resource = $this->paginate ? $query->paginate($this->getPerPage($attributes))->withQueryString() : $query->get();
         $this->resource = $this->collectResource($resource);
         // We'll return filters for display
         $this->flexFilters = $filters;
-    }
-
-    protected function preFilterQuery(array $attributes): Builder
-    {
-        // Build Query from Selects
-        $query = $this->flexModel->select(...$this->meta['selects']);
-
-        // Joins
-        if ($this->hasJoins()) {
-            $query = $this->withJoins($query);
-        }
-
-        if ($this->hasWhereParams()) {
-            $query = $this->withWhereParams($query);
-        }
-
-        // Authorization
-        if ($this->hasAuthorization()) {
-            $query = $this->authorize($query, $attributes);
-        }
-
-        if ($this->hasQueryScopes()) {
-            $query = $this->queryScopes($query, $attributes);
-        }
-
-        // Constraints
-        if ($this->hasConstraint($attributes)) {
-            $query = $this->constrain($query, $attributes);
-        }
-
-        return $query;
     }
 
     protected function getPerPage(array $attributes): int

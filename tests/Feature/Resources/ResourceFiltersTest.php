@@ -8,14 +8,16 @@ use Psi\FlexAdmin\Tests\Models\Property;
 it('should have filters as array items')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toMeta(new Property()))
     ->filters
-    ->toHaveCount(4)
+    ->toHaveCount(5)
     ->each
     ->toBeArray()
     ->group('resources', 'filter');
 
 it('should have filters as filter items')
-    ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toFilters(asArrayItems: false, model: new Property()))
-    ->toHaveCount(4)
+    ->expect(fn () => (new PropertyResource($this->property))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->toFilters(asArrayItems: false, model: new Property()))
+    ->toHaveCount(5)
     ->each
     ->toBeInstanceOf(Filter::class)
     ->group('resources', 'filter');
@@ -24,18 +26,21 @@ it('should have filter items for default values')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toMeta(new Property()))
     ->filters
     ->toHaveKey('1.item', ['label' => 'Small', 'value' => 'small'])
-    ->toHaveKey('2.item', ['label' => 'Blue', 'value' => 'blue'])
+    ->toHaveKey('3.item', ['label' => 'Blue', 'value' => 'blue'])
     ->group('resources', 'filter');
 
 it('should have empty filters when without filters is set')
-    ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->withoutFilters()->toMeta(new Property()))
+    ->expect(fn () => (new PropertyResource($this->property))
+        ->withContext(Field::CONTEXT_INDEX)
+        ->withoutFilters()
+        ->toMeta(new Property()))
     ->filters
     ->toBe([])
     ->group('resources', 'filter');
 
 it('should create filters with meta information')
     ->expect(fn () => (new PropertyResource($this->property))->withContext(Field::CONTEXT_INDEX)->toMeta(new Property())['filters'])
-    ->each(fn ($filter) => $filter->toHaveKey('meta.column'))
+    ->each(fn ($filter) => $filter->toHaveKey('meta.name'))
     ->group('resources', 'filter');
 
 it('should throw error when creating a filter on a non-filterable key', function () {

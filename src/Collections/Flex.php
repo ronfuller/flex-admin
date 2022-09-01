@@ -3,44 +3,60 @@ namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\CollectsResources;
-use Illuminate\Support\Arr;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection as Collection;
 use Inertia\Inertia;
+use Psi\FlexAdmin\Concerns\HasControls;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Resources\Resource;
 
-class Flex extends Resource
+class Flex
 {
-    use CollectsResources;
+    use HasControls;
+
+    use FlexFor;
     use FlexQuery;
     use FlexSearch;
-    use FlexConstraint;
     use FlexSort;
     use FlexFilter;
-    use FilterDateRange;
-    use FlexFor;
-    use FlexRelations;
-    use FlexCache;
-    use FlexScope;
-    use FlexParams;
-    use FlexAuthorization;
-
+    use FlexPagination;
+    use FlexColumns;
+    use FlexOptions;
+    use FlexResource;
+    use FlexSort;
     /**
-     * The resource that this resource collects.
+     * The  flex resource class
      *
-     * @var string
+     * @var Resource
      */
-    public $collects;
+    public $resource;
 
     /**
-     * The mapped collection instance.
+     * Instantiated model w/out attributes, for column select only
      *
-     * @var \Illuminate\Support\Collection
+     * @var Model
      */
-    public $collection;
+    public Model $model;
 
     /**
-     * Meta Information on the Collection including columns, selects, sort, keys
+     *
+     * @var AnonymousResourceCollection
+     */
+    public ?AnonymousResourceCollection $resourceCollection = null;
+
+    /**
+     * @var Collection
+     */
+    public ?Collection $collection = null;
+
+    /**
+     * @var array
+     *
+     */
+    public $paginationMeta = [];
+
+    /**
+     * Meta Information on the Collection including columns, filters,  sorts, keys
      *
      * @var array|null
      */
@@ -54,32 +70,11 @@ class Flex extends Resource
     protected $request;
 
     /**
-     * Determines if we paginate
-     *
-     * @var bool
-     */
-    protected bool $paginate = true;
-
-    /**
-     * Constraints to always include in query
-     *
-     * @var array
-     */
-    protected array|null $constraints = null;
-
-    /**
      * Filter built up from request scope query , default, or cache
      *
      * @var array
      */
     protected array $filter = [];
-
-    /**
-     * Instantiated model
-     *
-     * @var Model
-     */
-    public Model $flexModel;
 
     /**
      * Array of filters including updated value
@@ -89,115 +84,59 @@ class Flex extends Resource
     public array $flexFilters = [];
 
     /**
-     * Determines if we build filter options immediately
-     *
-     * @var bool
-     */
-    protected bool $deferFilters = false;
-
-    /**
-     * Determines if we load default filter values from the resource
-     *
-     * @var bool
-     */
-    protected bool $defaultFilters = true;
-
-    /**
      * @var array
      */
     protected array $flexSort = [];
 
     /**
-     * @var array
+     * Query results executed from a query or passed in via the set function
+     *
+     * @var mixed
      */
-    protected array $whereParams = [];
+    protected mixed $resultQuery = null;
 
     /**
-     * Inertia Page Component
+     * Model instance for non index context
      *
-     * @var string|null
+     * @var Model
      */
-    public ?string $page = null;
-
-    /**
-     * Determines if we should cache meta values
-     *
-     * @var bool
-     */
-    protected bool $shouldCacheMeta = true;
-
-    protected Resource $flexResource;
-
-    public const CONTROL_COLUMNS = ['enabled', 'filterable', 'constrainable', 'searchable', 'selectable', 'select', 'sort', 'column', 'defaultSort', 'sortDir', 'searchType', 'filterType', 'addToValues', 'join', 'render'];
+    protected ?Model $resultModel = null;
 
     /**
      * Create a flex collection instance
      *
-     * @param  string  $model
+     * @param  string  $model , class name of model for for the resource
      * @param  string  $context
-     * @param  resource  $resource
      * @return void
      */
-    final public function __construct(string $model, string $context, Resource $resource = null)
+    final public function __construct(string $model, public string $context)
     {
-        $this->flexModel = new $model();
-        $this->context = $context;
+        $this->model = new $model;
 
-        if (is_null($resource)) {
-            $this->collects = $this->collects();
-            /**
-             * @var \Psi\FlexAdmin\Resources\Resource
-             */
-            $resource = new $this->collects(null);
-        }
-        // Validate context against list of contexts
-        if (!in_array($context, Field::CONTEXTS)) {
-            throw new \Exception("Unknown context {$context}");
-        }
-        $this->flexResource = $resource;
+        $resourceClassName = $this->resource();
+        $this->resource = new $resourceClassName($this->model);
+        $this->meta = $context = Field::CONTEXT_INDEX ? $this->resource->withContext($context)->toMeta($this->model) : [];
     }
 
     /**
-     * Set the Inertia Page Component
+     * Ability to set query results generated from an external query builder exec
      *
-     * @param  string  $page
-     * @return \Psi\FlexAdmin\Collections\Flex
+     * @param mixed $resultQuery
+     * @return self
      */
-    public function page(string $page): self
+    public function setQueryResults(mixed $resultQuery): self
     {
-        $this->page = $page;
+        $this->resultQuery = $resultQuery;
 
         return $this;
     }
 
     /**
-     * Get the resource that this resource collects.
+     * Generates an Inertia Response
      *
-     * @return string|null
+     * @param [type] $request
+     * @return void
      */
-    protected function collects()
-    {
-        if ($this->collects) {
-            return $this->collects;
-        }
-        $modelClass = get_class($this->flexModel);
-
-        $class = (string) str($modelClass)->replace(config('flex-admin.model_path'), config('flex-admin.resource_path'))->append('Resource');
-
-        return class_exists($class) ? $class : throw new \Exception("Could not find resource for {$modelClass}");
-    }
-
-    /**
-     * Return the count of items in the resource collection.
-     *
-     * @return int
-     */
-    #[\ReturnTypeWillChange]
-    public function count()
-    {
-        return $this->collection->count();
-    }
-
     public function toResponse($request): \Illuminate\Http\JsonResponse | \Inertia\Response
     {
         if ($request->wantsJson()) {
@@ -213,33 +152,9 @@ class Flex extends Resource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray(Request $request)
     {
-        if ($this->context === 'index') {
-            // Building filters won't build paginated data query results, build filters for deferred filters
-            return $request->boolean('build-filters') ? $this->toQueryFilters($request) : $this->toIndexQuery($request);
-        } else {
-            return $this->toDataQuery($request);
-        }
-    }
-
-    /**
-     * Return results of a data query
-     *
-     * @param  Request  $request
-     * @return array
-     */
-    protected function toDataQuery(Request $request): array
-    {
-        // Resource here is the collected resource instance
-        if (is_null($this->resource)) {
-            // We haven't executed the query if we have a null resource
-            $this->query($request);
-        }
-
-        return [
-            'data' => $this->collection->isEmpty() ? [] : $this->toData($request)[0],
-        ];
+        return $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
     }
 
     /**
@@ -250,35 +165,26 @@ class Flex extends Resource
      */
     protected function toIndexQuery(Request $request): array
     {
-        // Resource here is the collected resource instance
-        if (is_null($this->resource)) {
-            // We haven't executed the query if we have a null resource
+        if (is_null($this->resultQuery)) {
             $this->query($request);
         }
-        $pagination = $this->toPagination(sort: $this->flexSort);
+        $this->collectToResource();
 
         return [
-            // TODO: only need pagination in index context
-            'pagination' => $pagination,
-            'rowsPerPageOptions' => data_get($pagination, 'rowsPerPageOptions'),
-            // TODO: only need columns in index context
             'columns' => $this->toColumns(),
-            'visibleColumns' => $this->visibleColumns(),
-            // Resource rows index, resource for other context
-            'rows' => $this->collection->isEmpty() ? [] : $this->toData($request),
-            // TODO: only need filters in index context
             'filters' => $this->flexFilters,
+            'visibleColumns' => $this->visibleColumns(),
+            'rowsPerPageOptions' => data_get($this->paginationMeta, 'rowsPerPageOptions'),
+            'pagination' => $this->paginationMeta,
+            'rows' => $this->toData($request),
         ];
     }
 
-    protected function toColumns(): array
+    protected function toDataQuery(Request $request): array
     {
-        return collect($this->meta['columns'])->map(fn ($columns) => Arr::except($columns, self::CONTROL_COLUMNS))->all();
-    }
-
-    protected function visibleColumns(): array
-    {
-        return collect($this->meta['columns'])->filter(fn ($col) => $col['render'])->values()->map(fn ($col) => $col['name'])->all();
+        $resource = new $this->resource($this->resultModel);
+        $actions = $resource->toActions(context: $this->context);
+        return $this->transformResource($resource, $actions, $request);
     }
 
     /**
@@ -289,21 +195,32 @@ class Flex extends Resource
      */
     protected function toData(Request $request): array
     {
+        // Pull the collection from the ResourceCollection Instance
+        $collection = $this->collection;
+
+        if ($collection->isEmpty()) {
+            return [];
+        }
         // use the first resource in the collection to build actions
         /**
          * @var Resource
          */
-        $resource = $this->collection->first();
+        $resource = $collection->first();
         $actions = $resource->toActions(context: $this->context);
 
         // We'll pass actions to the resource to build the array of data
-        return $this->collection->map(function (Resource $resource) use ($request, $actions) {
-            return $resource
-                ->withContext($this->context)
-                ->withKeys($this->meta['keys'])
-                ->withActions($actions)
-                ->setControls($this->getControls())         // cascade control parameters like actions, relations to the resource
-                ->toArray($request);
+        return $collection->map(function (Resource $resource) use ($request, $actions) {
+            return $this->transformResource($resource, $actions, $request);
         })->all();
+    }
+
+    protected function transformResource(Resource $resource, array $actions, Request $request)
+    {
+        return $resource
+            ->withContext($this->context)
+            ->withKeys($this->meta['keys'])
+            ->withActions($actions)
+            ->setControls($this->getControls())         // cascade control parameters like actions, relations to the resource
+            ->toArray($request);
     }
 }
