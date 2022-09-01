@@ -2,7 +2,6 @@
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
-use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Filters\Filter;
 use Psi\FlexAdmin\Panels\Panel;
@@ -10,7 +9,6 @@ use Psi\FlexAdmin\Relations\Relation;
 use Psi\FlexAdmin\Resources\Flexible;
 use Psi\FlexAdmin\Resources\Resource;
 use Psi\FlexAdmin\Tests\Models\Company;
-use Psi\FlexAdmin\Tests\Models\Unit;
 
 /**
  *  ======================
@@ -189,14 +187,14 @@ class PropertyResource extends Resource implements Flexible
                 relationKey: 'company',
                 model: $this->resource
             )
-                ->whenDetailorEdit()
-                ->as(CompanyResource::class),
+                ->whenDetailorEdit(),
 
-            // Relation::hasMany('units')
-            //     ->whenDetailorEdit()
-            //     ->as(
-            //         Flex::forDetail(Unit::class)
-            //     ),
+            Relation::hasMany(
+                relationKey: 'units',
+                model: $this->resource
+            )
+                ->whenDetailorEdit()
+
         ];
     }
 

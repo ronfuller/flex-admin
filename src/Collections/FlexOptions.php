@@ -41,6 +41,20 @@ trait FlexOptions
     protected bool $paginate = true;
 
     /**
+     * Include Actions with the resource
+     *
+     * @var bool
+     */
+    protected bool $withActions = true;
+
+    /**
+     * Include resource relations
+     *
+     * @var bool
+     */
+    protected bool $withRelations = true;
+
+    /**
      * Set the Inertia Page Component
      *
      * @param  string  $page
@@ -90,6 +104,25 @@ trait FlexOptions
     public function withoutFilters(): self
     {
         $this->withFilters = false;
+
+        return $this;
+    }
+
+    /**
+     * Creates a resource without actions
+     *
+     * @return \Psi\FlexAdmin\Resources\Resource
+     */
+    public function withoutActions(): self
+    {
+        $this->withActions = false;
+
+        return $this;
+    }
+
+    public function withoutRelations(): self
+    {
+        $this->withRelations = false;
 
         return $this;
     }

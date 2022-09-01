@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Tests\Http\Resources\PropertyResource;
-use Psi\FlexAdmin\Tests\Models\Company;
 use Psi\FlexAdmin\Tests\Models\Property;
 
 beforeEach(function () {
     Route::resource('companies', TestController::class);
+    Route::resource('units', TestController::class);
 });
 
 it('should create flex instance for a property model class')
@@ -27,19 +28,19 @@ it('should create an Inertia Page')
     ->group('collections');
 
 it('should create a collection for a property with short syntax for detail')
-    ->expect(fn () => Flex::forDetail(Property::class))
+    ->expect(fn () => Flex::forDetail(Property::first()))
     ->toBeInstanceOf(Flex::class)
 
     ->group('collections');
 
 it('should create a collection for a property with short syntax for edit')
-    ->expect(fn () => Flex::forEdit(Property::class))
+    ->expect(fn () => Flex::forEdit(Property::first()))
     ->toBeInstanceOf(Flex::class)
 
     ->group('collections');
 
 it('should create a collection for a property with short syntax for create')
-    ->expect(fn () => Flex::forCreate(Property::class))
+    ->expect(fn () => Flex::forCreate(Property::first()))
     ->toBeInstanceOf(Flex::class)
     ->group('collections');
 
@@ -100,47 +101,78 @@ it('should create rows for a large data set', function () {
 })
     ->group('collections');
 
-// it('should have a detail resource with a belongsTo relationship', function () {
-//     $property = Property::factory()->forCompany()->create();
+it('should have a detail resource with a BelongsTo relationship', function () {
+    $property = Property::factory()->forCompany()->create()->load('company');
 
-//     $result = Flex::forDetail(Property::class)
-//         ->byId($property->id)
-//         ->toArray(createRequest());
-//     expect($result)->toHaveKey('data');
-//     expect($result)->data->toHaveKeys(['actions', 'values', 'panels', 'relations']);
-//     expect(data_get($result, 'data.actions'))->toHaveCount(3);
-//     expect(data_get($result, 'data.values'))->toHaveCount(3);
-//     expect(data_get($result, 'data.relations'))->toHaveKey('company');
-// })->group('collections');
+    $result = Flex::forDetail($property)
+        ->toArray(createRequest());
+    expect($result)->toHaveKey('data');
+    expect($result)->data->toHaveKeys(['actions', 'values', 'panels', 'relations']);
+    expect(data_get($result, 'data.actions'))->toHaveCount(3);
+    expect(data_get($result, 'data.values'))->toHaveCount(3);
+    expect(data_get($result, 'data.relations'))->toHaveKey('company');
+    expect(data_get($result, 'data.relations.company.data.values.companyId'))->toBe($property->company->id);
+})
+    ->group('collections');
 
-// it('should have a detail resource without actions', function () {
-//     $property = Property::factory()->forCompany()->create();
+it('should have a detail resource without actions', function () {
+    $property = Property::factory()->forCompany()->create();
 
-//     $result = Flex::forDetail(Property::class)
-//         ->withoutActions()
-//         ->byId($property->id)
-//         ->toArray(createRequest());
-//     expect($result)->data->actions->toBeEmpty();
-// })->group('collections');
+    $result = Flex::forDetail($property)
+        ->withoutActions()
+        ->toArray(createRequest());
+    expect($result)->data->actions->toBeEmpty();
+})
+    ->group('collections');
 
-// it('should have a detail resource with a hasMany relationship', function () {
-//     $properties = Property::factory(5)->forCompany()->create();
+it('should set a result query', function () {
+    $code = Str::random(6);
 
-//     $result = Flex::forDetail(Company::class)
-//         ->byId($properties->first()->company_id)
-//         ->toArray(createRequest());
-//     expect($result)->toHaveKey('data');
-// })->group('collections');
+    $property = Property::factory(5)->forCompany()->state(['status' => $code])->create();
 
-// it('should have a detail resource without relations', function () {
-//     $property = Property::factory()->forCompany()->create();
+    $result = Flex::forIndex(Property::class)
+        ->withoutDefaultFilters()
+        ->setResultQuery(Property::where('status', $code)->get())
+        ->toArray(createRequest());
+    expect($result)->rows->toHaveCount(5);
+})
+    ->group('collections');
 
-//     $result = Flex::forDetail(Property::class)
-//         ->withoutRelations()
-//         ->byId($property->id)
-//         ->toArray(createRequest());
-//     expect($result)->data->relations->toBeEmpty();
-// })->group('collections');
+it('should paginate a when setting a result query', function () {
+    $code = Str::random(6);
+
+    $property = Property::factory(20)->forCompany()->state(['status' => $code])->create();
+
+    $result = Flex::forIndex(Property::class)
+        ->withoutDefaultFilters()
+        ->setResultQuery(Property::where('status', $code)->paginate(10))
+        ->toArray(createRequest());
+    expect($result)->rows->toHaveCount(10);
+    expect($result)->pagination->total->toBe(20);
+})
+    ->group('collections');
+
+it('should have a detail resource with a hasMany relationship', function () {
+    $property = Property::factory()->forCompany()->hasUnits(10)->create();
+    $property->load('units', 'company');
+    $result = Flex::forDetail($property)
+        ->toArray(createRequest());
+
+    expect($result)->toHaveKey('data.relations.units.rows');
+    expect(data_get($result, 'data.relations.units.rows'))->toHaveCount(10);
+})
+    ->group('collections');
+
+it('should have a detail resource without relations', function () {
+    $property = Property::factory()->forCompany()->create();
+    $property->load('company', 'units');
+
+    $result = Flex::forDetail($property)
+        ->withoutRelations()
+        ->toArray(createRequest());
+    expect($result)->data->relations->toBeEmpty();
+})
+    ->group('collections');
 
 /*
     Full Signature
