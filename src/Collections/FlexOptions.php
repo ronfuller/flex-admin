@@ -62,7 +62,21 @@ trait FlexOptions
     protected bool $fieldsAsObject = false;
 
     /**
-     * Set the Inertia Page Component
+     * Callback function to transform data on converting to array
+     *
+     * @var callable|null
+     */
+    protected mixed $transformer = null;
+
+    public function transform(callable $transformer): self
+    {
+        $this->transformer = $transformer;
+
+        return $this;
+    }
+
+    /**
+     * Fields on panels will be created to objects
      *
      * @return \Psi\FlexAdmin\Collections\Flex
      */

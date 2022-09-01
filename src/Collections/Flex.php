@@ -167,7 +167,9 @@ class Flex
      */
     public function toArray(Request $request)
     {
-        return $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
+        $data = $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
+
+        return $this->transformer ? call_user_func_array($this->transformer, compact('data')) : $data;
     }
 
     /**

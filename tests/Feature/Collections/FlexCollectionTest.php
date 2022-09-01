@@ -126,6 +126,17 @@ it('should have a detail resource with transformed fields', function () {
 
     ->group('collections');
 
+it('should be able to transform the data before output to array', function () {
+    $property = Property::factory()->forCompany()->create()->load('company');
+
+    $result = Flex::forDetail($property)
+        ->fieldsAsObject()
+        ->transform(fn ($data) => data_get($data, 'data.panels.0.fields'))
+        ->toArray(createRequest());
+    expect($result)->toHaveKeys(['name', 'createdAt', 'updatedAt', 'status']);
+})
+    ->group('collections');
+
 it('should have a detail resource without actions', function () {
     $property = Property::factory()->forCompany()->create();
 
