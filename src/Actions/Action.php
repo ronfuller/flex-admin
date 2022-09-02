@@ -127,12 +127,21 @@ class Action
         return $this;
     }
 
-    public function route(string $name, string $method = 'get', array $params = []): self
+    public function route(string $name, string $method = 'get', array $params = [], string $target = '_self'): self
     {
         if (!Route::has($name)) {
             throw new \Exception("Could not find route for name = {$name}. You may need to create an API resource");
         }
-        $this->attributes = array_merge($this->attributes, ['route' => compact('name', 'params'), 'external' => false, 'target' => '_self', 'asEvent' => false, 'method' => $method]);
+        $this->attributes = array_merge(
+            $this->attributes,
+            [
+                'route' => compact('name', 'params'),
+                'external' => false,
+                'target' => $target,
+                'asEvent' => false,
+                'method' => $method
+            ]
+        );
 
         return $this;
     }

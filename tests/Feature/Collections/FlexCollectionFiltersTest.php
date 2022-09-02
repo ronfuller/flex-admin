@@ -165,7 +165,6 @@ it('should return filter options for types')
     ->expect(fn () => Flex::forIndex(Property::class)->withoutDeferredFilters()->toArray(createRequest(['filter' => 'status:5JOYAE7QO8'])))
     ->filters
     ->toHaveKey('1.options.0.label', 'Apartment')
-    ->toHaveKey('1.options.4.label', 'Home')
     ->group('filter');
 
 it('should filter the resource query')
