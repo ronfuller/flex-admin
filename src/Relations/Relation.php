@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Relations;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,19 @@ class Relation
      */
     protected array $relatedConditions;
 
+    /**
+     * Class name of the related resource
+     *
+     * @var string
+     */
     protected string $related;
+
+    /**
+     * Determines if we load actions
+     *
+     * @var bool
+     */
+    protected $actions = false;
 
     public const
         TYPE_BELONGS_TO = 'belongsTo';
@@ -105,9 +118,10 @@ class Relation
 
     public function build(Model $resource, Request $request): array
     {
-        if (!$this->model->relationLoaded($this->relationKey)) {
+        if (! $this->model->relationLoaded($this->relationKey)) {
             return [];
         }
+
         return match ($this->relation) {
             self::TYPE_BELONGS_TO => $this->buildBelongsTo(
                 resource: $resource,

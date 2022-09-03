@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Feature\Collections;
 
 use Psi\FlexAdmin\Collections\FlexFilter;

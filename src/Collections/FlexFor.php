@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Psi\FlexAdmin\Fields\Field;
@@ -14,6 +15,7 @@ trait FlexFor
             model: get_class($model),
             context: Field::CONTEXT_DETAIL
         );
+
         return $flex->setResultModel($model);
     }
 
@@ -31,6 +33,7 @@ trait FlexFor
             model: get_class($model),
             context: Field::CONTEXT_EDIT
         );
+
         return $flex->setResultModel($model);
     }
 
@@ -40,6 +43,7 @@ trait FlexFor
             model: get_class($model),
             context: Field::CONTEXT_CREATE
         );
+
         return $flex->setResultModel($model);
     }
 }

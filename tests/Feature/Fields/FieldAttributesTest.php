@@ -120,7 +120,7 @@ it('should have callable attributes')
     ->expect(fn () => Field::make(null, 'created')
         ->model($this->property)
         ->attributes(fn ($model) => [
-            'propertyName' => $model->name
+            'propertyName' => $model->name,
         ])
         ->toAttributes())
     ->toHaveKey('propertyName')

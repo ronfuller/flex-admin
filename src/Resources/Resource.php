@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,6 @@ use Psi\FlexAdmin\Fields\Field;
 class Resource extends JsonResource implements Flexible
 {
     use HasControls;
-
     use ResourceColumns;
     use ResourcePagination;
     use ResourceFilters;
@@ -105,6 +105,7 @@ class Resource extends JsonResource implements Flexible
             'perPageOptions' => $this->perPageOptions(),
             'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all(),
         ];
+
         return $meta;
     }
 
@@ -147,11 +148,12 @@ class Resource extends JsonResource implements Flexible
         $fieldsCollection = $fields->map(function (Field $field) use ($attributes) {
             return  [
                 ...[
-                    'component' => $field->component
+                    'component' => $field->component,
                 ],
-                ...$field->model($this->resource)->toArray($attributes)
+                ...$field->model($this->resource)->toArray($attributes),
             ];
         });
+
         return $fieldsCollection;
     }
 
@@ -202,7 +204,7 @@ class Resource extends JsonResource implements Flexible
     protected function withFields()
     {
         // return fields array if not using panels
-        return !$this->withPanels();
+        return ! $this->withPanels();
     }
 
     /**
@@ -257,7 +259,7 @@ class Resource extends JsonResource implements Flexible
             'delete' => 'delete',
         ];
         $routeMethod = $slugRouteMethods[$slug];
-        $routeName = $pluralModel . '.' . $slugResourceRoutes[$slug];
+        $routeName = $pluralModel.'.'.$slugResourceRoutes[$slug];
         $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? [['name' => $modelKey, 'field' => $routeKeyName]] : [];
 
         return [$routeName, $routeMethod, $routeParams];

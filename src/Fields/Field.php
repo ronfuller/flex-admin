@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,12 +19,9 @@ class Field
     use FieldAttributes;
     use FieldSort;
     use FieldValue;
-    // use FieldSelect;
     use FieldRender;
     use FieldSearchable;
-    // use FieldModel;
     use FieldFilter;
-    // use FieldRelation;
 
     public const
         CONTEXT_INDEX = 'index';
@@ -80,6 +78,8 @@ class Field
         self::FILTER_BETWEEN,
     ];
 
+    protected ?Model $model = null;
+
     /**
      * Key determines the default field name, is the primary identifier for the field
      *
@@ -114,14 +114,6 @@ class Field
 
     public function toMeta(array|null $modelMeta = null): array
     {
-        // Meta information for the primary model for the field
-        // $this->modelMeta = $modelMeta ?? $this->modelMeta($this->model);
-
-        // If this field is on another model, we need that meta
-        // if ($this->onModel) {
-        //     $this->onModelMeta = $this->modelMeta(new $this->onModel());
-        // }
-
         return array_merge(
             $this->meta,
             [
@@ -141,7 +133,7 @@ class Field
 
     public function toAttributes(): array
     {
-        $attributes = $this->attributesFn ? \call_user_func($this->attributesFn, $this->model) : $this->attributes;
+        $attributes = $this->hasCallableAttributes ? \call_user_func($this->attributesFn, $this->model) : $this->attributes;
 
         return [...[
             'key' => $this->key,
@@ -151,7 +143,7 @@ class Field
             'copyable' => $this->meta['copyable'],
             'selectable' => $this->meta['selectable'],
             'hidden' => $this->meta['hidden'],
-            'readonly' => $this->meta['readonly']
+            'readonly' => $this->meta['readonly'],
         ], ...$attributes];
     }
 

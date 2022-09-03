@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Enums;
 
 enum ControlParams: string

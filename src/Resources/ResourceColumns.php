@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Support\Arr;
@@ -41,6 +42,7 @@ trait ResourceColumns
     public function sort(): array
     {
         $defaultSort = $this->columns->firstWhere('defaultSort', true);
+
         return $defaultSort ? Arr::only($defaultSort, ['key', 'name', 'sort', 'sortDir']) : [];
     }
 

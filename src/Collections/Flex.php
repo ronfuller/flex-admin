@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,6 @@ use Psi\FlexAdmin\Resources\Resource;
 class Flex
 {
     use HasControls;
-
     use FlexFor;
     use FlexQuery;
     use FlexSearch;
@@ -24,10 +24,11 @@ class Flex
     use FlexOptions;
     use FlexResource;
     use FlexSort;
+
     /**
      * The  flex resource class
      *
-     * @var Resource
+     * @var resource
      */
     public $resource;
 
@@ -39,7 +40,6 @@ class Flex
     public Model $model;
 
     /**
-     *
      * @var AnonymousResourceCollection
      */
     public ?AnonymousResourceCollection $resourceCollection = null;
@@ -51,7 +51,6 @@ class Flex
 
     /**
      * @var array
-     *
      */
     public $paginationMeta = [];
 
@@ -115,26 +114,27 @@ class Flex
 
         $resourceClassName = $this->resource();
         $this->resource = new $resourceClassName($this->model);
-        $this->meta = $context = Field::CONTEXT_INDEX ? $this->resource->withContext($context)->toMeta($this->model) : [];
+        $this->meta = $this->resource->withContext($context)->toMeta($this->model);
     }
 
     /**
      * Ability to set query results generated from an external query builder exec
      *
-     * @param mixed $resultQuery
+     * @param  mixed  $resultQuery
      * @return self
      */
     public function setResultQuery(mixed $resultQuery): self
     {
         $this->resultQuery = $resultQuery;
         $this->paginate = is_a($this->resultQuery, 'Illuminate\Pagination\LengthAwarePaginator');
+
         return $this;
     }
 
     /**
      * Ability to set query results generated from an external query builder exec
      *
-     * @param Model $resultModel
+     * @param  Model  $resultModel
      * @return self
      */
     public function setResultModel(Model $resultModel): self
@@ -147,7 +147,7 @@ class Flex
     /**
      * Generates an Inertia Response
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse | \Inertia\Response
      */
     public function toResponse(Request $request): \Illuminate\Http\JsonResponse | \Inertia\Response
@@ -199,6 +199,7 @@ class Flex
     {
         $resource = new $this->resource($this->resultModel);
         $actions = $resource->toActions(context: $this->context);
+
         return ['data' => $this->transformResource($resource, $actions, $request)];
     }
 
@@ -220,6 +221,7 @@ class Flex
         // We'll pass actions to the resource to build the array of data
         return $collection->map(function (Resource $resource) use ($request) {
             $actions = $resource->toActions(context: $this->context);
+
             return $this->transformResource($resource, $actions, $request);
         })->all();
     }
@@ -244,6 +246,7 @@ class Flex
                 ->all();
             data_set($data, "panels.{$index}.fields", $fields);
         });
+
         return $data;
     }
 }

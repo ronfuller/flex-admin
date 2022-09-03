@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -9,8 +10,8 @@ trait FlexSearch
     protected function search(Builder $query, array $attributes): Builder
     {
         $term = $this->searchTerm($attributes);
-
-        return $this->model->search($term);
+        /** @phpstan-ignore-next-line */
+        return $this->model->search($term);     // Search is on the Query Builder on the model, PHPStan can't see it
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -33,7 +34,9 @@ use Psi\FlexAdmin\Tests\Models\Company;
 class PropertyResource extends Resource implements Flexible
 {
     protected array $resourceFields = [];
+
     protected array $resourceFilters = [];
+
     protected array $resourceActions = [];
 
     /**
@@ -193,7 +196,7 @@ class PropertyResource extends Resource implements Flexible
                 relationKey: 'units',
                 model: $this->resource
             )
-                ->whenDetailorEdit()
+                ->whenDetailorEdit(),
 
         ];
     }

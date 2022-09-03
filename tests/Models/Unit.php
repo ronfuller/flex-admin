@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -35,7 +36,7 @@ class Unit extends Model
     public function size(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => $value ? $value . ' sq ft' : null
+            get: fn ($value) => $value ? $value.' sq ft' : null
         );
     }
 

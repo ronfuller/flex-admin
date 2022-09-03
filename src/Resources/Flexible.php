@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Http\Request;

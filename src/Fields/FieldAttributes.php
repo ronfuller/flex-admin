@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
@@ -23,16 +24,21 @@ trait FieldAttributes
     ];
 
     /**
-     *
      * @var array | callable
      */
     public $attributes = [];
 
     /**
-     *
      * @var callable
      */
     protected $attributesFn = null;
+
+    /**
+     * Determines if we should callback a user function to get attributes
+     *
+     * @var bool
+     */
+    protected bool $hasCallableAttributes = false;
 
     /**
      * @return bool
@@ -80,9 +86,11 @@ trait FieldAttributes
     {
         if (is_callable($attributes)) {
             $this->attributesFn = $attributes;
+            $this->hasCallableAttributes = true;
         } else {
             $this->attributes = [...$this->attributes, ...$attributes];
         }
+
         return $this;
     }
 

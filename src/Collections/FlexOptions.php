@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Collections;
 
 trait FlexOptions
@@ -83,6 +84,7 @@ trait FlexOptions
     public function fieldsAsObject(): self
     {
         $this->fieldsAsObject = true;
+
         return $this;
     }
 
@@ -95,6 +97,7 @@ trait FlexOptions
     public function page(string $page): self
     {
         $this->page = $page;
+
         return $this;
     }
 
@@ -106,6 +109,7 @@ trait FlexOptions
     public function withoutPagination(): self
     {
         $this->paginate = false;
+
         return $this;
     }
 
@@ -143,7 +147,7 @@ trait FlexOptions
     /**
      * Creates a resource without actions
      *
-     * @return \Psi\FlexAdmin\Resources\Resource
+     * @return \Psi\FlexAdmin\Collections\Flex
      */
     public function withoutActions(): self
     {

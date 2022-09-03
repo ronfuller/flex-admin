@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Fields;
 
 trait FieldSearchable
