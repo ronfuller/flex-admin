@@ -129,22 +129,21 @@ class Field
                 'render' => $this->render,
                 'component' => $this->component,
                 'key' => $this->key,
-                // 'select' => $this->getSelect(),
                 'sort' => $this->key,
-                // 'column' => $this->getColumn(),
                 'defaultSort' => $this->defaultSort,
                 'sortDir' => $this->sortDir,
-                // 'searchType' => $this->searchType,
                 'filterType' => $this->filterType,
                 'addToValues' => $this->addToValues,
-                // 'join' => $this->join(),
+
             ]
         );
     }
 
     public function toAttributes(): array
     {
-        return [...['key' => $this->key, 'name' => $this->meta['name'], 'label' => $this->meta['label'], 'panel' => $this->panel], ...$this->attributes];
+        $attributes = $this->attributesFn ? \call_user_func($this->attributesFn, $this->model) : $this->attributes;
+
+        return [...['key' => $this->key, 'name' => $this->meta['name'], 'label' => $this->meta['label'], 'panel' => $this->panel], ...$attributes];
     }
 
     public function toValue(array $attributes): mixed

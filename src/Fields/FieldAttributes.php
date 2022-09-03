@@ -22,7 +22,17 @@ trait FieldAttributes
         'readonly' => false,
     ];
 
+    /**
+     *
+     * @var array | callable
+     */
     public $attributes = [];
+
+    /**
+     *
+     * @var callable
+     */
+    protected $attributesFn = null;
 
     /**
      * @return bool
@@ -66,10 +76,13 @@ trait FieldAttributes
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function attributes(array $attributes): self
+    public function attributes(array|callable $attributes): self
     {
-        $this->attributes = [...$this->attributes, ...$attributes];
-
+        if (is_callable($attributes)) {
+            $this->attributesFn = $attributes;
+        } else {
+            $this->attributes = [...$this->attributes, ...$attributes];
+        }
         return $this;
     }
 

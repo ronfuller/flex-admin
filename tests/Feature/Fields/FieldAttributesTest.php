@@ -115,3 +115,13 @@ it('should have an array with attributes')
         ->toAttributes())
     ->toHaveKey('icon')
     ->group('attributes', 'fields');
+
+it('should have callable attributes')
+    ->expect(fn () => Field::make(null, 'created')
+        ->model($this->property)
+        ->attributes(fn ($model) => [
+            'propertyName' => $model->name
+        ])
+        ->toAttributes())
+    ->toHaveKey('propertyName')
+    ->group('attributes', 'fields');

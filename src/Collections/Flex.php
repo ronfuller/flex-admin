@@ -216,15 +216,10 @@ class Flex
         if ($collection->isEmpty()) {
             return [];
         }
-        // use the first resource in the collection to build actions
-        /**
-         * @var Resource
-         */
-        $resource = $collection->first();
-        $actions = $resource->toActions(context: $this->context);
 
         // We'll pass actions to the resource to build the array of data
-        return $collection->map(function (Resource $resource) use ($request, $actions) {
+        return $collection->map(function (Resource $resource) use ($request) {
+            $actions = $resource->toActions(context: $this->context);
             return $this->transformResource($resource, $actions, $request);
         })->all();
     }
