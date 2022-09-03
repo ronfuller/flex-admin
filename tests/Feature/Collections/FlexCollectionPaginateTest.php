@@ -54,7 +54,6 @@ it('should create pagination meta')
             ->withoutFilters()
             ->toArray(createRequest(['type' => $type, 'perPage' => 20]));
     })
-    ->ray()
     ->toHaveKey('pagination')
     ->pagination->toHaveKeys(['sort', 'descending', 'page', 'rowsPerPage', 'rowsNumber', 'currentPage', 'from', 'to', 'total', 'nextUrl', 'previousUrl', 'next', 'previous'])
     ->group('collections', 'paginate');

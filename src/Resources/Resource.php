@@ -145,9 +145,13 @@ class Resource extends JsonResource implements Flexible
         $fields = $fields->filter()->values();
 
         $fieldsCollection = $fields->map(function (Field $field) use ($attributes) {
-            return  $field->model($this->resource)->toArray($attributes);    // get the attributes and transformed value
+            return  [
+                ...[
+                    'component' => $field->component
+                ],
+                ...$field->model($this->resource)->toArray($attributes)
+            ];
         });
-
         return $fieldsCollection;
     }
 

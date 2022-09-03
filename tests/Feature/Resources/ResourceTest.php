@@ -21,6 +21,14 @@ it('should return an array limited by valid keys')
     ->toBeArray()
     ->group('resources');
 
+it('should return an array with component fields')
+    ->expect(fn () => (new PropertyResource(Property::first()))
+        ->withContext(Field::CONTEXT_DETAIL)
+        ->toArray(Request::create('http://test.com'))['panels'][0]['fields'])
+    ->toBeArray()
+    ->each(fn ($item) => $item->toHaveKey('component'))
+    ->group('resources');
+
 it('should return fields')
     ->expect(fn () => (new PropertyResource($this->property))
         ->withContext(Field::CONTEXT_INDEX)

@@ -143,7 +143,16 @@ class Field
     {
         $attributes = $this->attributesFn ? \call_user_func($this->attributesFn, $this->model) : $this->attributes;
 
-        return [...['key' => $this->key, 'name' => $this->meta['name'], 'label' => $this->meta['label'], 'panel' => $this->panel], ...$attributes];
+        return [...[
+            'key' => $this->key,
+            'name' => $this->meta['name'],
+            'label' => $this->meta['label'],
+            'panel' => $this->panel,
+            'copyable' => $this->meta['copyable'],
+            'selectable' => $this->meta['selectable'],
+            'hidden' => $this->meta['hidden'],
+            'readonly' => $this->meta['readonly']
+        ], ...$attributes];
     }
 
     public function toValue(array $attributes): mixed
