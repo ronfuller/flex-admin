@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -169,7 +168,13 @@ class Flex
     {
         $data = $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
 
-        return $this->transformer ? call_user_func_array($this->transformer, compact('data')) : $data;
+        $array = $this->transformer ? call_user_func_array($this->transformer, compact('data')) : $data;
+
+        if ($this->sendToRay) {
+            ray($array);
+        }
+
+        return $array;
     }
 
     /**

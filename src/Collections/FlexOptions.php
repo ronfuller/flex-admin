@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace Psi\FlexAdmin\Collections;
 
 trait FlexOptions
@@ -63,6 +62,13 @@ trait FlexOptions
     protected bool $fieldsAsObject = false;
 
     /**
+     * Send output to ray debugger
+     *
+     * @var boolean
+     */
+    protected bool $sendToRay = false;
+
+    /**
      * Callback function to transform data on converting to array
      *
      * @var callable|null
@@ -97,6 +103,13 @@ trait FlexOptions
     public function page(string $page): self
     {
         $this->page = $page;
+
+        return $this;
+    }
+
+    public function ray(): self
+    {
+        $this->sendToRay = true;
 
         return $this;
     }
