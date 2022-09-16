@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
@@ -83,7 +82,6 @@ trait FieldPermissions
     {
         $permission = Str::of($this->permissions[$context])->contains('{entity}') ?
             $model->qualifyColumn((string) Str::of($this->permissions[$context])->replace('{entity}.', '')) : $this->permissions[$context];
-
         return $this->withPermissions ? (auth()->check() ? auth()->user()->can($permission) : true) : true;
     }
 

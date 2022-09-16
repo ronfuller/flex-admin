@@ -83,7 +83,7 @@ uses()
 
         $this->user = User::factory()->create(
             [
-                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.delete', 'properties.create', 'companies.view', 'companies.edit'],
+                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.delete', 'properties.create', 'companies.view', 'companies.edit', 'units.view-any', 'units.view'],
             ]
         );
         actingAs($this->user);

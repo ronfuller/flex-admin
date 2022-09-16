@@ -1,11 +1,11 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Psi\FlexAdmin\Tests\Policies\CompanyPolicy;
 use Psi\FlexAdmin\Tests\Policies\PropertyPolicy;
+use Psi\FlexAdmin\Tests\Policies\UnitPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -43,5 +43,15 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('companies.destroy', [CompanyPolicy::class, 'delete']);
         Gate::define('companies.delete', [CompanyPolicy::class, 'delete']);
         Gate::define('companies.admin', [CompanyPolicy::class, 'admin']);
+
+        Gate::define('units.view-any', [UnitPolicy::class, 'viewAny']);
+        Gate::define('units.view', [UnitPolicy::class, 'view']);
+        Gate::define('units.edit', [UnitPolicy::class, 'update']);
+        Gate::define('units.update', [UnitPolicy::class, 'update']);
+        Gate::define('units.store', [UnitPolicy::class, 'create']);
+        Gate::define('units.create', [UnitPolicy::class, 'create']);
+        Gate::define('units.destroy', [UnitPolicy::class, 'delete']);
+        Gate::define('units.delete', [UnitPolicy::class, 'delete']);
+        Gate::define('units.admin', [UnitPolicy::class, 'admin']);
     }
 }

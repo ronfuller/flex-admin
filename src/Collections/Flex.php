@@ -112,7 +112,9 @@ class Flex
         $this->model = new $model;
 
         $resourceClassName = $this->resource();
+
         $this->resource = new $resourceClassName($this->model);
+
         $this->meta = $this->resource->withContext($context)->toMeta($this->model);
     }
 

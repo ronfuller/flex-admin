@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Relations;
 
 use Illuminate\Database\Eloquent\Model;
@@ -118,7 +117,7 @@ class Relation
 
     public function build(Model $resource, Request $request): array
     {
-        if (! $this->model->relationLoaded($this->relationKey)) {
+        if (!$this->model->relationLoaded($this->relationKey)) {
             return [];
         }
 
@@ -150,7 +149,7 @@ class Relation
 
     protected function buildHasMany(Model $resource, Request $request): array
     {
-        return Flex::forIndex(get_class($resource))
+        return Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()))
             ->setResultQuery($resource->{$this->relationKey})
             ->toArray($request);
     }
