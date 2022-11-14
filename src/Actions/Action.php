@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Actions;
 
 use Illuminate\Support\Facades\Route;
@@ -130,7 +129,7 @@ class Action
 
     public function route(string $name, string $method = 'get', array $params = [], string $target = '_self'): self
     {
-        if (! Route::has($name)) {
+        if (!Route::has($name)) {
             throw new \Exception("Could not find route for name = {$name}. You may need to create an API resource");
         }
         $this->attributes = array_merge(
@@ -246,7 +245,7 @@ class Action
             $this->displayContext($context) &&             // valid for the context?
             $this->authorized();                           // has permission
 
-        $this->attributes['disabled'] = ! $this->enabled;    // disabled attribute reflects true value of enabled
+        $this->attributes['disabled'] = !$this->enabled;    // disabled attribute reflects true value of enabled
 
         // If we always want a disabled attribute for the action, we'll enable but set disabled based on this status
         $this->enabled = $this->withDisabled ? true : $this->enabled;
@@ -259,7 +258,6 @@ class Action
             'canAct' => $this->canAct($resource),
             'attributes' => $this->attributes,
         ];
-
         return $this->hasDividers() ? $this->withDividers($action) : $action;
     }
 
@@ -272,12 +270,12 @@ class Action
     {
         $this->permission = $this->permission ?? '';
 
-        return $this->withPermissions && ! empty($this->permission) ? (auth()->check() ? auth()->user()->can($this->permission) : true) : true;
+        return $this->withPermissions && !empty($this->permission) ? (auth()->check() ? auth()->user()->can($this->permission) : true) : true;
     }
 
     protected function canAct(mixed $resource): bool
     {
-        return  $resource ? \method_exists($resource, 'canAct') : false;
+        return $resource ? \method_exists($resource?->resource, 'canAct') : false;
     }
 
     protected function setDefaults()
@@ -298,7 +296,7 @@ class Action
 
     protected function defaultAttributes(): array
     {
-        return ['disabled' => false, 'asEvent' => true, 'confirm' => false, 'confirmText' => '', 'divider' => false, 'title' => str($this->slug)->replace('-', ' ')->title()];
+        return ['disabled' => false, 'asEvent' => true, 'confirm' => false, 'confirmText' => '', 'divider' => false, 'title' => (string) str($this->slug)->replace('-', ' ')->title()];
     }
 
     protected function hasDividers(): bool
