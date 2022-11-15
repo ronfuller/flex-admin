@@ -29,11 +29,11 @@ trait FlexQuery
         // Either search or filter, not both
         if ($this->hasSearch($attributes)) {
             // Search
-            $query->search($this->searchTerm($attributes));
+            $query->search(term: $this->searchTerm($attributes), attributes: $attributes);
         } elseif ($this->hasFilters($filters)) {
             // Filter
             $filterValues = $this->filterValues($filters);
-            $query->filter($filterValues);
+            $query->filter(filter: $filterValues, attributes: $attributes);
         }
 
         ['sort' => $sort, 'sortDir' => $sortDir] = $this->sortBy($attributes);
@@ -53,7 +53,12 @@ trait FlexQuery
         $this->collection = $this->resourceCollection->collection;
 
         // We need the ResourceCollection instance here
-        $this->toPaginationMeta($this->flexSort, $this->resourceCollection);
+        $this->toPaginationMeta(
+            defaultSort: $this->resource->defaultSort,
+            indexRoute: $this->resource->indexRoute(),
+            sort: $this->flexSort,
+            resource: $this->resourceCollection
+        );
     }
 
     protected function getPerPage(array $attributes): int

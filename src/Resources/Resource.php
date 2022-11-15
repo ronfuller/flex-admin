@@ -24,6 +24,8 @@ class Resource extends JsonResource implements Flexible
      */
     public Model | null $model = null;
 
+    public $defaultSort = [];
+
     /**
      * @var string
      */
@@ -104,6 +106,7 @@ class Resource extends JsonResource implements Flexible
             'perPageOptions' => $this->perPageOptions(),
             'fields' => $this->columns->mapWithKeys(fn ($col, $index) => [$col['name'] => $index])->all(),
         ];
+        $this->defaultSort = $meta['sort'];
 
         return $meta;
     }
@@ -200,6 +203,11 @@ class Resource extends JsonResource implements Flexible
         });
     }
 
+    public function indexRoute(): string
+    {
+        return route($this->resourceRoute('index')[0]);
+    }
+
     protected function withFields()
     {
         // return fields array if not using panels
@@ -246,12 +254,14 @@ class Resource extends JsonResource implements Flexible
         $modelKey = $this->modelKeyName();
 
         $slugResourceRoutes = [
+            'index' => 'index',
             'view' => 'show',
             'edit' => 'edit',
             'create' => 'create',
             'delete' => 'destroy',
         ];
         $slugRouteMethods = [
+            'index' => 'get',
             'view' => 'get',
             'edit' => 'get',
             'create' => 'get',

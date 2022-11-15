@@ -154,7 +154,7 @@ class Flex
     public function toResponse(Request $request): \Illuminate\Http\JsonResponse | \Inertia\Response
     {
         if ($request->wantsJson()) {
-            return response()->json($this->toArray($request));
+            return response()->json(['data' => $this->toArray($request)]);
         } else {
             return Inertia::render($this->page, $this->toArray($request));
         }
@@ -164,13 +164,19 @@ class Flex
      * Transform the resource into a JSON array.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param array $append
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray(Request $request)
+    public function toArray(Request $request, array $append = [])
     {
         $data = $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
 
         $array = $this->transformer ? call_user_func_array($this->transformer, compact('data')) : $data;
+
+        $array = [
+            ...$array,
+            ...$append
+        ];
 
         if ($this->sendToRay) {
             ray($array);
@@ -190,6 +196,7 @@ class Flex
         if (is_null($this->resultQuery)) {
             $this->query($request);
         }
+
         $this->collectToResource();
 
         return [

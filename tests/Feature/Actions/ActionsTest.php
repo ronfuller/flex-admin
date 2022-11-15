@@ -5,6 +5,8 @@ use Psi\FlexAdmin\Actions\Action;
 use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Http\Actions\UrlAction;
 use Psi\FlexAdmin\Tests\Http\Controllers\TestController;
+use Psi\FlexAdmin\Tests\Http\Resources\PropertyResource;
+use Psi\FlexAdmin\Tests\Http\Resources\UserResource;
 use Psi\FlexAdmin\Tests\Models\Property;
 use Psi\FlexAdmin\Tests\Models\User;
 
@@ -208,13 +210,13 @@ it('should be true when ignoring permissions')
 
 // view-website canAct returns false on property model
 it('should be indicate resource has canAct')
-    ->expect(fn () => Action::make('view-website')->permission('properties.view-any')->toArray(Field::CONTEXT_INDEX, $this->property))
+    ->expect(fn () => Action::make('view-website')->permission('properties.view-any')->toArray(Field::CONTEXT_INDEX, (new PropertyResource($this->property))))
     ->toHaveKey('canAct', true)
     ->group('actions');
 
 // view-company canAct returns true on property model
 it('should be show when the model does not have a canAct method')
-    ->expect(fn () => Action::make('view-company')->permission('properties.view-any')->toArray(Field::CONTEXT_INDEX, $this->user))
+    ->expect(fn () => Action::make('view-company')->permission('properties.view-any')->toArray(Field::CONTEXT_INDEX, (new UserResource($this->user))))
     ->toHaveKey('canAct', false)
     ->group('actions');
 

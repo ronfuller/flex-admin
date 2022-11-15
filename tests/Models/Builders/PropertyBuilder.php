@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models\Builders;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +14,7 @@ class PropertyBuilder extends Builder implements FlexQueryBuilder
         return $this->whereNotNull('id');
     }
 
-    public function search(string $term): FlexQueryBuilder
+    public function search(string $term, array $attributes = []): FlexQueryBuilder
     {
         return $this->where('name', 'like', "%{$term}%")
             ->orWhereHas('company', function (Builder $query) use ($term) {
@@ -26,7 +25,7 @@ class PropertyBuilder extends Builder implements FlexQueryBuilder
             ->orWhere('type', 'like', "%{$term}%");
     }
 
-    public function filter(array $filter): FlexQueryBuilder
+    public function filter(array $filter, array $attributes = []): FlexQueryBuilder
     {
         return $this->when($filter['type'] ?? null, function ($query, $type) {
             $query->where('type', $type);

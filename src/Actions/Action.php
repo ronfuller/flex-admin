@@ -275,7 +275,7 @@ class Action
 
     protected function canAct(mixed $resource): bool
     {
-        return $resource ? \method_exists($resource?->resource, 'canAct') : false;
+        return $resource->resource ? \method_exists($resource->resource, 'canAct') : false;
     }
 
     protected function setDefaults()

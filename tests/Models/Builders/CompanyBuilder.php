@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests\Models\Builders;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -12,12 +11,12 @@ class CompanyBuilder extends Builder implements FlexQueryBuilder
         return $this->whereNotNull('id');
     }
 
-    public function search(string $term): FlexQueryBuilder
+    public function search(string $term, array $attributes = []): FlexQueryBuilder
     {
         return $this->where('name', 'like', "%{$term}%");
     }
 
-    public function filter(array $attributes): FlexQueryBuilder
+    public function filter(array $filter, array $attributes = []): FlexQueryBuilder
     {
         return $this;
     }

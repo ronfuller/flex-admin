@@ -149,9 +149,14 @@ class Relation
 
     protected function buildHasMany(Model $resource, Request $request): array
     {
-        return Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()))
+        $foreign = ['key' => $resource->getForeignKey(), 'value' => $resource->{$resource->getKeyName()}];
+
+        return  Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()))
             ->setResultQuery($resource->{$this->relationKey})
-            ->toArray($request);
+            ->toArray(
+                request: $request,
+                append: compact('foreign')
+            );
     }
 
     protected function buildBelongsToMany(Model $resource, Request $request): array
