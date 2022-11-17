@@ -67,7 +67,7 @@ jobs:
       - name: Run Test Coverage
         run: |
           vendor/bin/pest --filter=setup
-          vendor/bin/pest --exclude-group=setup --coverage --min=85
+          vendor/bin/pest --exclude-group=setup --coverage --min=80
         env:
           DB_USERNAME: root
           DB_PASSWORD: root
