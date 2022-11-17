@@ -275,6 +275,10 @@ class Action
 
     protected function canAct(mixed $resource): bool
     {
+        if (is_null($resource)) {
+            return false;
+        }
+
         return $resource->resource ? \method_exists($resource->resource, 'canAct') : false;
     }
 

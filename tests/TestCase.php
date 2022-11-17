@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -14,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Psi\\FlexAdmin\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Psi\\FlexAdmin\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
     }
 
@@ -23,12 +22,18 @@ class TestCase extends Orchestra
         return [
             FlexAdminServiceProvider::class,
             \Spatie\LaravelRay\RayServiceProvider::class,
+            \Spatie\LaravelData\LaravelDataServiceProvider::class,
             \Psi\FlexAdmin\Tests\Providers\AuthServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
+        $data = include __DIR__ . '/config/data.php';
+        foreach ($data as $key => $value) {
+            $app['config']->set("data.{$key}", $value);
+        }
+
         $app['config']->set('app.key', 'base64:8xem+lYvuVAYkd/UvLjmG4cptCp4aOuWCz7Zn7dXcVo=');
         $app['config']->set('flex-admin.resource_path', 'Http\\Resources');
         $app['config']->set('flex-admin.model_path', 'Models');
@@ -44,7 +49,6 @@ class TestCase extends Orchestra
     protected function setupMigrations()
     {
         Schema::dropAllTables();
-        ray('Setup Migrations');
         collect([
             // Package Migrations
             // '/../database/migrations/create_flex_admins_table.php.stub',
@@ -56,7 +60,7 @@ class TestCase extends Orchestra
             '/database/migrations/2022_04_13_101320_testbench_create_units_table.php',
 
         ])->each(function ($path) {
-            $migration = include __DIR__.$path;
+            $migration = include __DIR__ . $path;
             $migration->up();
         });
     }
