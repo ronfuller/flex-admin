@@ -55,7 +55,10 @@
             "vendor/bin/pest --filter=setup",
             "vendor/bin/pest --exclude-group=setup --parallel --processes=2"
         ],
-        "test-coverage": "vendor/bin/pest --coverage"
+        "test-coverge": [
+            "vendor/bin/pest --filter=setup",
+            "vendor/bin/pest --exclude-group=setup --coverage --min=60"
+        ]
     },
     "config": {
         "sort-packages": true,
