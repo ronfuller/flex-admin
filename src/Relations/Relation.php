@@ -39,28 +39,28 @@ class Relation
     public const
         TYPE_HAS_ONE = 'hasOne';
 
-    final public function __construct(public string $relationKey, public string $relation, public Model $model)
+    final public function __construct(public string $relationKey, public string $relation, public Model $model, public ?string $resourceClassName = null)
     {
     }
 
-    public static function belongsTo(string $relationKey, Model $model)
+    public static function belongsTo(string $relationKey, Model $model, ?string $resourceClassName = null)
     {
-        return new static($relationKey, self::TYPE_BELONGS_TO, $model);
+        return new static($relationKey, self::TYPE_BELONGS_TO, $model, $resourceClassName);
     }
 
-    public static function hasOne(string $relationKey, Model $model)
+    public static function hasOne(string $relationKey, Model $model, ?string $resourceClassName = null)
     {
-        return new static($relationKey, self::TYPE_HAS_ONE, $model);
+        return new static($relationKey, self::TYPE_HAS_ONE, $model, $resourceClassName);
     }
 
-    public static function hasMany(string $relationKey, Model $model)
+    public static function hasMany(string $relationKey, Model $model, ?string $resourceClassName = null)
     {
-        return new static($relationKey, self::TYPE_HAS_MANY, $model);
+        return new static($relationKey, self::TYPE_HAS_MANY, $model, $resourceClassName);
     }
 
-    public static function belongsToMany(string $relationKey, Model $model)
+    public static function belongsToMany(string $relationKey, Model $model, ?string $resourceClassName = null)
     {
-        return new static($relationKey, self::TYPE_BELONGS_TO_MANY, $model);
+        return new static($relationKey, self::TYPE_BELONGS_TO_MANY, $model, $resourceClassName);
     }
 
     public function whenIndex(): self
@@ -144,14 +144,14 @@ class Relation
 
     protected function buildBelongsTo(Model $resource, Request $request): array
     {
-        return Flex::forDetail($resource->{$this->relationKey})->toArray($request);
+        return Flex::forDetail($resource->{$this->relationKey}, $this->resourceClassName)->toArray($request);
     }
 
     protected function buildHasMany(Model $resource, Request $request): array
     {
         $foreign = ['key' => $resource->getForeignKey(), 'value' => $resource->{$resource->getKeyName()}];
 
-        return  Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()))
+        return  Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()), $this->resourceClassName)
             ->setResultQuery($resource->{$this->relationKey})
             ->toArray(
                 request: $request,

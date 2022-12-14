@@ -107,11 +107,11 @@ class Flex
      * @param  string  $context
      * @return void
      */
-    final public function __construct(string $model, public string $context)
+    final public function __construct(string $model, public string $context, public ?string $resourceClassName = null)
     {
         $this->model = new $model;
 
-        $resourceClassName = $this->resource();
+        $resourceClassName = $resourceClassName ?? $this->resource();
 
         $this->resource = new $resourceClassName($this->model);
 
