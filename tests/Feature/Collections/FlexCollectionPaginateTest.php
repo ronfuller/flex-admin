@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Collections\Flex;
-use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Models\Property;
 
 it('should paginate the query')
@@ -10,7 +9,7 @@ it('should paginate the query')
         $type = Str::random(10);
         Property::factory()->count(100)->forCompany()->create(['type' => $type]);
 
-        return Flex::forIndex(Property::class, Field::CONTEXT_INDEX)
+        return Flex::forIndex(Property::class)
             ->withoutFilters()
             ->toArray(createRequest(['type' => $type]));
     })
@@ -23,7 +22,7 @@ it('should not paginate the query')
         $type = Str::random(10);
         Property::factory()->count(100)->forCompany()->create(['type' => $type]);
 
-        return Flex::forIndex(Property::class, Field::CONTEXT_INDEX)
+        return Flex::forIndex(Property::class)
             ->withoutPagination()
             ->withoutDefaultFilters()
             ->toArray(createRequest(['filter' => "type:{$type}"]));
@@ -37,7 +36,7 @@ it('should paginate from request scope')
         $type = Str::random(10);
         Property::factory()->count(100)->forCompany()->create(['type' => $type]);
 
-        return Flex::forIndex(Property::class, Field::CONTEXT_INDEX)
+        return Flex::forIndex(Property::class)
             ->withoutFilters()
             ->toArray(createRequest(['type' => $type, 'perPage' => 20]));
     })
@@ -50,7 +49,7 @@ it('should create pagination meta')
         $type = Str::random(10);
         Property::factory()->count(100)->forCompany()->create(['type' => $type]);
 
-        return Flex::forIndex(Property::class, Field::CONTEXT_INDEX)
+        return Flex::forIndex(Property::class)
             ->withoutFilters()
             ->toArray(createRequest(['type' => $type, 'perPage' => 20]));
     })

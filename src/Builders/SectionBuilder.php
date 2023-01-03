@@ -1,9 +1,14 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Builders;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Psi\FlexAdmin\Concerns\IndexFields;
+use Psi\FlexAdmin\Concerns\Makeable;
 use Psi\FlexAdmin\DataTransferObjects\FormColumnData;
 use Psi\FlexAdmin\DataTransferObjects\FormFieldGroupData;
 use Psi\FlexAdmin\DataTransferObjects\FormSectionData;
@@ -13,10 +18,6 @@ use Psi\FlexAdmin\DataTransferObjects\SectionContentData;
 use Psi\FlexAdmin\DataTransferObjects\SectionFieldData;
 use Psi\FlexAdmin\DataTransferObjects\SectionFieldRowData;
 use Psi\FlexAdmin\DataTransferObjects\SectionHeadingData;
-use Psi\FlexAdmin\Concerns\Makeable;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Psi\FlexAdmin\Concerns\IndexFields;
 use Spatie\LaravelData\Optional;
 
 class SectionBuilder
@@ -153,12 +154,12 @@ class SectionBuilder
                 if (
                     in_array((string) str($col->field->attr->name)->beforeLast('_'), ['ssn', 'drivers_license', 'student'])
                     && $col->field->attr->conditional
-                    && !($col->field->attr->conditional instanceof Optional)
+                    && ! ($col->field->attr->conditional instanceof Optional)
 
                 ) {
                     // set the hidden property based on values
                     $dateCol = $row->columns->first(fn (FormColumnData $col) => (string) str($col->field->attr->name)->beforeLast('_') === 'birthdate');
-                    if (!empty($dateCol?->field?->value)) {
+                    if (! empty($dateCol?->field?->value)) {
                         $col->field->attr->hidden = Carbon::parse($dateCol->field->value)->diffInYears(now()) > 18;
                     }
                 }
@@ -212,7 +213,7 @@ class SectionBuilder
                 $clone = SectionFieldRowData::from($row->toArray());
                 $clone->columns->each(function (FormColumnData $col) use ($index) {
                     if (Arr::has($col->field->attr->toArray(), 'conditional')) {
-                        if (!Arr::has($col->field->attr->toArray(), 'conditionField')) {
+                        if (! Arr::has($col->field->attr->toArray(), 'conditionField')) {
                             throw new \Exception("Conditional field not specified for field {$col->field->attr->name}", 1);
                         }
                         // Special Case Occupant Fields

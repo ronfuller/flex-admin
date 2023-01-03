@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Psi\FlexAdmin\Fields\Field;
@@ -20,9 +21,7 @@ trait FlexFor
     }
 
     /**
-     *
-     *
-     * @param mixed $model
+     * @param  mixed  $model
      * @return Flex
      */
     public static function forIndex(mixed $model, ?string $resourceClassName = null): Flex

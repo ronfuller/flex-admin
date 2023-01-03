@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Database\Eloquent\Model;
@@ -164,7 +165,7 @@ class Flex
      * Transform the resource into a JSON array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param array $append
+     * @param  array  $append
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray(Request $request, array $append = [])
@@ -175,7 +176,7 @@ class Flex
 
         $array = [
             ...$array,
-            ...$append
+            ...$append,
         ];
 
         if ($this->sendToRay) {

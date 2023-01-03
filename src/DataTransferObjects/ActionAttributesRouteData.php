@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\DataTransferObjects;
 
 // use Spatie\LaravelData\DataCollection;

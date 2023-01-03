@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Http\Middleware;
 
 use Closure;

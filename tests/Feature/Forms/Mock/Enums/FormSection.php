@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Feature\Forms\Mock\Enums;
 
 use Psi\FlexAdmin\Resources\FormSections\ResourceFormSection;

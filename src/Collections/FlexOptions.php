@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Collections;
 
 trait FlexOptions
@@ -64,7 +65,7 @@ trait FlexOptions
     /**
      * Send output to ray debugger
      *
-     * @var boolean
+     * @var bool
      */
     protected bool $sendToRay = false;
 

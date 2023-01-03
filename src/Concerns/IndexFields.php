@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Concerns;
 
 use Illuminate\Support\Arr;
@@ -19,7 +20,7 @@ class IndexFields
             $keys = array_keys($elem);
             $rowIndex = $index + 1;
             foreach ($keys as $key => $value) {
-                data_set($elem, $value . "_{$rowIndex}", $elem[$value]);
+                data_set($elem, $value."_{$rowIndex}", $elem[$value]);
                 unset($elem[$value]);
             }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -91,7 +92,7 @@ class UnitPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \Psi\FlexAdmin\Tests\Models\User  $user
-     * @param  \Psi\FlexAdmin\Tests\Models\Unit $model
+     * @param  \Psi\FlexAdmin\Tests\Models\Unit  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Unit $model)

@@ -1,10 +1,11 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Builders;
 
-use Psi\FlexAdmin\Services\FormSectionService;
 use Psi\FlexAdmin\Concerns\Makeable;
+use Psi\FlexAdmin\Services\FormSectionService;
 
 class FormBuilder
 {

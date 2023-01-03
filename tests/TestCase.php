@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -13,7 +14,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Psi\\FlexAdmin\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Psi\\FlexAdmin\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
@@ -29,7 +30,7 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        $data = include __DIR__ . '/config/data.php';
+        $data = include __DIR__.'/config/data.php';
         foreach ($data as $key => $value) {
             $app['config']->set("data.{$key}", $value);
         }
@@ -60,7 +61,7 @@ class TestCase extends Orchestra
             '/database/migrations/2022_04_13_101320_testbench_create_units_table.php',
 
         ])->each(function ($path) {
-            $migration = include __DIR__ . $path;
+            $migration = include __DIR__.$path;
             $migration->up();
         });
     }

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Tests\Feature\Forms\Mock\Services;
 
 use Psi\FlexAdmin\Services\FormSectionService as ServicesFormSectionService;

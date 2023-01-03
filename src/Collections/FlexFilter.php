@@ -130,15 +130,15 @@ trait FlexFilter
         return $filter['name'].':'.$filter['value'][$filter['optionValue']];
     }
 
-    protected function parseFilter(array $attributes): array
+    public static function parseFilter(array $attributes): array
     {
         // Filter params come in with the format param1:value1;param2:value2        // colon, semicolon cannot exists in param values
         $filterParts = \explode(';', \urldecode($attributes['filter']));
 
-        return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(':')->trim() => $this->valueOf((string) Str::of($part)->after(':')->trim())])->all();
+        return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(':')->trim() => self::valueOf((string) Str::of($part)->after(':')->trim())])->all();
     }
 
-    private function valueOf(string $value)
+    private static function valueOf(string $value)
     {
         return is_numeric($value) ? (Str::of($value)->contains('.') ? (float) $value : (int) $value) : $value;
     }

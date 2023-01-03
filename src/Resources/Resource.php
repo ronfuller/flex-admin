@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
@@ -211,7 +212,7 @@ class Resource extends JsonResource implements Flexible
     protected function withFields()
     {
         // return fields array if not using panels
-        return !$this->withPanels();
+        return ! $this->withPanels();
     }
 
     /**
@@ -268,7 +269,7 @@ class Resource extends JsonResource implements Flexible
             'delete' => 'delete',
         ];
         $routeMethod = $slugRouteMethods[$slug];
-        $routeName = $pluralModel . '.' . $slugResourceRoutes[$slug];
+        $routeName = $pluralModel.'.'.$slugResourceRoutes[$slug];
         $routeParams = in_array($slug, ['view', 'edit', 'delete']) ? [['name' => $modelKey, 'field' => $routeKeyName]] : [];
 
         return [$routeName, $routeMethod, $routeParams];

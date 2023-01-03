@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Models\Builders;
 
 use Illuminate\Database\Eloquent\Builder;

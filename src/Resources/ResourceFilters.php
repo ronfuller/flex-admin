@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Resources;
 
 use Illuminate\Database\Eloquent\Model;
@@ -45,7 +46,7 @@ trait ResourceFilters
         if (is_null($this->model)) {
             $this->model = $model;
         }
-        if (is_null($this->columns) && !is_null($model)) {
+        if (is_null($this->columns) && ! is_null($model)) {
             $this->columns = $this->columns();
         }
 

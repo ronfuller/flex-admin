@@ -1,4 +1,5 @@
 <?php
+
 namespace Psi\FlexAdmin\Tests\Http\Resources;
 
 use Psi\FlexAdmin\Fields\Field;

@@ -1,10 +1,11 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Psi\FlexAdmin\Tests\Feature\Forms\Mock\Resources\FormSections;
 
-use Psi\FlexAdmin\Resources\FormSections\ResourceFormSection;
 use Psi\FlexAdmin\Concerns\Makeable;
+use Psi\FlexAdmin\Resources\FormSections\ResourceFormSection;
 
 class ContactSection implements ResourceFormSection
 {
