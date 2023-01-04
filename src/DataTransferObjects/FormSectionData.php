@@ -14,6 +14,7 @@ final class FormSectionData extends Data
         public readonly SectionHeadingData $heading,
         public readonly SectionActionData $actions,
         public readonly SectionFieldData $fields,
+        public readonly array $values = [],
         public ?SectionAttributesData $attributes = null,
         public ?SectionContentData $content = null,
         public string $component = 'form-section',

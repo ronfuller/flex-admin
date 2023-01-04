@@ -69,6 +69,27 @@ it('should build a form section', function () {
     expect($section)->toBeArray()->toHaveKeys(['heading', 'actions', 'fields', 'content']);
 })->group('forms');
 
+it('should build a form section with values', function () {
+    $section = SectionBuilder::make()
+        ->heading(['title' => __('labels.contact-information')])
+        ->actions([])
+        ->row([
+            [
+                'field' => [
+                    'attr' => [
+                        'label' => __('labels.first-name'),
+                        'name' => 'first_name',
+                    ],
+                    'value' => 'John Smith',
+                ],
+            ],
+        ])
+        ->toArray();
+    expect($section)->toBeArray()
+        ->toHaveKeys(['heading', 'actions', 'fields', 'content', 'values'])
+        ->values->toBe(['first_name' => 'John Smith']);
+})->group('forms');
+
 it('should build a form section with a hidden field', function () {
     $section = SectionBuilder::make()
         ->heading(['title' => __('labels.contact-information')])

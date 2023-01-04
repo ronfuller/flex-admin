@@ -176,6 +176,8 @@ class SectionBuilder
          */
         $fieldData = $this->group ?? null ? $this->toGroupedFields() : $this->toFields();
 
+        $fields = empty($data) ? $fieldData : $this->transform($fieldData, $data);
+
         $responseData =
             [
                 'slug' => $this->slug ?? '',
@@ -187,11 +189,24 @@ class SectionBuilder
                     'component' => $this->component,
                     'title' => $this->title,
                     'name' => $this->name,
-                    'fields' => empty($data) ? $fieldData : $this->transform($fieldData, $data),
+                    'fields' => $fields,
+                    'values' => $this->values($fields),
                 ])->toArray(),
             ];
 
         return $responseData;
+    }
+
+    protected function values(SectionFieldData $fields): array
+    {
+        $values = [];
+        $fields->rows->each(function (SectionFieldRowData $row) use (&$values) {
+            $row->columns->each(function (FormColumnData $col) use (&$values) {
+                $values[$col->field->attr->name] = $col->field->value;
+            });
+        });
+
+        return $values;
     }
 
     protected function toFields(): SectionFieldData
