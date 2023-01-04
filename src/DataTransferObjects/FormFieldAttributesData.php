@@ -24,6 +24,7 @@ final class FormFieldAttributesData extends Data
         public bool|Optional $hidden,
         public bool|Optional $disable,
         public string|Optional $type,
+        public array|Optional $sections,
         public bool|Optional $autofocus,
         public string|Optional $labelPosition,
         public bool|Optional $leftLabel,
