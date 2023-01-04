@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\DataTransferObjects;
 
 use Psi\FlexAdmin\Enums\ElementColor;
@@ -24,7 +23,7 @@ final class FormFieldAttributesData extends Data
         public bool|Optional $required,
         public bool|Optional $hidden,
         public bool|Optional $disable,
-        public bool|Optional $type,
+        public string|Optional $type,
         public bool|Optional $autofocus,
         public string|Optional $labelPosition,
         public bool|Optional $leftLabel,
