@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
@@ -13,6 +12,7 @@ final class SectionHeadingData extends Data
     public function __construct(
         public readonly ?string $title = '',
         public readonly ?string $icon = '',
+        public readonly ?bool $dense = false,
         public ?SectionHeadingAttributesData $attr = null,
         public readonly ?string $component = 'sidebar',
     ) {
