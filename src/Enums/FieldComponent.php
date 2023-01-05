@@ -1,5 +1,4 @@
 <?php
-
 namespace Psi\FlexAdmin\Enums;
 
 /**
@@ -15,6 +14,7 @@ enum FieldComponent: string
     case Checkbox = 'checkbox-field';
     case FileUpload = 'file-upload-field';
     case CheckboxArray = 'checkbox-array-field';
+    case CheckboxListArray = 'checkbox-list-array-field';
     case Radio = 'radio-field';
     case Signature = 'signature-field';
 
