@@ -27,6 +27,7 @@ final class FormFieldAttributesData extends Data
         public string|Optional $type,
         public array|Optional $sections,
         public bool|Optional $autofocus,
+        public bool|Optional $autoUpload,
         public string|Optional $labelPosition,
         public bool|Optional $leftLabel,
         public bool|Optional $multiple,
