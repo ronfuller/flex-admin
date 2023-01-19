@@ -17,6 +17,7 @@ enum FieldComponent: string
     case CheckboxListArray = 'checkbox-list-array-field';
     case Radio = 'radio-field';
     case Signature = 'signature-field';
+    case PopupSelect = 'popup-select-field';
 
     public static function values(): array
     {
