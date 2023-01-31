@@ -24,6 +24,7 @@ class Flex
     use FlexOptions;
     use FlexResource;
     use FlexSort;
+    use FlexLogging;
 
     /**
      * The  flex resource class
@@ -154,6 +155,8 @@ class Flex
      */
     public function toResponse(Request $request): \Illuminate\Http\JsonResponse | \Inertia\Response
     {
+
+
         if ($request->wantsJson()) {
             return response()->json(['data' => $this->toArray($request)]);
         } else {
@@ -170,6 +173,7 @@ class Flex
      */
     public function toArray(Request $request, array $append = [])
     {
+        $this->flexLog(message: "Flex Transform for Context {$this->context} ", context: $request->all());
         $data = $this->context === Field::CONTEXT_INDEX ? $this->toIndexQuery($request) : $this->toDataQuery($request);
 
         $array = $this->transformer ? call_user_func_array($this->transformer, compact('data')) : $data;
