@@ -48,4 +48,8 @@ class FlexFilterWrapper
             return $filter->name === $name;
         });
     }
+
+    public function flexLog(string $message, array $context)
+    {
+    }
 }
