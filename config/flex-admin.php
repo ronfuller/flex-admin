@@ -30,4 +30,5 @@ return [
     'pagination' => [
         'per_page_options' => [5, 15, 25, 50, 75, 100],
     ],
+    'logging' => false
 ];
