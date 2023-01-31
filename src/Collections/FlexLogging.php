@@ -7,7 +7,7 @@ namespace Psi\FlexAdmin\Collections;
 trait FlexLogging
 {
 
-    protected static function flexLog(string $message, array $context)
+    protected function flexLog(string $message, array $context)
     {
 
         if (config('flex-admin.logging')) {

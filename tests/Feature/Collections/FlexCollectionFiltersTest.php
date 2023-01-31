@@ -6,6 +6,7 @@ use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Tests\Models\Property;
 use Psi\FlexAdmin\Tests\Models\User;
 
+
 beforeEach(function () {
     $this->status = '5JOYAE7QO8';
     Property::query()->delete();
@@ -56,7 +57,7 @@ it('should return filters')
 
 it('should filter the query by multiple filters')
     ->expect(fn () => Flex::forIndex(Property::class)
-        ->toArray(createRequest(['filter' => 'type:apartment;color:green;status:5JOYAE7QO8'])))
+        ->toArray(createRequest(['filter' => buildFilter('type:apartment;color:green;status:5JOYAE7QO8')])))
     ->rows
     ->toHaveCount(1)
     ->group('collections', 'filter');
@@ -64,7 +65,7 @@ it('should filter the query by multiple filters')
 it('should filter the query by a date range of last 7 days')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last 7 days;status:5JOYAE7QO8'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last 7 days;status:5JOYAE7QO8')])))
     ->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
@@ -72,7 +73,7 @@ it('should filter the query by a date range of last 7 days')
 it('should filter the query by last 4 hours')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last 4 hours (new);status:0NYYUYW9DF'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last 4 hours (new);status:0NYYUYW9DF')])))
     ->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
@@ -80,7 +81,7 @@ it('should filter the query by last 4 hours')
 it('should filter the query by last 14 days')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last 14 days;status:5JOYAE7QO8'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last 14 days;status:5JOYAE7QO8')])))
     ->rows
     ->toHaveCount(4)
     ->group('collections', 'filter');
@@ -88,7 +89,7 @@ it('should filter the query by last 14 days')
 it('should filter the query by last 30 days')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last 30 days;status:5JOYAE7QO8'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last 30 days;status:5JOYAE7QO8')])))
     ->rows
     ->toHaveCount(4)
     ->group('collections', 'filter');
@@ -96,14 +97,14 @@ it('should filter the query by last 30 days')
 it('should filter the query by last 60 days')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last 60 days;status:AJU2Z14UUQ'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last 60 days;status:AJU2Z14UUQ')])))
     ->rows
     ->toHaveCount(4)
     ->group('collections', 'filter');
 
 it('should filter the query by last 90 days')
     ->expect(fn () => Flex::forIndex(Property::class)
-        ->withoutDefaultFilters()->toArray(createRequest(['filter' => 'created_at:Last 90 days;status:AJU2Z14UUQ'])))
+        ->withoutDefaultFilters()->toArray(createRequest(['filter' => buildFilter('created_at:Last 90 days;status:AJU2Z14UUQ')])))
     ->rows
 
     ->toHaveCount(6)
@@ -111,7 +112,7 @@ it('should filter the query by last 90 days')
 
 it('should filter the query by this month')
     ->expect(fn () => Flex::forIndex(Property::class)
-        ->withoutDefaultFilters()->toArray(createRequest(['filter' => 'created_at:This Month;status:AJU2Z14UUQ'])))
+        ->withoutDefaultFilters()->toArray(createRequest(['filter' => buildFilter('created_at:This Month;status:AJU2Z14UUQ')])))
     ->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
@@ -119,7 +120,7 @@ it('should filter the query by this month')
 it('should filter the query by last month')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last Month;status:9850G5PW2O'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last Month;status:9850G5PW2O')])))
     ->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
@@ -127,7 +128,7 @@ it('should filter the query by last month')
 it('should filter the query by this quarter')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:This Quarter;status:JN6ZSAJLHM'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:This Quarter;status:JN6ZSAJLHM')])))
     ->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
@@ -135,7 +136,7 @@ it('should filter the query by this quarter')
 it('should filter the query by last quarter')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last Quarter;status:O4IGPQ4FGW'])))
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last Quarter;status:O4IGPQ4FGW')])))
     ->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
@@ -143,31 +144,31 @@ it('should filter the query by last quarter')
 it('should filter the query by this year')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:This Year;status:5R2O5O63MQ'])))->rows
+        ->toArray(createRequest(['filter' => buildFilter('created_at:This Year;status:5R2O5O63MQ')])))->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
 
 it('should filter the query by last year')
     ->expect(fn () => Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->toArray(createRequest(['filter' => 'created_at:Last Year;status:4FI6DUVKNC'])))->rows
+        ->toArray(createRequest(['filter' => buildFilter('created_at:Last Year;status:4FI6DUVKNC')])))->rows
     ->toHaveCount(2)
     ->group('collections', 'filter');
 
 it('should throw error on invalid date range filter', function () {
     expect(fn () => Flex::forIndex(Property::class)
-        ->withoutDefaultFilters()->toArray(createRequest(['filter' => 'created_at:invalid;status:O4IGPQ4FGW'])))
+        ->withoutDefaultFilters()->toArray(createRequest(['filter' => buildFilter('created_at:invalid;status:O4IGPQ4FGW')])))
         ->toThrow('Error in date range filter');
 })->group('collections', 'filter');
 
 it('should return filter options for types')
-    ->expect(fn () => Flex::forIndex(Property::class)->withoutDeferredFilters()->toArray(createRequest(['filter' => 'status:5JOYAE7QO8'])))
+    ->expect(fn () => Flex::forIndex(Property::class)->withoutDeferredFilters()->toArray(createRequest(['filter' => buildFilter('status:5JOYAE7QO8')])))
     ->filters
     ->toHaveKey('1.options.0.label', 'Apartment')
     ->group('filter');
 
 it('should filter the resource query')
-    ->expect(fn () => Flex::forIndex(Property::class)->toArray(createRequest(['filter' => 'type:apartment;color:green;status:5JOYAE7QO8'])))->rows
+    ->expect(fn () => Flex::forIndex(Property::class)->toArray(createRequest(['filter' => buildFilter('type:apartment;color:green;status:5JOYAE7QO8')])))->rows
     ->toHaveCount(1)
     ->group('collections', 'filter');
 
