@@ -35,7 +35,7 @@ trait FieldValue
     /**
      * @return \Psi\FlexAdmin\Fields\Field
      */
-    public function value(string | callable | array $value): self
+    public function value(string|callable|array $value): self
     {
         $this->value = $value;
 
@@ -45,6 +45,7 @@ trait FieldValue
     // TODO: Add Append Functionality
     /**
      * @return \Psi\FlexAdmin\Fields\Field
+     *
      * @codeCoverageIgnore
      */
     public function append(string $append): self
@@ -66,6 +67,7 @@ trait FieldValue
 
     /**
      * @return \Psi\FlexAdmin\Fields\Field
+     *
      * @codeCoverageIgnore
      */
     public function nullValue(): self

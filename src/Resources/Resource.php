@@ -23,7 +23,7 @@ class Resource extends JsonResource implements Flexible
     /**
      * @var Model
      */
-    public Model | null $model = null;
+    public Model|null $model = null;
 
     public $defaultSort = [];
 

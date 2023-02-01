@@ -18,7 +18,7 @@ trait FlexFilter
      */
     protected function hasFilters(array $filters): bool
     {
-        return $this->withFilters && collect($filters)->contains(fn ($filter) => !is_null($filter['value']));
+        return $this->withFilters && collect($filters)->contains(fn ($filter) => ! is_null($filter['value']));
     }
 
     /**
@@ -30,9 +30,9 @@ trait FlexFilter
     protected function getFilters(array $attributes): array
     {
         $filters = collect($this->meta['filters']);
-        $this->flexLog(message: "Get Filters", context: $filters->all());
+        $this->flexLog(message: 'Get Filters', context: $filters->all());
 
-        if (!$this->defaultFilters) {
+        if (! $this->defaultFilters) {
             // not using default filters then set any values to null
             $filters = $filters->map(function ($filter) {
                 $filter['value'] = null;
@@ -59,7 +59,7 @@ trait FlexFilter
      */
     protected function filtersFromAttributes(Collection $filters, array $attributes): Collection
     {
-        $this->flexLog(message: "Parsing Filter Attributes", context: $attributes);
+        $this->flexLog(message: 'Parsing Filter Attributes', context: $attributes);
 
         $attrFilter = $this->parseFilter($attributes);
 
@@ -83,7 +83,7 @@ trait FlexFilter
     protected function buildFilters(array $attributes, Builder $query): array
     {
         $filters = $this->getFilters($attributes);
-        $this->flexLog(message: "Build Filters", context: $filters);
+        $this->flexLog(message: 'Build Filters', context: $filters);
 
         // the filter items in the array should be filter class objects, not arrays
         return collect($this->meta['filters'])->map(function ($filter) use ($query, $filters) {
@@ -98,7 +98,7 @@ trait FlexFilter
                     ...$item,
                     ...Arr::only($filterItem, ['value', 'item']),
                     ...[
-                        'is_active' => !is_null($filterItem['value']) || (isset($item['default']) && $item['default'] !== $filterItem['value']),
+                        'is_active' => ! is_null($filterItem['value']) || (isset($item['default']) && $item['default'] !== $filterItem['value']),
                         'is_default' => (isset($item['default']) && $item['default'] === $filterItem['value']),
                     ],
                 ];
@@ -123,7 +123,7 @@ trait FlexFilter
     {
         return [
             'filter' => collect($filters)
-                ->filter(fn ($filter) => !is_null($filter['value']))
+                ->filter(fn ($filter) => ! is_null($filter['value']))
                 ->map(fn ($filter) => $this->filterToAttribute($filter))
                 ->join('|'),
         ];
@@ -131,7 +131,7 @@ trait FlexFilter
 
     protected function filterToAttribute(array $filter)
     {
-        return $filter['name'] . ':' . $filter['value'][$filter['optionValue']];
+        return $filter['name'].':'.$filter['value'][$filter['optionValue']];
     }
 
     public static function parseFilter(array $attributes): array
@@ -139,7 +139,6 @@ trait FlexFilter
         $delimiter = config('flex-admin.filter.delimiter');
         // Filter params come in with the format param1:value1;param2:value2        // colon, semicolon cannot exists in param values
         $filterParts = \explode($delimiter, \urldecode($attributes['filter']));
-
 
         return collect($filterParts)->mapWithKeys(fn ($part) => [(string) Str::of($part)->before(':')->trim() => self::valueOf((string) Str::of($part)->after(':')->trim())])->all();
     }

@@ -6,7 +6,6 @@ use Psi\FlexAdmin\Collections\Flex;
 use Psi\FlexAdmin\Tests\Models\Property;
 use Psi\FlexAdmin\Tests\Models\User;
 
-
 beforeEach(function () {
     $this->status = '5JOYAE7QO8';
     Property::query()->delete();

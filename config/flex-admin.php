@@ -34,8 +34,8 @@ return [
 
     'filter' => [
         /**
-         * Delimiter seperates filter options
+         * Delimiter seperates filter options, NOTE: CHANGING THIS VALUE REQUIRES CHANGINGE DataTableFilter.vue component in q-component-lib
          */
-        'delimiter' => '!'
-    ]
+        'delimiter' => '!*',
+    ],
 ];

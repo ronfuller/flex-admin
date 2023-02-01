@@ -119,7 +119,7 @@ trait FlexScope
      *
      * @return \Psi\FlexAdmin\Collections\Flex
      */
-    public function withScope(string | array $scope): self
+    public function withScope(string|array $scope): self
     {
         $this->withScopes = \is_string($scope) ? [$scope] : $scope;
         collect($this->withScopes)->each(fn ($scope) => $this->validateScope($scope));
