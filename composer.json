@@ -49,7 +49,7 @@
         }
     },
     "scripts": {
-        "fix": "vendor/bin/pint",
+        "format": "vendor/bin/pint",
         "analyze": "vendor/bin/phpstan analyse",
         "test": [
             "vendor/bin/pest --filter=setup",

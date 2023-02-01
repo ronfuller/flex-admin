@@ -153,10 +153,8 @@ class Flex
      * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse | \Inertia\Response
      */
-    public function toResponse(Request $request): \Illuminate\Http\JsonResponse | \Inertia\Response
+    public function toResponse(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-
-
         if ($request->wantsJson()) {
             return response()->json(['data' => $this->toArray($request)]);
         } else {

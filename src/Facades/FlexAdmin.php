@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Psi\FlexAdmin\FlexAdmin
+ *
  * @codeCoverageIgnore
  */
 class FlexAdmin extends Facade

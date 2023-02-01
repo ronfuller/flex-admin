@@ -36,10 +36,9 @@ function createRequest(array $params = []): Request
     return  Request::create('http://test.com', 'GET', $params);
 }
 
-
 function buildFilter(string $filter): string
 {
-    return (string) str($filter)->replace(";", config('flex-admin.filter.delimiter'));
+    return (string) str($filter)->replace(';', config('flex-admin.filter.delimiter'));
 }
 
 uses()

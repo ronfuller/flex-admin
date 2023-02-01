@@ -16,7 +16,7 @@ trait FlexQuery
     {
         // Request Attributes
         $attributes = $request->all();
-        $this->flexLog(message: "Flex Query", context: $attributes);
+        $this->flexLog(message: 'Flex Query', context: $attributes);
 
         /**
          * @var FlexQueryBuilder
@@ -35,7 +35,7 @@ trait FlexQuery
         } elseif ($this->hasFilters($filters)) {
             // Filter
             $filterValues = $this->filterValues($filters);
-            $this->flexLog(message: "Filter Values", context: $filterValues);
+            $this->flexLog(message: 'Filter Values', context: $filterValues);
 
             $query->filter(filter: $filterValues, attributes: $attributes);
         }

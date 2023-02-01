@@ -116,7 +116,7 @@ trait FieldRender
         return $this;
     }
 
-    protected function componentForContext(string $context): string | null
+    protected function componentForContext(string $context): string|null
     {
         return $this->components[$context] ?? $this->component;
     }
