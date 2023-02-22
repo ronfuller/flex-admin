@@ -14,6 +14,8 @@ final class ContentAttributesData extends Data
         public readonly string $color = 'accent',
         public readonly string $icon = 'mdi-information',
         public readonly string $border = 'top',
+        public readonly string $textColor = 'white',
+        public readonly string $iconColor = 'white',
         public readonly bool $outlined = true,
         public readonly bool $prominent = true,
         public readonly bool $dense = false,
