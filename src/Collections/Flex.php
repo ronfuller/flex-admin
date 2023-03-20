@@ -35,8 +35,6 @@ class Flex
 
     /**
      * Instantiated model w/out attributes, for column select only
-     *
-     * @var Model
      */
     public Model $model;
 
@@ -71,27 +69,18 @@ class Flex
 
     /**
      * Filter built up from request scope query , default, or cache
-     *
-     * @var array
      */
     protected array $filter = [];
 
     /**
      * Array of filters including updated value
-     *
-     * @var array
      */
     public array $flexFilters = [];
 
-    /**
-     * @var array
-     */
     protected array $flexSort = [];
 
     /**
      * Query results executed from a query or passed in via the set function
-     *
-     * @var mixed
      */
     protected mixed $resultQuery = null;
 
@@ -106,7 +95,6 @@ class Flex
      * Create a flex collection instance
      *
      * @param  string  $model , class name of model for for the resource
-     * @param  string  $context
      * @return void
      */
     final public function __construct(string $model, public string $context, public ?string $resourceClassName = null)
@@ -122,9 +110,6 @@ class Flex
 
     /**
      * Ability to set query results generated from an external query builder exec
-     *
-     * @param  mixed  $resultQuery
-     * @return self
      */
     public function setResultQuery(mixed $resultQuery): self
     {
@@ -136,9 +121,6 @@ class Flex
 
     /**
      * Ability to set query results generated from an external query builder exec
-     *
-     * @param  Model  $resultModel
-     * @return self
      */
     public function setResultModel(Model $resultModel): self
     {
@@ -149,9 +131,6 @@ class Flex
 
     /**
      * Generates an Inertia Response
-     *
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse | \Inertia\Response
      */
     public function toResponse(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
@@ -165,8 +144,6 @@ class Flex
     /**
      * Transform the resource into a JSON array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array  $append
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray(Request $request, array $append = [])
@@ -190,9 +167,6 @@ class Flex
 
     /**
      * Return results of a data query
-     *
-     * @param  Request  $request
-     * @return array
      */
     protected function toIndexQuery(Request $request): array
     {
@@ -222,9 +196,6 @@ class Flex
 
     /**
      * Create the transformed resource
-     *
-     * @param  Request  $request
-     * @return array
      */
     protected function toData(Request $request): array
     {

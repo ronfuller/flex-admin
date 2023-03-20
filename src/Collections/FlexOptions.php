@@ -8,64 +8,46 @@ trait FlexOptions
 {
     /**
      * Inertia Page Component
-     *
-     * @var string|null
      */
     public ?string $page = null;
 
     /**
      * Determines if we load default filter values from the resource
-     *
-     * @var bool
      */
     protected bool $defaultFilters = true;
 
     /**
      * Determines if we build filter options immediately
-     *
-     * @var bool
      */
     protected bool $deferFilters = false;
 
     /**
      * Include filters
-     *
-     * @var bool
      */
     protected bool $withFilters = true;
 
     /**
      * Determines if we paginate
-     *
-     * @var bool
      */
     protected bool $paginate = true;
 
     /**
      * Include Actions with the resource
-     *
-     * @var bool
      */
     protected bool $withActions = true;
 
     /**
      * Include resource relations
-     *
-     * @var bool
      */
     protected bool $withRelations = true;
 
     /**
      * Convert Fields to Associative Array Object
-     *
-     * @var bool
      */
     protected bool $fieldsAsObject = false;
 
     /**
      * Send output to ray debugger
-     *
-     * @var bool
      */
     protected bool $sendToRay = false;
 
@@ -98,7 +80,6 @@ trait FlexOptions
     /**
      * Set the Inertia Page Component
      *
-     * @param  string  $page
      * @return \Psi\FlexAdmin\Collections\Flex
      */
     public function page(string $page): self

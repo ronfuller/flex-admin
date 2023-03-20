@@ -42,7 +42,6 @@ class PropertyResource extends Resource implements Flexible
     /**
      * Add a field to the fields array
      *
-     * @param  Field  $field
      * @return \Psi\FlexAdmin\Tests\Http\Resources\PropertyResource
      */
     public function addField(Field $field): self
@@ -55,7 +54,6 @@ class PropertyResource extends Resource implements Flexible
     /**
      * Add a filter to the filters array
      *
-     * @param  Filter  $filter
      * @return \Psi\FlexAdmin\Tests\Http\Resources\PropertyResource
      */
     public function addFilter(Filter $filter): self
@@ -69,7 +67,6 @@ class PropertyResource extends Resource implements Flexible
      * Create fields for resource
      *
      * @param  array|null|null  $cols input list of columns enabled for the resource in context, null is prior to column availability
-     * @return array
      */
     public function fields(array|null $keys = null): array
     {

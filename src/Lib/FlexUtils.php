@@ -16,9 +16,6 @@ class FlexUtils
 
     /**
      * Return the title for the given slug (i.e. Edit Property)
-     *
-     * @param  string  $slug
-     * @return string
      */
     public function title(string $slug): string
     {
@@ -30,9 +27,6 @@ class FlexUtils
 
     /**
      * Return the permissions for the given slug (i.e. properties.edit)
-     *
-     * @param  string  $slug
-     * @return string
      */
     public function permission(string $slug): string
     {
@@ -43,10 +37,6 @@ class FlexUtils
 
     /**
      * Build the route for the given slug (i.e. application-groups.show)
-     *
-     * @param  string  $slug
-     * @param  mixed  $model
-     * @return array
      */
     public function route(string $slug, mixed $model): array
     {

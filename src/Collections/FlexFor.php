@@ -20,10 +20,6 @@ trait FlexFor
         return $flex->setResultModel($model);
     }
 
-    /**
-     * @param  mixed  $model
-     * @return Flex
-     */
     public static function forIndex(mixed $model, ?string $resourceClassName = null): Flex
     {
         return new static(

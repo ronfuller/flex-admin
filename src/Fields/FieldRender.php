@@ -8,8 +8,6 @@ trait FieldRender
 {
     /**
      * Name of component, override on child
-     *
-     * @var string|null
      */
     public string|null $component;
 
@@ -27,8 +25,6 @@ trait FieldRender
 
     /**
      * Determines whether to render the field with the component
-     *
-     * @var bool
      */
     protected bool $render = true;
 

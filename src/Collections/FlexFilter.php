@@ -12,9 +12,6 @@ trait FlexFilter
 {
     /**
      * Checks for any filter with a value set
-     *
-     * @param  array  $filters
-     * @return bool
      */
     protected function hasFilters(array $filters): bool
     {
@@ -23,9 +20,6 @@ trait FlexFilter
 
     /**
      * Gets the filters from the resource w/out building options and sets values based on attributes or cache
-     *
-     * @param  array  $attributes
-     * @return array
      */
     protected function getFilters(array $attributes): array
     {
@@ -52,10 +46,6 @@ trait FlexFilter
 
     /**
      * Update filter values from the input attributes
-     *
-     * @param  Collection  $filters
-     * @param  array  $attributes
-     * @return Collection
      */
     protected function filtersFromAttributes(Collection $filters, array $attributes): Collection
     {
@@ -76,9 +66,6 @@ trait FlexFilter
 
     /**
      * Build the filter options from the input filter meta
-     *
-     * @param  Builder  $query
-     * @return array
      */
     protected function buildFilters(array $attributes, Builder $query): array
     {
@@ -115,9 +102,6 @@ trait FlexFilter
 
     /**
      * Create a filter attribute from a filter array
-     *
-     * @param  array  $filters
-     * @return array
      */
     protected function filtersAsAttributes(array $filters): array
     {

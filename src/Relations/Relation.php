@@ -9,15 +9,10 @@ use Psi\FlexAdmin\Fields\Field;
 
 class Relation
 {
-    /**
-     * @var array
-     */
     protected array $relatedConditions;
 
     /**
      * Class name of the related resource
-     *
-     * @var string
      */
     protected string $related;
 

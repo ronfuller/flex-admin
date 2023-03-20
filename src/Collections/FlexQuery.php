@@ -9,8 +9,6 @@ trait FlexQuery
 {
     /**
      * Query
-     *
-     * @return void
      */
     protected function query(Request $request): void
     {

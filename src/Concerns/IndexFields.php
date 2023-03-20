@@ -10,9 +10,6 @@ class IndexFields
 {
     /**
      * Convert an array of elements to a flatten array where keys are format [elem]_[index] where index is 1..n
-     *
-     * @param  array  $data
-     * @return array
      */
     public static function flatten(array $data): array
     {

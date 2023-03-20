@@ -11,9 +11,6 @@ trait HasControls
 {
     /**
      * Set the control parameters for actions and relations
-     *
-     * @param  array  $args
-     * @return self
      */
     public function setControls(array $args): self
     {

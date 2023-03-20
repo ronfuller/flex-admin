@@ -62,7 +62,6 @@ class Resource extends JsonResource implements Flexible
     /**
      * Specifies the context for the resource
      *
-     * @param  string  $context
      * @return \Psi\FlexAdmin\Resources\Resource
      */
     public function withContext(string $context): self
@@ -75,7 +74,6 @@ class Resource extends JsonResource implements Flexible
     /**
      * Determines which resource field keys are valid for the resource
      *
-     * @param  array  $keys
      * @return \Psi\FlexAdmin\Resources\Resource
      */
     public function withKeys(array $keys): self
@@ -87,9 +85,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Creates the meta for the resource including keys, columns, filters,sorts, pagination
-     *
-     * @param  Model  $model
-     * @return array
      */
     public function toMeta(Model $model): array
     {
@@ -123,8 +118,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Creates a fields array
-     *
-     * @return array
      */
     public function toFields(): array
     {
@@ -217,9 +210,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Build the default permissions for the resource
-     *
-     * @param  string  $slug
-     * @return string
      */
     protected function resourcePermission(string $slug): string
     {
@@ -230,9 +220,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Build the default title for the resource
-     *
-     * @param  string  $slug
-     * @return string
      */
     protected function resourceTitle(string $slug): string
     {
@@ -244,9 +231,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Create the route for the resource
-     *
-     * @param  string  $slug
-     * @return array
      */
     protected function resourceRoute(string $slug): array
     {
@@ -277,8 +261,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Plural name for model (i.e. companies)
-     *
-     * @return string
      */
     private function modelPluralName(): string
     {
@@ -287,8 +269,6 @@ class Resource extends JsonResource implements Flexible
 
     /**
      * Key name for model ('i.e' user_profile)
-     *
-     * @return string
      */
     private function modelKeyName(): string
     {

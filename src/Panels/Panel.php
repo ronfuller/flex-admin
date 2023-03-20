@@ -9,22 +9,16 @@ class Panel
 {
     /**
      * Title for panel
-     *
-     * @var string
      */
     protected string $title;
 
     /**
      * Attributes for the panel
-     *
-     * @var array
      */
     protected array $attributes;
 
     /**
      * Ordered fields belonging to panel
-     *
-     * @var array
      */
     protected array $fields = [];
 

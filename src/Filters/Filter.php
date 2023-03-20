@@ -16,36 +16,26 @@ class Filter
 
     /**
      * Type of filter { select, boolean, multi-select }
-     *
-     * @var string
      */
     protected string $type = 'select';
 
     /**
      * Format for filter  { filter, type-ahead, cascade, switch}
-     *
-     * @var string
      */
     protected string $format = 'filter';
 
     /**
      * Options for select filter
-     *
-     * @var array
      */
     protected array $options = [];
 
     /**
      * Display label for the filter
-     *
-     * @var string
      */
     protected string $label;
 
     /**
      * Attributes
-     *
-     * @var array
      */
     protected array $attributes = [
         'optionValue' => 'value',
@@ -54,22 +44,16 @@ class Filter
 
     /**
      * Meta information about the filter including column details
-     *
-     * @var array
      */
     protected array $meta = [];
 
     /**
      * Source for the filter
-     *
-     * @var string|null
      */
     protected string|null $source = null;
 
     /**
      * Information about the source
-     *
-     * @var string|null
      */
     protected string|null $sourceMeta = null;
 
@@ -212,9 +196,6 @@ class Filter
 
     /**
      * Get the item value using the callable
-     *
-     * @param  mixed  $value
-     * @return array
      */
     public function getItem(mixed $value): array
     {

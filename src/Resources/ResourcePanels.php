@@ -10,15 +10,11 @@ trait ResourcePanels
 {
     /**
      * Include panels with the resource
-     *
-     * @var bool
      */
     protected bool $withPanels = true;
 
     /**
      * Key for default panel
-     *
-     * @var string
      */
     protected string $defaultPanelKey = 'details';
 

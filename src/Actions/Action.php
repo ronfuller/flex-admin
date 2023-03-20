@@ -17,58 +17,42 @@ class Action
 
     /**
      * Type of action { inline, grouped }
-     *
-     * @var string
      */
     protected string $type;
 
     /**
      * Determines if the action is enabled for this permission, context
-     *
-     * @var bool
      */
     protected bool $enabled;
 
     /**
      * Permission for the action , e.g.('users.edit')
-     *
-     * @var string
      */
     protected string $permission;
 
     /**
      * Attributes for the action, set on extended action to override default
-     *
-     * @var array
      */
     protected array $attributes;
 
     /**
      * Valid contexts for the action
-     *
-     * @var array
      */
     protected array $contexts;
 
     /**
      * Adds a divider before or after
-     *
-     * @var array
      */
     protected array $dividers;
 
     /**
      * Determines if we should include actions as disabled rather than removed entirely
      * Default: false
-     *
-     * @var bool
      */
     protected bool $withDisabled = false;
 
     /**
      * Determines if we should use permissions for the action
-     *
-     * @var bool
      */
     protected bool $withPermissions = true;
 
@@ -80,8 +64,6 @@ class Action
     /**
      * Undocumented function
      *
-     * @param  string  $slug
-     * @param  bool|null  $condition
      * @return \Psi\FlexAdmin\Actions\Action | null
      */
     public static function make(string $slug, bool $condition = null): self|null
