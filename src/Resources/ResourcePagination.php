@@ -16,8 +16,6 @@ trait ResourcePagination
 
     /**
      * Determines if we should paginate the resource
-     *
-     * @var bool
      */
     protected bool $paginate = true;
 

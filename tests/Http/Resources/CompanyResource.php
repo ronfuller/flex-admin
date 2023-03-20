@@ -15,9 +15,6 @@ class CompanyResource extends Resource implements Flexible
 
     /**
      * Remove any field
-     *
-     * @param  string  $key
-     * @return self
      */
     public function removeField(string $key): self
     {
@@ -30,7 +27,6 @@ class CompanyResource extends Resource implements Flexible
      * Create fields for resource
      *
      * @param  array|null|null  $cols input list of columns enabled for the resource in context, null is prior to column availability
-     * @return array
      */
     public function fields(array|null $keys = null): array
     {

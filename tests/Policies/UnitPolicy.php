@@ -13,7 +13,6 @@ class UnitPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -24,7 +23,6 @@ class UnitPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user)
@@ -35,7 +33,6 @@ class UnitPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -46,7 +43,6 @@ class UnitPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user)
@@ -57,7 +53,6 @@ class UnitPolicy
     /**
      * Determine whether the user can admin the model.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function admin(User $user)
@@ -68,7 +63,6 @@ class UnitPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user)
@@ -79,8 +73,6 @@ class UnitPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
-     * @param  \Psi\FlexAdmin\Tests\Models\Unit  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Unit $model)
@@ -91,8 +83,6 @@ class UnitPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \Psi\FlexAdmin\Tests\Models\User  $user
-     * @param  \Psi\FlexAdmin\Tests\Models\Unit  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Unit $model)

@@ -10,15 +10,11 @@ trait ResourceActions
 {
     /**
      * Include Actions with the resource
-     *
-     * @var bool
      */
     protected bool $withActions = true;
 
     /**
      * Default actions for every resource
-     *
-     * @var array
      */
     protected array $defaultActions = ['view', 'edit', 'create', 'delete'];
 
@@ -66,8 +62,6 @@ trait ResourceActions
 
     /**
      * Returns the actions for the resource with specified permissions and context set
-     *
-     * @return array
      */
     public function toActions(string $context = Field::CONTEXT_INDEX): array
     {
@@ -96,7 +90,6 @@ trait ResourceActions
     /**
      * withActions
      *
-     * @param  array  $actions
      * @return \Psi\FlexAdmin\Resources\Resource
      */
     public function withActions(array $actions): self
@@ -125,9 +118,6 @@ trait ResourceActions
 
     /**
      * Build Action Route URL
-     *
-     * @param  array  $routeData
-     * @return string
      */
     protected function buildActionRouteUrl(array $routeData): string
     {
@@ -140,8 +130,6 @@ trait ResourceActions
 
     /**
      * Creates default actions
-     *
-     * @return array
      */
     protected function defaultActions(): array
     {

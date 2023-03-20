@@ -35,14 +35,9 @@ trait FieldAttributes
 
     /**
      * Determines if we should callback a user function to get attributes
-     *
-     * @var bool
      */
     protected bool $hasCallableAttributes = false;
 
-    /**
-     * @return bool
-     */
     public function enabled(): bool
     {
         return $this->meta['enabled'];
@@ -177,8 +172,6 @@ trait FieldAttributes
 
     /**
      * Sets the default attribute name
-     *
-     * @return void
      */
     protected function setDefaultName(): void
     {
@@ -188,8 +181,6 @@ trait FieldAttributes
 
     /**
      * Sets the default attribute label
-     *
-     * @return void
      */
     protected function setDefaultLabel(): void
     {

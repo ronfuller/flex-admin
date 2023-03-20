@@ -10,8 +10,6 @@ class UrlAction extends Action
 
     /**
      * Setting enabled will always enable the action
-     *
-     * @var bool
      */
     protected bool $enabled = true;
 }

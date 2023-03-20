@@ -10,15 +10,11 @@ trait ResourceRelations
 {
     /**
      * Include resource relations
-     *
-     * @var bool
      */
     protected bool $withRelations = true;
 
     /**
      * Filter relations by elements in this array
-     *
-     * @var array
      */
     protected array $filterRelations = [];
 

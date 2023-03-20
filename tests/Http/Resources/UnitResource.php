@@ -17,7 +17,6 @@ class UnitResource extends FlexResource
      * Create fields for resource
      *
      * @param  array|null|null  $cols input list of columns enabled for the resource in context, null is prior to column availability
-     * @return array
      */
     public function fields(array|null $cols = null): array
     {
@@ -58,9 +57,6 @@ class UnitResource extends FlexResource
 
     /**
      * Define relationships for the field
-     *
-     * @param  Request  $request
-     * @return array
      */
     public function relations(Request $request): array
     {

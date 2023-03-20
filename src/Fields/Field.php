@@ -82,8 +82,6 @@ class Field
 
     /**
      * Key determines the default field name, is the primary identifier for the field
-     *
-     * @param  string  $key
      */
     final public function __construct(public string $key)
     {
@@ -92,9 +90,6 @@ class Field
 
     /**
      * Sets the context for the field
-     *
-     * @param  string  $context
-     * @return self
      */
     public function context(string $context): self
     {
