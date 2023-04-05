@@ -147,8 +147,8 @@ trait ResourceActions
                     ?->icon($this->theme['icon-edit'])
                     ->attributes(Arr::only($this->theme, ['icon-color', 'color']))
                     ->title($this->resourceTitle('edit'))
-                    ->route(...$this->resourceRoute('view'))
-                    ->permission($this->resourcePermission('view'))
+                    ->route(...$this->resourceRoute('edit'))
+                    ->permission($this->resourcePermission('edit'))
                     ->hideFromEdit(),
 
                 Action::make('create', (in_array('create', $this->defaultActions)))
@@ -156,7 +156,7 @@ trait ResourceActions
                     ->attributes(Arr::only($this->theme, ['icon-color', 'color']))
                     ->title($this->resourceTitle('create'))
                     ->route(...$this->resourceRoute('create'))
-                    ->permission($this->resourcePermission('delete'))
+                    ->permission($this->resourcePermission('create'))
                     ->hideFromIndex()
                     ->hideFromCreate(),
 
