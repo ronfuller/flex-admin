@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 ./bin/format.sh
 ./bin/analyze.sh
 ./bin/test.sh

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 cd packages/flex-admin
 ./vendor/bin/pest --filter=setup
 ./vendor/bin/pest --exclude-group=setup --parallel --processes=2
