@@ -34,6 +34,7 @@ final class FormFieldAttributesData extends Data
         public string|Optional $labelPosition,
         public bool|Optional $leftLabel,
         public bool|Optional $multiple,
+        public bool|Optional $useChips,
         public int|Optional $applicant_id,
         public array|Optional $signatureLabels,
         public string|Optional $validationError,
