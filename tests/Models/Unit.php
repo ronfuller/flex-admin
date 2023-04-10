@@ -4,6 +4,7 @@ namespace Psi\FlexAdmin\Tests\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Psi\FlexAdmin\Tests\Models\Builders\UnitBuilder;
 
 class Unit extends Model
 {
@@ -50,6 +51,11 @@ class Unit extends Model
         return \Psi\FlexAdmin\Tests\Factories\UnitFactory::new();
     }
 
+    public function newEloquentBuilder($query): UnitBuilder
+    {
+        return new UnitBuilder($query);
+    }
+
     protected static function booted()
     {
         /* === MODEL EVENTS ==== */
@@ -62,7 +68,5 @@ class Unit extends Model
 
         static::created(function ($model) {
         });
-
-        /* === GLOBAL SCOPES ==== */
     }
 }

@@ -65,8 +65,10 @@ uses()
         $this->applicationGroup = ApplicationGroup::factory()->make();
         $this->user = User::first();
         actingAs($this->user);
+        $this->user->givePermissionTo('units.view-any');
         Route::resource('properties', TestController::class);
         Route::resource('companies', TestController::class);
+        Route::resource('units', TestController::class);
     })
     ->in('Feature/Resources');
 

@@ -9,9 +9,6 @@ use Psi\FlexAdmin\Enums\ControlParams;
 
 trait HasControls
 {
-    /**
-     * Set the control parameters for actions and relations
-     */
     public function setControls(array $args): self
     {
         collect(ControlParams::values())->each(function ($param) use ($args) {

@@ -43,7 +43,6 @@ trait ResourceFilters
         if (is_null($this->columns) && ! is_null($model)) {
             $this->columns = $this->columns();
         }
-
         /**
          * @var Collection
          */

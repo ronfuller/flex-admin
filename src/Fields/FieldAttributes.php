@@ -3,6 +3,7 @@
 namespace Psi\FlexAdmin\Fields;
 
 use Illuminate\Support\Str;
+use Psi\FlexAdmin\Fields\Enums\DisplayContext;
 
 trait FieldAttributes
 {
@@ -27,6 +28,16 @@ trait FieldAttributes
      * @var array | callable
      */
     public $attributes = [];
+
+    /**
+     * @var array | callable
+     */
+    public $contextAttributes = [
+        DisplayContext::INDEX->value => [],
+        DisplayContext::DETAIL->value => [],
+        DisplayContext::EDIT->value => [],
+        DisplayContext::CREATE->value => [],
+    ];
 
     /**
      * @var callable
@@ -95,6 +106,46 @@ trait FieldAttributes
     public function attribute(string $key, mixed $value): self
     {
         $this->attributes[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function indexAttribute(string $key, mixed $value): self
+    {
+        $this->contextAttributes[DisplayContext::INDEX->value][$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function detailAttribute(string $key, mixed $value): self
+    {
+        $this->contextAttributes[DisplayContext::DETAIL->value][$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function createAttribute(string $key, mixed $value): self
+    {
+        $this->contextAttributes[DisplayContext::CREATE->value][$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return \Psi\FlexAdmin\Fields\Field
+     */
+    public function editAttribute(string $key, mixed $value): self
+    {
+        $this->contextAttributes[DisplayContext::EDIT->value][$key] = $value;
 
         return $this;
     }
