@@ -116,6 +116,24 @@ it('should have an array with attributes')
     ->toHaveKey('icon')
     ->group('attributes', 'fields');
 
+it('should set context aware attributes')
+    ->expect(fn () => Field::make(null, 'created_at')
+        ->indexAttribute('status', 'active')
+        ->icon('mdi-account')
+        ->context(DisplayContext::INDEX->value)
+        ->toAttributes())
+    ->toHaveKey('status', 'active')
+    ->group('attributes', 'fields');
+
+it('should set context aware attributes and not show in context')
+    ->expect(fn () => Field::make(null, 'created_at')
+        ->detailAttribute('status', 'active')
+        ->icon('mdi-account')
+        ->context(DisplayContext::INDEX->value)
+        ->toAttributes())
+    ->not->toHaveKey('status')
+    ->group('attributes', 'fields');
+
 it('should have callable attributes')
     ->expect(fn () => Field::make(null, 'created')
         ->model($this->property)

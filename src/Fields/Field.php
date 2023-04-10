@@ -97,6 +97,11 @@ class Field
         // We may have disabled through permissions, don't re-enabled with display context, context can only disable
         $this->meta['enabled'] = $this->meta['enabled'] ? $this->displayContext($context) : false;
 
+        $this->attributes = [
+            ...$this->attributes,
+            ...$this->contextAttributes[$context],
+        ];
+
         return $this;
     }
 

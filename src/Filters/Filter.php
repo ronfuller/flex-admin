@@ -2,7 +2,6 @@
 
 namespace Psi\FlexAdmin\Filters;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -246,7 +245,7 @@ class Filter
         );
     }
 
-    public function build(Model $model, Builder|null $query): self
+    public function build(Model $model, $query): self
     {
         if (is_null($this->source) || is_null($this->sourceMeta)) {
             throw new \Exception('Cannot build filter without source set.');
@@ -281,7 +280,7 @@ class Filter
         return $model->getAttribute('filter_'.$this->sourceMeta);
     }
 
-    protected function optionsFromFunction(Model $model, Builder $query): array
+    protected function optionsFromFunction(Model $model, $query): array
     {
         $filterQuery = clone $query;
         $method = (string) Str::of($this->sourceMeta)->title()->prepend('filter');
@@ -293,7 +292,7 @@ class Filter
         return $model->{$method}($filterQuery);
     }
 
-    protected function optionsFromColumn(Model $model, Builder $query): array
+    protected function optionsFromColumn(Model $model, $query): array
     {
         $column = $model->qualifyColumn($this->sourceMeta);
         $filterQuery = clone $query;

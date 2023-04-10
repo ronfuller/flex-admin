@@ -2,7 +2,6 @@
 
 namespace Psi\FlexAdmin\Collections;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -67,7 +66,7 @@ trait FlexFilter
     /**
      * Build the filter options from the input filter meta
      */
-    protected function buildFilters(array $attributes, Builder $query): array
+    protected function buildFilters(array $attributes, $query): array
     {
         $filters = $this->getFilters($attributes);
         $this->flexLog(message: 'Build Filters', context: $filters);

@@ -154,7 +154,7 @@ it('should set a result query', function () {
 
     $result = Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->setResultQuery(Property::where('status', $code)->get())
+        ->setResultQuery(Property::where('status', $code), createRequest())
         ->toArray(createRequest());
     expect($result)->rows->toHaveCount(5);
 })
@@ -167,7 +167,7 @@ it('should paginate a when setting a result query', function () {
 
     $result = Flex::forIndex(Property::class)
         ->withoutDefaultFilters()
-        ->setResultQuery(Property::where('status', $code)->paginate(10))
+        ->setResultQuery(Property::where('status', $code), createRequest())
         ->toArray(createRequest());
     expect($result)->rows->toHaveCount(10);
     expect($result)->pagination->total->toBe(20);
@@ -176,10 +176,8 @@ it('should paginate a when setting a result query', function () {
 
 it('should have a detail resource with a hasMany relationship', function () {
     $property = Property::factory()->forCompany()->hasUnits(10)->create();
-    $property->load('units', 'company');
     $result = Flex::forDetail($property)
         ->toArray(createRequest());
-
     expect($result)->toHaveKey('data.relations.units.rows');
     expect(data_get($result, 'data.relations.units.rows'))->toHaveCount(10);
 })
@@ -187,8 +185,6 @@ it('should have a detail resource with a hasMany relationship', function () {
 
 it('should have a detail resource without relations', function () {
     $property = Property::factory()->forCompany()->create();
-    $property->load('company', 'units');
-
     $result = Flex::forDetail($property)
         ->withoutRelations()
         ->toArray(createRequest());

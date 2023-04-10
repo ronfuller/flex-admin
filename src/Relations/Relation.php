@@ -113,9 +113,9 @@ class Relation
 
     public function build(Model $resource, Request $request): array
     {
-        if (! $this->model->relationLoaded($this->relationKey)) {
-            return [];
-        }
+        // if (! $this->model->relationLoaded($this->relationKey)) {
+        //     return [];
+        // }
 
         return match ($this->relation) {
             self::TYPE_BELONGS_TO => $this->buildBelongsTo(
@@ -148,7 +148,7 @@ class Relation
         $foreign = ['key' => $resource->getForeignKey(), 'value' => $resource->{$resource->getKeyName()}];
 
         return  Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()), $this->resourceClassName)
-            ->setResultQuery($resource->{$this->relationKey})
+            ->setResultQuery($resource->{$this->relationKey}()->index([]), $request)
             ->toArray(
                 request: $request,
                 append: compact('foreign')

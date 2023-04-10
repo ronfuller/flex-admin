@@ -191,7 +191,9 @@ class PropertyResource extends Resource implements Flexible
 
             Relation::hasMany(
                 relationKey: 'units',
-                model: $this->resource
+                model: $this->resource,
+                resourceClassName: UnitResource::class
+
             )
                 ->whenDetailorEdit(),
 
