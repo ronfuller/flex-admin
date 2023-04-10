@@ -17,6 +17,11 @@ class Relation
     protected string $related;
 
     /**
+     * The number of records we show in paginated related query results
+     */
+    protected int $recordsPerPage = 10;
+
+    /**
      * Determines if we load actions
      *
      * @var bool
@@ -111,12 +116,15 @@ class Relation
         ];
     }
 
+    public function recordsPerPage(int $recordsPerPage): self
+    {
+        $this->recordsPerPage = $recordsPerPage;
+
+        return $this;
+    }
+
     public function build(Model $resource, Request $request): array
     {
-        // if (! $this->model->relationLoaded($this->relationKey)) {
-        //     return [];
-        // }
-
         return match ($this->relation) {
             self::TYPE_BELONGS_TO => $this->buildBelongsTo(
                 resource: $resource,
@@ -150,7 +158,7 @@ class Relation
         $foreign = ['key' => $resource->getForeignKey(), 'value' => $resource->{$resource->getKeyName()}];
 
         return  Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()), $this->resourceClassName)
-            ->setResultQuery($resource->{$this->relationKey}()->index([]), $request)
+            ->setResultQuery($resource->{$this->relationKey}()->index([]), $request, $this->recordsPerPage)
             ->toArray(
                 request: $request,
                 append: compact('foreign')
