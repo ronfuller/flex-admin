@@ -140,7 +140,9 @@ class Relation
 
     protected function buildBelongsTo(Model $resource, Request $request): array
     {
-        return Flex::forDetail($resource->{$this->relationKey}, $this->resourceClassName)->toArray($request);
+        return Flex::forDetail($resource->{$this->relationKey}, $this->resourceClassName)
+            ->withoutRelations()
+            ->toArray($request);
     }
 
     protected function buildHasMany(Model $resource, Request $request): array
