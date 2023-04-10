@@ -111,11 +111,11 @@ class Flex
     /**
      * Ability to set query results generated from an external query builder exec
      */
-    public function setResultQuery(mixed $resultQuery, Request $request): self
+    public function setResultQuery(mixed $resultQuery, Request $request, int $recordsPerPage = 10): self
     {
         if (! is_a($resultQuery, 'Illuminate\Pagination\LengthAwarePaginator')) {
             $this->flexFilters = $this->buildFilters(attributes: $request->all(), query: $resultQuery);
-            $resultQuery = $resultQuery->paginate(10);
+            $resultQuery = $resultQuery->paginate($recordsPerPage);
         }
         $this->resultQuery = $resultQuery;
         $this->paginate = is_a($this->resultQuery, 'Illuminate\Pagination\LengthAwarePaginator');
