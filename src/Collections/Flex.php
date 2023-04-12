@@ -115,7 +115,8 @@ class Flex
     {
         if (! is_a($resultQuery, 'Illuminate\Pagination\LengthAwarePaginator')) {
             $this->flexFilters = $this->buildFilters(attributes: $request->all(), query: $resultQuery);
-            $resultQuery = $resultQuery->paginate($recordsPerPage);
+            ['sort' => $sort, 'sortDir' => $sortDir] = $this->sortBy($request->all());
+            $resultQuery = $resultQuery->sortBy(sort: $sort, sortDir: $sortDir)->paginate($recordsPerPage);
         }
         $this->resultQuery = $resultQuery;
         $this->paginate = is_a($this->resultQuery, 'Illuminate\Pagination\LengthAwarePaginator');

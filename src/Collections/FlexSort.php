@@ -61,6 +61,6 @@ trait FlexSort
             return in_array($attributes[$dirConfig['attribute']], ['asc', 'desc']) ? $attributes[$dirConfig['attribute']] : throw new \Exception("Invalid sort direction {$dir}");
         }
         // Flag is the truthy value
-        return  $dir ? $flag : ($flag === 'desc' ? 'asc' : 'desc');
+        return $dir ? $flag : ($flag === 'desc' ? 'asc' : 'desc');
     }
 }

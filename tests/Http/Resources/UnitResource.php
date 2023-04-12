@@ -86,7 +86,7 @@ class UnitResource extends FlexResource
 
     public function filters(): array
     {
-        return  [
+        return [
             Filter::make('status')->fromColumn()->icon('mdi-list-status'),
             Filter::make('beds')->fromColumn()->icon('mdi-bed'),
             Filter::make('baths')->fromColumn()->icon('mdi-shower'),

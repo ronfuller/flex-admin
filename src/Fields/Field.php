@@ -23,17 +23,13 @@ class Field
     use FieldSearchable;
     use FieldFilter;
 
-    public const
-        CONTEXT_INDEX = 'index';
+    public const CONTEXT_INDEX = 'index';
 
-    public const
-        CONTEXT_DETAIL = 'detail';
+    public const CONTEXT_DETAIL = 'detail';
 
-    public const
-        CONTEXT_EDIT = 'edit';
+    public const CONTEXT_EDIT = 'edit';
 
-    public const
-        CONTEXT_CREATE = 'create';
+    public const CONTEXT_CREATE = 'create';
 
     // only default contexts
     public const CONTEXTS = [
@@ -50,23 +46,17 @@ class Field
         self::CONTEXT_CREATE => '{entity}.create',
     ];
 
-    public const
-        FILTER_VALUE = 'value';
+    public const FILTER_VALUE = 'value';
 
-    public const
-        FILTER_RANGE = 'range';
+    public const FILTER_RANGE = 'range';
 
-    public const
-        FILTER_DATE_RANGE = 'date-range';
+    public const FILTER_DATE_RANGE = 'date-range';
 
-    public const
-        FILTER_LTE = 'lte';
+    public const FILTER_LTE = 'lte';
 
-    public const
-        FILTER_GTE = 'gte';
+    public const FILTER_GTE = 'gte';
 
-    public const
-        FILTER_BETWEEN = 'between';
+    public const FILTER_BETWEEN = 'between';
 
     public const FILTER_TYPES =
     [

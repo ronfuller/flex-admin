@@ -15,7 +15,7 @@ class UserResource extends Resource implements Flexible
      */
     public function fields(array|null $keys = null): array
     {
-        return  [
+        return [
             Field::make($keys, 'id')
                 ?->name('userId')
                 ->valueOnly(),

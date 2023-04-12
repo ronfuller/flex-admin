@@ -28,17 +28,13 @@ class Relation
      */
     protected $actions = false;
 
-    public const
-        TYPE_BELONGS_TO = 'belongsTo';
+    public const TYPE_BELONGS_TO = 'belongsTo';
 
-    public const
-        TYPE_HAS_MANY = 'hasMany';
+    public const TYPE_HAS_MANY = 'hasMany';
 
-    public const
-        TYPE_BELONGS_TO_MANY = 'belongsToMany';
+    public const TYPE_BELONGS_TO_MANY = 'belongsToMany';
 
-    public const
-        TYPE_HAS_ONE = 'hasOne';
+    public const TYPE_HAS_ONE = 'hasOne';
 
     final public function __construct(public string $relationKey, public string $relation, public Model $model, public ?string $resourceClassName = null)
     {
@@ -157,7 +153,7 @@ class Relation
     {
         $foreign = ['key' => $resource->getForeignKey(), 'value' => $resource->{$resource->getKeyName()}];
 
-        return  Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()), $this->resourceClassName)
+        return Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()), $this->resourceClassName)
             ->setResultQuery($resource->{$this->relationKey}()->index([]), $request, $this->recordsPerPage)
             ->toArray(
                 request: $request,

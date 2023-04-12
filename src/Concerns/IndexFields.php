@@ -39,7 +39,7 @@ class IndexFields
         return collect(array_keys($fields))
             ->filter(fn ($key) => self::isIndexedField(key: $key))
             ->map(function ($key) use ($fields) {
-                return  [
+                return [
                     'index' => self::fieldIndex($key),
                     'field' => (string) str($key)->beforeLast('_'),
                     'value' => $fields[$key],
