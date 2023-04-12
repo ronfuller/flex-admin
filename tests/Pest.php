@@ -33,7 +33,7 @@ function actingAs(User $user, string $driver = null)
 
 function createRequest(array $params = []): Request
 {
-    return  Request::create('http://test.com', 'GET', $params);
+    return Request::create('http://test.com', 'GET', $params);
 }
 
 function buildFilter(string $filter): string

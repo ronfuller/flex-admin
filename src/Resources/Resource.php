@@ -142,7 +142,7 @@ class Resource extends JsonResource implements Flexible
         $fields = $fields->filter()->values();
 
         $fieldsCollection = $fields->map(function (Field $field) use ($attributes) {
-            return  [
+            return [
                 ...[
                     'component' => $field->component,
                 ],
