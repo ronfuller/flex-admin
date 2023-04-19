@@ -41,7 +41,7 @@ final class FormFieldAttributesData extends Data
         public string|Optional $validationError,
         public bool|Optional $conditional,
         public string|Optional $conditionField,
-        public string|Optional $conditionValue,
+        public string|array|Optional $conditionValue,
         public string|Optional $conditionOperator,
         public readonly ElementColor|Optional $labelColor,
         public readonly ElementColor|Optional $iconColor,
