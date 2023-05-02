@@ -9,6 +9,7 @@ namespace Psi\FlexAdmin\Enums;
 enum FieldFormat: string
 {
     case Text = 'text';
+    case Numeric = 'numeric';
     case Phone = 'phone';
     case Date = 'date';
     case ShortDate = 'shortDate';
