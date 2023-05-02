@@ -17,6 +17,7 @@ enum FieldFormat: string
     case Card = 'card';
     case SSN = 'ssn';
     case Currency = 'currency';
+    case Money = 'money';
     case PasswordConfirmation = 'password_confirmation';
     case Autocomplete = 'autocomplete';
     case Filter = 'filter';
