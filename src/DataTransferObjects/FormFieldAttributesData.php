@@ -50,6 +50,7 @@ final class FormFieldAttributesData extends Data
         public array|Optional $indicator,
         public bool|Optional $indicateChange,
         public array|Optional $statements,
+        public bool|Optional $enableUpdate,
         public readonly ElementColor|Optional $labelColor,
         public readonly ElementColor|Optional $iconColor,
         public readonly ElementColor|Optional $inputTextColor,
