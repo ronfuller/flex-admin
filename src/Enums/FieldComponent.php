@@ -17,6 +17,7 @@ enum FieldComponent: string
     case CheckboxArray = 'checkbox-array-field';
     case CheckboxListArray = 'checkbox-list-array-field';
     case Radio = 'radio-field';
+    case Editor = 'editor-field';
     case Signature = 'signature-field';
     case PopupSelect = 'popup-select-field';
 
