@@ -37,5 +37,7 @@ return [
          * Delimiter seperates filter options, NOTE: CHANGING THIS VALUE REQUIRES CHANGINGE DataTableFilter.vue component in q-component-lib
          */
         'delimiter' => '!*',
+        'session_cache' => false,
+        'session_cache_lifetime' => 60,
     ],
 ];

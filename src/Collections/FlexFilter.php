@@ -4,6 +4,7 @@ namespace Psi\FlexAdmin\Collections;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Psi\FlexAdmin\Filters\Filter;
 
@@ -37,10 +38,49 @@ trait FlexFilter
 
         // Determine if we are filtering from the query string
         if (isset($attributes['filter'])) {
-            $filters = $this->filtersFromAttributes($filters, $attributes);
+            if ($attributes['filter'] === 'reset') {
+                $this->filtersClearSession();
+            } else {
+                $filters = $this->filtersFromAttributes($filters, $attributes);
+                $this->filtersToSession($filters);
+            }
+        } else {
+            if ($this->filtersUseSession()) {
+                $filters = $this->filtersFromSession();
+            }
         }
 
         return $filters->all();
+    }
+
+    protected function filtersUseSession(): bool
+    {
+        return data_get(config('flex-admin.filter') ?? [], 'session_cache', false);
+    }
+
+    protected function cacheKey(): string
+    {
+        return (string) str((string) str((string) str(get_class($this->resource))->snake()->replace('_', '-'))->replace('\\', '-').'-'.(string) str(url()->current())->replace(':', '')->replace('.', '-')->replace('/', '-'))->slug();
+    }
+
+    protected function filtersFromSession(): Collection
+    {
+        return collect($this->filtersUseSession() ? session($this->cacheKey(), []) : []);
+    }
+
+    protected function filtersToSession(Collection $filters): void
+    {
+        if ($this->filtersUseSession()) {
+            $lifetime = data_get(config('flex-admin.filter') ?? [], 'session_cache_lifetime', 60);
+            session([$this->cacheKey() => $filters->all()], now()->addMinutes($lifetime));
+        }
+    }
+
+    protected function filtersClearSession(): void
+    {
+        if ($this->filtersUseSession()) {
+            session()->forget($this->cacheKey());
+        }
     }
 
     /**
