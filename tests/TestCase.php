@@ -37,6 +37,7 @@ class TestCase extends Orchestra
 
         $app['config']->set('app.key', 'base64:8xem+lYvuVAYkd/UvLjmG4cptCp4aOuWCz7Zn7dXcVo=');
         $app['config']->set('flex-admin.resource_path', 'Http\\Resources');
+        $app['config']->set('flex-admin.filter.session_cache', false);
         $app['config']->set('flex-admin.model_path', 'Models');
         $app['config']->set('flex-admin.render.default_component', 'text-field');
         $app['config']->set('flex-admin.render.default_panel', 'details');
