@@ -74,7 +74,7 @@ final class FormFieldAttributesData extends Data
         public array|Optional $options,
         public bool|Optional $optionsDense,
         public string|Optional $optionLabel,
-        public string|Optional $optionalValue,
+        public string|Optional $optionValue,
         public string|Optional $searchUrl,
         public string|Optional $emitValue,
     ) {
