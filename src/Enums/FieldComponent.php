@@ -20,6 +20,7 @@ enum FieldComponent: string
     case Editor = 'editor-field';
     case Signature = 'signature-field';
     case PopupSelect = 'popup-select-field';
+    case CustomSelect = 'custom-select-field';
 
     public static function values(): array
     {
