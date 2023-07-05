@@ -16,6 +16,8 @@ final class FormFieldGroupData extends Data
         public readonly ?int $max = 3,
         public readonly ?int $fixed = 0,
         public ?string $actionLabel = '',
+        public ?string $delimiter = ' - ',
+        public array $suffixes = [],
         public ?array $rows = []
     ) {
     }

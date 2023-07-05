@@ -23,6 +23,7 @@ enum FieldFormat: string
     case Autocomplete = 'autocomplete';
     case Filter = 'filter';
     case Array = 'array';
+    case Google = 'google';
 
     public static function values(): array
     {
