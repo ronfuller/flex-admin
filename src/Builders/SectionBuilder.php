@@ -239,7 +239,16 @@ class SectionBuilder
                                 $col->field->attr->hidden = false;
                             }
                         }
-                        $col->field->attr->conditionField .= "_{$index}";
+                        if (Arr::has($col->field->attr->toArray(), 'conditionField')) {
+                            $col->field->attr->conditionField .= "_{$index}";
+                        }
+                        if (Arr::has($col->field->attr->toArray(), 'conditions')) {
+                            $col->field->attr->conditions = collect($col->field->attr->conditions)->map(function ($condition) use ($index) {
+                                $condition['field'] .= "_{$index}";
+
+                                return $condition;
+                            })->all();
+                        }
                     }
                     $col->field->attr->name .= "_{$index}";
                 });
