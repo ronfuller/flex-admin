@@ -228,8 +228,8 @@ class SectionBuilder
                 $clone = SectionFieldRowData::from($row->toArray());
                 $clone->columns->each(function (FormColumnData $col) use ($index) {
                     if (Arr::has($col->field->attr->toArray(), 'conditional')) {
-                        if (! Arr::has($col->field->attr->toArray(), 'conditionField')) {
-                            throw new \Exception("Conditional field not specified for field {$col->field->attr->name}", 1);
+                        if (! Arr::has($col->field->attr->toArray(), ['conditionField', 'conditions'])) {
+                            throw new \Exception("Conditional field or conditions not specified for field {$col->field->attr->name}", 1);
                         }
                         // Special Case Occupant Fields
                         if (in_array($col->field->attr->name, ['ssn', 'drivers_license', 'student'])) {
