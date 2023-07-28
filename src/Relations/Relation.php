@@ -28,6 +28,11 @@ class Relation
      */
     protected $actions = false;
 
+    /**
+     * Determines if we build the related query
+     **/
+    protected $buildRelatedQuery = true;
+
     public const TYPE_BELONGS_TO = 'belongsTo';
 
     public const TYPE_HAS_MANY = 'hasMany';
@@ -102,13 +107,19 @@ class Relation
         return $this;
     }
 
+    public function withExistingRelation(): self
+    {
+        $this->buildRelatedQuery = false;
+
+        return $this;
+    }
+
     public function attributes(): array
     {
         return [
             'key' => $this->relationKey,
             'type' => $this->relation,
             'conditions' => $this->relatedConditions ?? null,
-
         ];
     }
 
@@ -153,8 +164,10 @@ class Relation
     {
         $foreign = ['key' => $resource->getForeignKey(), 'value' => $resource->{$resource->getKeyName()}];
 
+        $resultQuery = $this->buildRelatedQuery ? $resource->{$this->relationKey}()->index([]) : $resource->{$this->relationKey};
+
         return Flex::forIndex(get_class($resource->{$this->relationKey}()->getRelated()), $this->resourceClassName)
-            ->setResultQuery($resource->{$this->relationKey}()->index([]), $request, $this->recordsPerPage)
+            ->setResultQuery($resultQuery, $request, $this->recordsPerPage)
             ->toArray(
                 request: $request,
                 append: compact('foreign')
