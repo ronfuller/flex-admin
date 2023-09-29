@@ -1,2 +1,3 @@
 #!/bin/bash
-../../vendor/bin/sail shell ./packages/flex-admin/bin/shell/test.sh
+./vendor/bin/pest --filter=setup
+./vendor/bin/pest --exclude-group=setup --parallel --processes=12

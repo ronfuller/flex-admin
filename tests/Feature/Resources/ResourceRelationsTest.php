@@ -4,9 +4,9 @@ use Psi\FlexAdmin\Fields\Field;
 use Psi\FlexAdmin\Tests\Http\Resources\PropertyResource;
 
 it('should have relations')
-->expect(fn () => (new PropertyResource($this->property->load('company')))
-    ->withContext(Field::CONTEXT_DETAIL)
-    ->toArray(createRequest()))
+    ->expect(fn () => (new PropertyResource($this->property->load('company')))
+        ->withContext(Field::CONTEXT_DETAIL)
+        ->toArray(createRequest()))
     ->toHaveKey('relations')
     ->relations
     ->toHaveCount(2)

@@ -74,6 +74,7 @@ uses()
 
 uses()
     ->beforeEach(function () {
+
         $this->properties = Property::factory()->count(5)
             ->for(
                 Company::factory()->state(['name' => 'Columbia'])
@@ -88,11 +89,14 @@ uses()
             ->create();
         //$this->user = User::first();
 
-        $this->user = User::factory()->create(
-            [
-                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.delete', 'properties.create', 'companies.view', 'companies.edit', 'units.view-any', 'units.view'],
-            ]
-        );
+        $this->user = User::firstWhere('name', 'Frederick Flintstone');
+
+        //        User::factory()->create(
+        //            [
+        //                'permissions' => ['properties.view-any', 'properties.view', 'properties.edit', 'properties.delete', 'properties.create', 'companies.view', 'companies.edit', 'units.view-any', 'units.view'],
+        //            ]
+        //        );
+
         actingAs($this->user);
         Route::resource('properties', PropertyController::class)->middleware(['web']);
     })

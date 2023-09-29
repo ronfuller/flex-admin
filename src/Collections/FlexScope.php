@@ -8,7 +8,7 @@ trait FlexScope
 {
     public array $scopes = [];
 
-    protected array|null $withScopes = null;
+    protected ?array $withScopes = null;
 
     /**
      * Add an authorize scope

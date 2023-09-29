@@ -18,7 +18,7 @@ class UnitResource extends FlexResource
      *
      * @param  array|null|null  $cols input list of columns enabled for the resource in context, null is prior to column availability
      */
-    public function fields(array|null $cols = null): array
+    public function fields(array $cols = null): array
     {
         return [
             Field::make($cols, 'id')

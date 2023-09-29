@@ -19,7 +19,7 @@ trait ResourceFlexible
         return [];
     }
 
-    public function fields(?array $keys = null): array
+    public function fields(array $keys = null): array
     {
         return [];
     }

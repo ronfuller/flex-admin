@@ -66,7 +66,7 @@ class Action
      *
      * @return \Psi\FlexAdmin\Actions\Action | null
      */
-    public static function make(string $slug, bool $condition = null): self|null
+    public static function make(string $slug, bool $condition = null): ?self
     {
         $condition = $condition ?? true;
 

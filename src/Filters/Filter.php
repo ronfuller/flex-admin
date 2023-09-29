@@ -2,12 +2,35 @@
 
 namespace Psi\FlexAdmin\Filters;
 
+use function call_user_func;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use function method_exists;
 
 class Filter
 {
+    public const SOURCE_FUNCTION = 'function';
+
+    public const SOURCE_COLUMN = 'column';
+
+    public const SOURCE_ATTRIBUTE = 'attribute';
+
     public mixed $value = null;
+
+    /**
+     * Callable function to get an item from the filter value
+     *
+     * @var callable|null
+     */
+    public $itemFromValue;
+
+    /**
+     * Model Query Scope to apply filter
+     *
+     * @var string|null
+     */
+    public $queryScope;
 
     protected mixed $default = null;
 
@@ -49,37 +72,24 @@ class Filter
     /**
      * Source for the filter
      */
-    protected string|null $source = null;
+    protected ?string $source = null;
 
     /**
      * Information about the source
      */
-    protected string|null $sourceMeta = null;
+    protected ?string $sourceMeta = null;
 
-    /**
-     * Callable function to get an item from the filter value
-     *
-     * @var callable|null
-     */
-    public $itemFromValue;
-
-    /**
-     * Model Query Scope to apply filter
-     *
-     * @var string|null
-     */
-    public $queryScope;
-
-    public const SOURCE_FUNCTION = 'function';
-
-    public const SOURCE_COLUMN = 'column';
-
-    public const SOURCE_ATTRIBUTE = 'attribute';
-
-    final public function __construct(public string $name, public string|null $key = null)
+    final public function __construct(public string $name, public ?string $key = null)
     {
         // TODO: validate that overridden attributes don't contain type,name,label
         $this->setDefaults();
+    }
+
+    protected function setDefaults()
+    {
+        $this->label = $this->label ?? (string) Str::of($this->name)->after('.')->singular()->title()->replace('_',
+            ' ')->replace('-', ' ');
+        $this->key = $this->key ?? (string) Str::of($this->name)->lower();
     }
 
     public static function make(...$args)
@@ -130,14 +140,6 @@ class Filter
         return $this;
     }
 
-    public function option(string $labelKey, string $valueKey): self
-    {
-        $this->attributes['optionValue'] = $valueKey;
-        $this->attributes['optionLabel'] = $labelKey;
-
-        return $this;
-    }
-
     public function withScope(string $scope): self
     {
         $this->queryScope = $scope;
@@ -179,7 +181,7 @@ class Filter
     public function attributes(array $attributes): self
     {
         if (array_intersect(['name', 'label', 'type', 'format', 'value', 'meta'], array_keys($attributes))) {
-            throw new \Exception('Cannot append attributes with reserved keys.');
+            throw new Exception('Cannot append attributes with reserved keys.');
         }
         $this->attributes = array_merge($this->attributes, $attributes);
 
@@ -198,18 +200,18 @@ class Filter
      */
     public function getItem(mixed $value): array
     {
-        return $this->itemFromValue ? \call_user_func($this->itemFromValue, $value) : ['label' => (string) Str::of($value)->title(), 'value' => $value];
+        return $this->itemFromValue ? call_user_func($this->itemFromValue,
+            $value) : ['label' => (string) Str::of($value)->title(), 'value' => $value];
     }
 
     /**
      * Set the item value using the callable
-     *
-     * @return \Psi\FlexAdmin\Filters\Filter
      */
     public function setItem(): self
     {
         if ($this->value) {
-            $this->item = $this->itemFromValue ? \call_user_func($this->itemFromValue, $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
+            $this->item = $this->itemFromValue ? call_user_func($this->itemFromValue,
+                $this->value) : ['label' => (string) Str::of($this->value)->title(), 'value' => $this->value];
         }
 
         return $this;
@@ -248,7 +250,7 @@ class Filter
     public function build(Model $model, $query): self
     {
         if (is_null($this->source) || is_null($this->sourceMeta)) {
-            throw new \Exception('Cannot build filter without source set.');
+            throw new Exception('Cannot build filter without source set.');
         }
 
         switch ($this->source) {
@@ -269,34 +271,11 @@ class Filter
         return $this;
     }
 
-    protected function optionsFromAttribute(Model $model): array
-    {
-        $attribute = 'filter_'.$this->sourceMeta;
-        $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append('Attribute');
-        if (! \method_exists($model, $filterMutatorMethod)) {
-            throw new \Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
-        }
-
-        return $model->getAttribute('filter_'.$this->sourceMeta);
-    }
-
-    protected function optionsFromFunction(Model $model, $query): array
-    {
-        $filterQuery = clone $query;
-        $method = (string) Str::of($this->sourceMeta)->title()->prepend('filter');
-
-        if (! \method_exists($model, $method)) {
-            throw new \Exception("Could not find filter function for filter named {$this->sourceMeta}");
-        }
-
-        return $model->{$method}($filterQuery);
-    }
-
     protected function optionsFromColumn(Model $model, $query): array
     {
         $column = $model->qualifyColumn($this->sourceMeta);
         $filterQuery = clone $query;
-        $options = $filterQuery->select($column)->distinct()->orderBy($column)->toBase()->get()->pluck($this->sourceMeta)->all();
+        $options = $filterQuery->select($column)->distinct()->reorder()->orderBy($column)->toBase()->get()->pluck($this->sourceMeta)->all();
         $this->option('label', 'value');
 
         return collect($options)->map(function ($item) {
@@ -307,9 +286,34 @@ class Filter
         })->all();
     }
 
-    protected function setDefaults()
+    public function option(string $labelKey, string $valueKey): self
     {
-        $this->label = $this->label ?? (string) Str::of($this->name)->after('.')->singular()->title()->replace('_', ' ')->replace('-', ' ');
-        $this->key = $this->key ?? (string) Str::of($this->name)->lower();
+        $this->attributes['optionValue'] = $valueKey;
+        $this->attributes['optionLabel'] = $labelKey;
+
+        return $this;
+    }
+
+    protected function optionsFromFunction(Model $model, $query): array
+    {
+        $filterQuery = clone $query;
+        $method = (string) Str::of($this->sourceMeta)->title()->prepend('filter');
+
+        if (! method_exists($model, $method)) {
+            throw new Exception("Could not find filter function for filter named {$this->sourceMeta}");
+        }
+
+        return $model->{$method}($filterQuery);
+    }
+
+    protected function optionsFromAttribute(Model $model): array
+    {
+        $attribute = 'filter_'.$this->sourceMeta;
+        $filterMutatorMethod = (string) Str::of($this->sourceMeta)->studly()->prepend('getFilter')->append('Attribute');
+        if (! method_exists($model, $filterMutatorMethod)) {
+            throw new Exception("Attribute missing for filter {$this->sourceMeta}. Model must include getter prefixed with filter");
+        }
+
+        return $model->getAttribute('filter_'.$this->sourceMeta);
     }
 }

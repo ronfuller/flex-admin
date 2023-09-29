@@ -1,2 +1,3 @@
 #!/bin/bash
-../../vendor/bin/sail shell ./packages/flex-admin/bin/shell/analyze.sh
+set -e
+./vendor/bin/phpstan analyze
