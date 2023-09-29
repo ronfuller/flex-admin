@@ -9,7 +9,7 @@ interface Flexible
     /**
      * Generates resource fields
      */
-    public function fields(array|null $keys = null): array;
+    public function fields(array $keys = null): array;
 
     /**
      * Builds Resource Actions

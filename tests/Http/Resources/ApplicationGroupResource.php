@@ -12,7 +12,7 @@ class ApplicationGroupResource extends Resource implements Flexible
      *
      * @param  array|null|null  $cols input list of columns enabled for the resource in context, null is prior to column availability
      */
-    public function fields(array|null $keys = null): array
+    public function fields(array $keys = null): array
     {
         // KEYS NEED TO BE SMART WITH DATA VALUES
         return [];

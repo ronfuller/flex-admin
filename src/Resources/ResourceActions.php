@@ -18,7 +18,7 @@ trait ResourceActions
      */
     protected array $defaultActions = ['view', 'edit', 'create', 'delete'];
 
-    protected array|null $actions = null;
+    protected ?array $actions = null;
 
     /**
      * Creates a resource without actions

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class FlexInspect
 {
-    public array|null $meta = null;
+    public ?array $meta = null;
 
     public function __construct(Model $model)
     {

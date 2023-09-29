@@ -102,7 +102,7 @@ class Field
         return $this;
     }
 
-    public function toMeta(array|null $modelMeta = null): array
+    public function toMeta(array $modelMeta = null): array
     {
         return array_merge(
             $this->meta,

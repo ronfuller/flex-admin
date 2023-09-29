@@ -6,7 +6,7 @@ use Psi\FlexAdmin\Fields\Field;
 
 trait FlexFor
 {
-    public static function forDetail(mixed $model, ?string $resourceClassName = null)
+    public static function forDetail(mixed $model, string $resourceClassName = null)
     {
         /**
          * @var Flex
@@ -20,7 +20,7 @@ trait FlexFor
         return $flex->setResultModel($model);
     }
 
-    public static function forIndex(mixed $model, ?string $resourceClassName = null): Flex
+    public static function forIndex(mixed $model, string $resourceClassName = null): Flex
     {
         return new static(
             model: $model,
@@ -29,7 +29,7 @@ trait FlexFor
         );
     }
 
-    public static function forEdit(mixed $model, ?string $resourceClassName = null)
+    public static function forEdit(mixed $model, string $resourceClassName = null)
     {
         $flex = new static(
             model: get_class($model),
@@ -40,7 +40,7 @@ trait FlexFor
         return $flex->setResultModel($model);
     }
 
-    public static function forCreate(mixed $model, ?string $resourceClassName = null)
+    public static function forCreate(mixed $model, string $resourceClassName = null)
     {
         $flex = new static(
             model: get_class($model),

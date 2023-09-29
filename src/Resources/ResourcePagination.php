@@ -7,12 +7,12 @@ trait ResourcePagination
     /**
      * @var int - pagination option to use for default pagination per page
      */
-    protected int|null $perPage;
+    protected ?int $perPage;
 
     /**
      * @var array
      */
-    protected array|null $perPageOptions;
+    protected ?array $perPageOptions;
 
     /**
      * Determines if we should paginate the resource

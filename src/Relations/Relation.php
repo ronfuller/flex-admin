@@ -45,22 +45,22 @@ class Relation
     {
     }
 
-    public static function belongsTo(string $relationKey, Model $model, ?string $resourceClassName = null)
+    public static function belongsTo(string $relationKey, Model $model, string $resourceClassName = null)
     {
         return new static($relationKey, self::TYPE_BELONGS_TO, $model, $resourceClassName);
     }
 
-    public static function hasOne(string $relationKey, Model $model, ?string $resourceClassName = null)
+    public static function hasOne(string $relationKey, Model $model, string $resourceClassName = null)
     {
         return new static($relationKey, self::TYPE_HAS_ONE, $model, $resourceClassName);
     }
 
-    public static function hasMany(string $relationKey, Model $model, ?string $resourceClassName = null)
+    public static function hasMany(string $relationKey, Model $model, string $resourceClassName = null)
     {
         return new static($relationKey, self::TYPE_HAS_MANY, $model, $resourceClassName);
     }
 
-    public static function belongsToMany(string $relationKey, Model $model, ?string $resourceClassName = null)
+    public static function belongsToMany(string $relationKey, Model $model, string $resourceClassName = null)
     {
         return new static($relationKey, self::TYPE_BELONGS_TO_MANY, $model, $resourceClassName);
     }

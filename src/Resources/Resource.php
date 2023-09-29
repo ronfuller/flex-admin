@@ -23,7 +23,7 @@ class Resource extends JsonResource implements Flexible
     /**
      * @var Model
      */
-    public Model|null $model = null;
+    public ?Model $model = null;
 
     public $defaultSort = [];
 
@@ -137,7 +137,7 @@ class Resource extends JsonResource implements Flexible
         $fields = collect($this->fields($this->keys));
 
         if ($values) {
-            $fields = $fields->filter(fn (Field|null $field) => $field ? $field->addToValues : false);
+            $fields = $fields->filter(fn (?Field $field) => $field ? $field->addToValues : false);
         }
         $fields = $fields->filter()->values();
 

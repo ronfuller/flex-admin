@@ -9,12 +9,12 @@ trait FieldRender
     /**
      * Name of component, override on child
      */
-    public string|null $component;
+    public ?string $component;
 
     /**
      * Associative array of components
      */
-    protected array|null $components;
+    protected ?array $components;
 
     /**
      * Associates resource with a distinct panel
@@ -112,7 +112,7 @@ trait FieldRender
         return $this;
     }
 
-    protected function componentForContext(string $context): string|null
+    protected function componentForContext(string $context): ?string
     {
         return $this->components[$context] ?? $this->component;
     }
