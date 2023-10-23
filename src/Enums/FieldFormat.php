@@ -10,6 +10,7 @@ enum FieldFormat: string
 {
     case Text = 'text';
     case Numeric = 'numeric';
+    case Decimal = 'decimal';
     case Phone = 'phone';
     case Date = 'date';
     case ShortDate = 'shortDate';
